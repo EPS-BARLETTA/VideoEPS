@@ -1,6 +1,6 @@
 // Service worker : garde l'application sur l'appareil pour un usage sans connexion.
 // Changer VERSION à chaque mise à jour de l'application.
-const VERSION = "chrono-eps-v6";
+const VERSION = "chrono-eps-v7";
 const FONTS = "chrono-eps-fonts-v1";
 const FILES = [
   "./",
@@ -43,7 +43,24 @@ self.addEventListener("fetch", event => {
     return;
   }
   if (new URL(req.url).origin !== self.location.origin) return;
-  const key = req.mode === "navigate" ? "./index.html" : req;
+  // Page de l'application : on prend la dernière version si le réseau répond vite,
+  // sinon la copie gardée sur l'appareil (usage sans connexion).
+  if (req.mode === "navigate") {
+    event.respondWith(caches.open(VERSION).then(async cache => {
+      const timeout = new Promise(r => setTimeout(() => r(null), 2500));
+      const net = fetch(req, { cache: "no-store" }).then(res => {
+        if (res && res.ok) cache.put("./index.html", res.clone());
+        return res;
+      }).catch(() => null);
+      const res = await Promise.race([net, timeout]);
+      if (res) return res;
+      const cached = await cache.match("./index.html");
+      if (cached) { event.waitUntil(net); return cached; }
+      return (await net) || new Response("Hors connexion", { status: 503, headers: { "Content-Type": "text/plain; charset=utf-8" } });
+    }));
+    return;
+  }
+  const key = req;
   event.respondWith(
     caches.open(VERSION).then(async cache => {
       const cached = await cache.match(key, { ignoreSearch: true });
