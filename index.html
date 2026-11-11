@@ -238,13 +238,35 @@
   /* ---------- groupes et import ---------- */
   .tools{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:12px}
   .tools .btn{min-height:46px;font-size:16px;padding:0 12px;gap:8px}
-  .tools .seg button{padding:7px 12px}
+  .tools .btn{flex:1 1 auto}
   .tools .lab{font-size:14px;font-weight:600;color:var(--ink-2)}
   .gblock{margin-bottom:12px}
   .gblock .gh{display:flex;justify-content:space-between;font:700 19px/1.2 var(--cond);margin:0 2px 6px}
   .gblock .gh small{font:600 14px var(--text);color:var(--ink-2)}
   .gblock textarea{min-height:130px}
   #runRow{margin:4px 0 6px}
+  #runSeg{flex-wrap:wrap;align-self:flex-start;margin-top:8px}
+  .tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+  .tile{min-height:56px;padding:8px 10px 8px 38px;position:relative;text-align:left;background:var(--paper);border:2px solid var(--rule);
+    border-radius:var(--r-m);font-weight:600;font-size:16px;line-height:1.2}
+  .tile::before{content:"";position:absolute;left:10px;top:50%;width:20px;height:20px;margin-top:-10px;border:2px solid var(--ink-3);border-radius:6px;background:#fff}
+  .tile[aria-pressed="true"]{border-color:var(--ink);background:#E9F2EC}
+  .tile[aria-pressed="true"]::before{background:var(--infield);border-color:var(--infield);
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5 9-10'/%3E%3C/svg%3E");background-size:16px;background-position:center;background-repeat:no-repeat}
+  .tile small{display:block;font-weight:500;font-size:13px;color:var(--ink-2)}
+  .gcard{border:2px solid var(--gc);border-radius:var(--r-l);padding:10px 12px;margin-top:12px;background:var(--paper)}
+  .gcard h3{margin:0 0 8px;font:800 22px/1 var(--cond);color:var(--gc);display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 8px;white-space:nowrap}
+  .gcard h3 small{white-space:normal}
+  .gcard h3 small{font:600 14px var(--text);color:var(--ink-2)}
+  .gcard .names{display:flex;flex-wrap:wrap;gap:6px}
+  .gcard .names button{padding:6px 10px;border-radius:99px;background:var(--chalk);border:1.5px solid var(--rule);font-size:15px;font-weight:600}
+  .gcard .names button::after{content:" ×";color:var(--ink-3)}
+  #grpBar{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+  #grpBar .btn{flex:none;color:#fff;background:var(--gc);border-color:var(--gc);min-width:120px}
+  #grpBar .btn.new{background:var(--paper);color:var(--ink);border:2px dashed var(--ink-3)}
+  #grpBar .btn:disabled{opacity:.4}
+  #grpBar .hint{flex:1;display:flex;align-items:center;justify-content:center;min-height:58px;color:var(--ink-2);font-weight:600;
+    background:var(--paper);border:1.5px solid var(--rule);border-radius:var(--r-m)}
 
   /* ---------- cartes d'arrivée (photo + menu) ---------- */
   .card{display:grid;grid-template-columns:clamp(110px,34%,200px) minmax(0,1fr);gap:12px;padding:12px;border-top:1.5px solid var(--rule)}
@@ -303,6 +325,7 @@
   <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 00-2-2H6a2 2 0 00-2 2v8a2 2 0 002 2h2"/></symbol>
   <symbol id="i-redo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 11-2.3-5.6"/><path d="M20 4v5h-5"/></symbol>
   <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
+  <symbol id="i-groups" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.6"/><path d="M16 14.2c2.9.3 5 2.6 5 5.8"/></symbol>
   <symbol id="i-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5M5 20h14"/></symbol>
   <symbol id="i-prev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></symbol>
   <symbol id="i-next"viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></symbol>
@@ -329,15 +352,15 @@
     <div class="tools">
       <button class="btn" id="csvBtn"><svg><use href="#i-up"/></svg>Importer CSV</button>
       <input type="file" id="fCsv" accept=".csv,.txt,text/csv,text/plain" class="hidden">
-      <span class="lab" style="margin-left:auto">Groupes</span>
-      <div class="seg" data-for="groups"><button data-v="1" aria-pressed="true">1</button><button data-v="2" aria-pressed="false">2</button><button data-v="3" aria-pressed="false">3</button></div>
+      <button class="btn ink" id="grpBtn"><svg><use href="#i-groups"/></svg>Former les groupes</button>
     </div>
+    <div id="poolNote" class="tip hidden"></div>
     <div id="gBlocks"></div>
     <div id="runRow" class="hidden">
-      <div class="panel"><div class="opt"><div><div class="t">Qui court ?</div><div class="d">Les noms du menu à la fin</div></div>
+      <div class="panel"><div class="opt" style="flex-direction:column;align-items:stretch"><div><div class="t">Qui court ?</div><div class="d">Les noms du menu à la fin</div></div>
         <div class="seg" id="runSeg"></div></div></div>
     </div>
-    <p class="help">Un élève par ligne. Un numéro en début de ligne sert de dossard. Le CSV peut avoir des colonnes Nom, Prénom, Groupe, Dossard. Tu peux aussi laisser vide et nommer après la course.</p>
+    <p class="help">Un élève par ligne. Un numéro en début de ligne sert de dossard. Le CSV peut avoir des colonnes Nom, Prénom, Groupe, Dossard ; sans colonne Groupe, tu formes les groupes en cochant les élèves. Tu peux aussi laisser vide et nommer après la course.</p>
 
     <h2>Réglages</h2>
     <div class="panel">
@@ -362,11 +385,30 @@
       <div class="panel list" id="histList"></div>
       <p class="help">Les temps restent sur cet appareil. Les vidéos, non : enregistre-les à la fin de chaque course.</p>
     </div>
-    <p class="help" style="margin-top:28px;text-align:center;color:var(--ink-3)">Version 10</p>
+    <p class="help" style="margin-top:28px;text-align:center;color:var(--ink-3)">Version 11</p>
   </div>
   <div class="dock"><div class="wrap">
     <button class="btn ink wide" id="openCam"><svg><use href="#i-cam"/></svg>Ouvrir la caméra</button>
   </div></div>
+</section>
+
+<!-- ======================= FORMER LES GROUPES ======================= -->
+<section id="grp" class="page hidden">
+  <div class="wrap">
+    <div class="topbar"><button class="iconbtn" id="grpBack" aria-label="Retour"><svg><use href="#i-back"/></svg></button></div>
+    <header class="reshead"><h1>Former les groupes</h1>
+      <div class="meta"><span>Coche des élèves, puis touche le groupe en bas.</span></div></header>
+    <h2>À placer <span class="count" id="poolCount"></span>
+      <button class="addTie" id="grpAll" style="margin:0 0 0 auto">Tout cocher</button></h2>
+    <div class="tiles" id="poolTiles"></div>
+    <div id="grpDone" class="help hidden" style="font-size:16px;font-weight:600;color:var(--infield)">Tous les élèves sont placés.</div>
+    <div id="grpList"></div>
+    <div style="display:flex;gap:10px;margin-top:22px">
+      <button class="btn" id="grpReset" style="flex:1"><svg><use href="#i-redo"/></svg>Tout recommencer</button>
+      <button class="btn go" id="grpOk" style="flex:1">Terminé</button>
+    </div>
+  </div>
+  <div class="dock"><div class="wrap"><div id="grpBar"></div></div></div>
 </section>
 
 <!-- ======================= COURSE ======================= -->
@@ -497,7 +539,7 @@
       box.querySelectorAll("[data-v]").forEach(b => b.onclick = () => close(b.dataset.v === "1"));
     });
   }
-  function show(id){ ["setup","race","results"].forEach(s => $(s).classList.toggle("hidden", s !== id)); window.scrollTo(0,0); }
+  function show(id){ ["setup","race","results","grp"].forEach(s => $(s).classList.toggle("hidden", s !== id)); window.scrollTo(0,0); }
   const safeName = s => (s || "").normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-zA-Z0-9]+/g,"-").replace(/^-|-$/g,"");
   function baseFileName(){
     const d = new Date(S.meta.date);
@@ -512,8 +554,9 @@
   const saved = store.get("cc_setup", {});
   if (saved.title) $("fTitle").value = saved.title;
   if (saved.cls) $("fClass").value = saved.cls;
-  S.groupsTxt = Array.isArray(saved.groupsTxt) ? saved.groupsTxt.concat(["","",""]).slice(0,3) : [saved.runners || "", "", ""];
-  S.opts.groups = saved.groups || "1";
+  S.groupsTxt = Array.isArray(saved.groupsTxt) ? (saved.groups ? saved.groupsTxt.slice(0, +saved.groups || 1) : saved.groupsTxt.slice()) : [saved.runners || ""];
+  if (!S.groupsTxt.length) S.groupsTxt = [""];
+  S.poolTxt = saved.poolTxt || "";
   S.opts.run = saved.run || "1";
   if (saved.burn === false) $("fBurn").checked = false;
   if (saved.audio) $("fAudio").checked = true;
@@ -533,7 +576,7 @@
   function qualityHint(){ $("qualityHint").textContent = QUALITY[S.opts.quality].label; }
   qualityHint();
   function saveSetup(){
-    store.set("cc_setup", { title:$("fTitle").value, cls:$("fClass").value, groupsTxt:S.groupsTxt, groups:S.opts.groups, run:S.opts.run,
+    store.set("cc_setup", { title:$("fTitle").value, cls:$("fClass").value, groupsTxt:S.groupsTxt, poolTxt:S.poolTxt, run:S.opts.run,
       cam:S.opts.cam, hand:S.opts.hand, quality:S.opts.quality, burn:$("fBurn").checked, audio:$("fAudio").checked, beep:$("fBeep").checked });
   }
   function parseRunners(txt, g){
@@ -544,7 +587,9 @@
       return m ? { id, bib:m[1], name:m[2].trim(), group:g } : { id, bib:"", name:l, group:g };
     });
   }
-  const nGroups = () => +S.opts.groups || 1;
+  const nGroups = () => Math.max(1, S.groupsTxt.length);
+  const GCOL = ["#2C7A4B","#1F5FA8","#B83226","#8A4FB0","#C77A0A","#0F8A8A","#A63A73","#55626E"];
+  const gColor = g => GCOL[(g - 1) % GCOL.length];
   const plural = n => n + (n > 1 ? " élèves" : " élève");
   // élèves de la course : groupe choisi, ou tous les groupes
   function runningRunners(){
@@ -571,13 +616,16 @@
     const N = nGroups(), box = $("gBlocks"); box.innerHTML = "";
     for (let g = 1; g <= N; g++) {
       const d = document.createElement("div"); d.className = "gblock";
-      d.innerHTML = (N > 1 ? '<div class="gh">Groupe ' + g + '<small id="gCount' + g + '"></small></div>' : "") +
+      d.innerHTML = (N > 1 ? '<div class="gh" style="color:' + gColor(g) + '">Groupe ' + g + '<small id="gCount' + g + '"></small></div>' : "") +
         '<textarea placeholder="Dupont Léa&#10;Martin Noah&#10;12 Schmit Emma" aria-label="Groupe ' + g + ', un élève par ligne"></textarea>';
       const ta = d.querySelector("textarea"); ta.value = S.groupsTxt[g-1] || "";
       ta.addEventListener("input", () => { S.groupsTxt[g-1] = ta.value; updateCount(); saveSetup(); });
       box.appendChild(d);
     }
     $("runRow").classList.toggle("hidden", N === 1);
+    const np = parseRunners(S.poolTxt).length;
+    $("poolNote").classList.toggle("hidden", !np);
+    $("poolNote").innerHTML = np ? "<b>" + plural(np) + " sans groupe</b> : touche « Former les groupes » pour les placer." : "";
     if (N > 1) {
       if (S.opts.run !== "all" && (+S.opts.run || 1) > N) S.opts.run = "1";
       const seg = $("runSeg"); seg.innerHTML = "";
@@ -591,11 +639,7 @@
     }
     updateCount();
   }
-  function setGroupsCount(n){
-    S.opts.groups = String(n);
-    document.querySelectorAll('.seg[data-for="groups"] button').forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === S.opts.groups)));
-    renderGroups(); saveSetup();
-  }
+
   ["fTitle","fClass","fBurn","fAudio","fBeep"].forEach(id => $(id).addEventListener("change", saveSetup));
   renderGroups();
 
@@ -676,33 +720,108 @@
     const classes = [...new Set(list.map(s => s.cls).filter(Boolean))];
     if (classes.length === 1 && !$("fClass").value.trim()) $("fClass").value = classes[0];
     const groups = [...new Set(list.map(s => s.group).filter(Boolean))];
-    if (groups.length >= 1 && groups.length <= 3 && list.every(s => s.group)) {
+    if (groups.length >= 1 && groups.length <= 12 && list.every(s => s.group)) {
       // le fichier dit déjà qui est dans quel groupe
-      S.groupsTxt = groups.map(gv => list.filter(s => s.group === gv).map(lineOf).join("\n")).concat(["","",""]).slice(0,3);
-      setGroupsCount(groups.length);
+      S.groupsTxt = groups.map(gv => list.filter(s => s.group === gv).map(lineOf).join("\n"));
+      S.poolTxt = ""; S.opts.run = "1";
+      renderGroups(); saveSetup();
       toast(plural(list.length) + " importés en " + groups.length + (groups.length > 1 ? " groupes" : " groupe"));
       return;
     }
-    const N = nGroups();
-    let how = "one";
-    if (N > 1) {
-      how = await sheet((box, close) => {
-        box.innerHTML = "<h3>" + plural(list.length) + " trouvés</h3><p>Comment les placer dans les " + N + " groupes ?</p>" +
-          '<div class="acts" style="flex-direction:column"><button class="btn ink" data-v="split">Répartir en ' + N + ' groupes égaux</button>' +
-          '<button class="btn" data-v="one">Tout mettre dans le groupe 1</button></div>';
-        box.querySelectorAll("[data-v]").forEach(b => b.onclick = () => close(b.dataset.v));
-      });
-      if (!how) return;
-    }
-    if (how === "split") {
-      const size = Math.ceil(list.length / N);
-      S.groupsTxt = [0,1,2].map(g => g < N ? list.slice(g * size, (g + 1) * size).map(lineOf).join("\n") : "");
-    } else {
-      S.groupsTxt = [list.map(lineOf).join("\n"), "", ""];
-    }
+    S.groupsTxt = [""]; S.poolTxt = list.map(lineOf).join("\n"); S.opts.run = "1";
     renderGroups(); saveSetup();
     toast(plural(list.length) + " importés");
+    openGrouping();
   };
+
+  // ---------- former les groupes : cases à cocher ----------
+  const G = { items:[], sel:new Set() };
+  function openGrouping(){
+    G.items = []; G.sel = new Set();
+    S.groupsTxt.forEach((t, gi) => (t || "").split(/\r?\n/).map(l => l.trim()).filter(Boolean).forEach(l => G.items.push({ line:l, g:gi + 1 })));
+    (S.poolTxt || "").split(/\r?\n/).map(l => l.trim()).filter(Boolean).forEach(l => G.items.push({ line:l, g:0 }));
+    if (!G.items.length) { toast("Importe ou écris d'abord la liste des élèves"); return; }
+    // une seule liste sans groupe : tout est à placer
+    if (!G.items.some(x => x.g === 0) && S.groupsTxt.length === 1) G.items.forEach(x => x.g = 0);
+    show("grp"); renderGrouping();
+    history.pushState({grp:1}, "");
+  }
+  const itemName = l => { const m = l.match(/^(\d{1,4})[\s.,;:\-–]+(.+)$/); return m ? { bib:m[1], name:m[2] } : { bib:"", name:l }; };
+  function maxG(){ return G.items.reduce((m, x) => Math.max(m, x.g), 0); }
+  function renderGrouping(){
+    const pool = G.items.map((x, i) => [x, i]).filter(([x]) => x.g === 0);
+    $("poolCount").textContent = pool.length ? plural(pool.length) : "";
+    $("grpAll").classList.toggle("hidden", !pool.length);
+    $("grpAll").textContent = pool.length && pool.every(([, i]) => G.sel.has(i)) ? "Tout décocher" : "Tout cocher";
+    $("grpDone").classList.toggle("hidden", !!pool.length);
+    const tiles = $("poolTiles"); tiles.innerHTML = "";
+    pool.forEach(([x, i]) => {
+      const t = document.createElement("button"); t.className = "tile";
+      const n = itemName(x.line);
+      t.innerHTML = esc(n.name) + (n.bib ? "<small>n° " + esc(n.bib) + "</small>" : "");
+      t.setAttribute("aria-pressed", String(G.sel.has(i)));
+      t.onclick = () => { G.sel.has(i) ? G.sel.delete(i) : G.sel.add(i); renderGrouping(); };
+      tiles.appendChild(t);
+    });
+    const M = maxG(), list = $("grpList"); list.innerHTML = "";
+    for (let g = 1; g <= M; g++) {
+      const mem = G.items.map((x, i) => [x, i]).filter(([x]) => x.g === g);
+      if (!mem.length) continue;
+      const c = document.createElement("div"); c.className = "gcard"; c.style.setProperty("--gc", gColor(g));
+      c.innerHTML = "<h3>Groupe " + g + "<small>" + plural(mem.length) + " · touche un nom pour le retirer</small></h3><div class=\"names\"></div>";
+      const names = c.querySelector(".names");
+      mem.forEach(([x]) => {
+        const b = document.createElement("button"); b.textContent = itemName(x.line).name;
+        b.onclick = () => { x.g = 0; renderGrouping(); };
+        names.appendChild(b);
+      });
+      list.appendChild(c);
+    }
+    const bar = $("grpBar"); bar.innerHTML = "";
+    const k = G.sel.size;
+    if (!pool.length) { bar.innerHTML = '<span class="hint">Touche « Terminé » pour valider</span>'; return; }
+    if (!k) { bar.innerHTML = '<span class="hint">Coche des élèves, puis choisis leur groupe</span>'; return; }
+    let fresh = 1; while (G.items.some(x => x.g === fresh)) fresh++;
+    for (let g = 1; g <= Math.max(M, fresh); g++) {
+      const used = G.items.some(x => x.g === g);
+      if (!used && g !== fresh) continue;
+      const b = document.createElement("button"); b.className = "btn" + (used ? "" : " new");
+      b.style.setProperty("--gc", gColor(g));
+      b.innerHTML = (used ? "" : "+ ") + "Groupe " + g + '<small style="font-weight:500;opacity:.85">(' + k + ")</small>";
+      b.onclick = () => { G.sel.forEach(i => G.items[i].g = g); G.sel.clear(); renderGrouping(); toast(plural(k) + " dans le groupe " + g); };
+      bar.appendChild(b);
+    }
+  }
+  $("grpAll").onclick = () => {
+    const pool = G.items.map((x, i) => i).filter(i => G.items[i].g === 0);
+    if (pool.every(i => G.sel.has(i))) G.sel.clear(); else pool.forEach(i => G.sel.add(i));
+    renderGrouping();
+  };
+  $("grpReset").onclick = async () => {
+    if (await ask("Tout recommencer ?", "Tous les élèves reviennent dans la liste à placer.", "Recommencer", true)) {
+      G.items.forEach(x => x.g = 0); G.sel.clear(); renderGrouping();
+    }
+  };
+  function saveGrouping(){
+    const used = [...new Set(G.items.map(x => x.g).filter(Boolean))].sort((a, b) => a - b);
+    if (!used.length) { S.groupsTxt = [G.items.map(x => x.line).join("\n")]; S.poolTxt = ""; }
+    else {
+      S.groupsTxt = used.map(g => G.items.filter(x => x.g === g).map(x => x.line).join("\n"));
+      S.poolTxt = G.items.filter(x => x.g === 0).map(x => x.line).join("\n");
+    }
+    if (S.opts.run !== "all" && (+S.opts.run || 1) > S.groupsTxt.length) S.opts.run = "1";
+    renderGroups(); saveSetup();
+  }
+  $("grpOk").onclick = async () => {
+    const left = G.items.filter(x => x.g === 0).length, used = maxG();
+    if (left && used) {
+      const ok = await ask(plural(left) + " sans groupe", "Ils resteront de côté (pas dans les menus) jusqu'à ce que tu les places.", "Valider quand même");
+      if (!ok) return;
+    }
+    saveGrouping(); history.back();
+  };
+  $("grpBack").onclick = () => { saveGrouping(); history.back(); };
+  $("grpBtn").onclick = openGrouping;
 
   function pickMime(){
     const list = ["video/mp4;codecs=avc1", "video/mp4", "video/webm;codecs=vp9", "video/webm;codecs=vp8", "video/webm"];
@@ -1380,6 +1499,7 @@
   $("homeBtn").onclick = async () => { if (await leaveResults()) { show("setup"); renderHistory(); } };
   window.addEventListener("beforeunload", e => { if (S.running || (S.videoBlob && !S.videoSaved)) { e.preventDefault(); e.returnValue = ""; } });
   window.addEventListener("popstate", () => {
+    if (!$("grp").classList.contains("hidden")) { saveGrouping(); show("setup"); return; }
     if (!$("pf").classList.contains("hidden")) { closeViewer(); return; }
     if (!$("race").classList.contains("hidden")) { history.pushState({race:1}, ""); toast("Maintiens Terminer pour arrêter la course"); }
   });
