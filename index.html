@@ -362,7 +362,7 @@
       <div class="panel list" id="histList"></div>
       <p class="help">Les temps restent sur cet appareil. Les vidéos, non : enregistre-les à la fin de chaque course.</p>
     </div>
-    <p class="help" style="margin-top:28px;text-align:center;color:var(--ink-3)">Version 9</p>
+    <p class="help" style="margin-top:28px;text-align:center;color:var(--ink-3)">Version 10</p>
   </div>
   <div class="dock"><div class="wrap">
     <button class="btn ink wide" id="openCam"><svg><use href="#i-cam"/></svg>Ouvrir la caméra</button>
@@ -414,6 +414,7 @@
     <p class="help">Choisis l'élève dans le menu de chaque arrivée : il disparaît des autres menus. Touche une photo pour l'agrandir, « revoir » pour la vidéo. Plusieurs élèves arrivés ensemble : « + Ajouter un élève ».</p>
 
     <div class="more">
+      <button class="btn" id="dlPhotos" style="grid-column:1/-1"><svg><use href="#i-down"/></svg>Enregistrer les photos (avec les noms)</button>
       <button class="btn" id="shareBtn"><svg><use href="#i-share"/></svg>Partager</button>
       <button class="btn" id="copyBtn"><svg><use href="#i-copy"/></svg>Copier le texte</button>
       <button class="btn" id="dlCsv"><svg><use href="#i-down"/></svg>Fichier Excel (CSV)</button>
@@ -902,6 +903,49 @@
   }
 
   // ---------- photo d'arrivée : image de la caméra au moment de l'appui ----------
+  // photos gardées sur l'appareil (IndexedDB) tant que la course est dans l'historique
+  const idb = (() => {
+    let p = null;
+    const open = () => p || (p = new Promise((res, rej) => {
+      const r = indexedDB.open("chrono-eps", 1);
+      r.onupgradeneeded = () => r.result.createObjectStore("photos", { keyPath:"id" });
+      r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+    }));
+    const tx = (mode, fn) => open().then(db => new Promise((res, rej) => {
+      const t = db.transaction("photos", mode), req = fn(t.objectStore("photos"));
+      t.oncomplete = () => res(req ? req.result : undefined); t.onerror = () => rej(t.error); t.onabort = () => rej(t.error);
+    }));
+    return {
+      put: rec => tx("readwrite", st => st.put(rec)),
+      get: id => tx("readonly", st => st.get(id)),
+      keys: () => tx("readonly", st => st.getAllKeys()),
+      del: ids => tx("readwrite", st => { ids.forEach(id => st.delete(id)); return null; })
+    };
+  })();
+  const raceOfPid = pid => +String(pid).split("_")[0];
+  async function purgePhotos(){
+    try {
+      const hist = new Set(store.get("cc_history", []).map(h => h.id));
+      const keys = await idb.keys();
+      const old = keys.filter(k => { const r = raceOfPid(k); return !hist.has(r) && r !== S.meta.date; });
+      if (old.length) await idb.del(old);
+    } catch(e){}
+  }
+  async function deleteRacePhotos(raceId){
+    try { const keys = await idb.keys(); await idb.del(keys.filter(k => raceOfPid(k) === raceId)); } catch(e){}
+  }
+  async function loadPhotos(){
+    const pids = [...new Set(S.arrivals.map(a => a.pid).filter(Boolean))];
+    for (const pid of pids) {
+      try {
+        const rec = await idb.get(pid);
+        if (!rec || !rec.blob) continue;
+        const url = URL.createObjectURL(rec.blob); S.photos.push(url);
+        S.arrivals.forEach(a => { if (a.pid === pid) a.photo = url; });
+      } catch(e){}
+    }
+    refreshResults();
+  }
   S.photos = [];
   function freePhotos(){ (S.photos || []).forEach(u => URL.revokeObjectURL(u)); S.photos = []; }
   function snapPhoto(a){
@@ -920,11 +964,13 @@
       const tTxt = fmt(a.t), tW = ctx.measureText(tTxt).width;
       ctx.fillStyle = "rgba(184,50,38,.96)"; ctx.fillRect(m, y, tW + fs * 0.8, ah);
       ctx.textAlign = "left"; ctx.fillStyle = "#fff"; ctx.fillText(tTxt, m + fs * 0.4, y + ah / 2 + fs * 0.05);
+      a.pid = S.meta.date + "_" + Math.round(a.t) + "_" + Math.random().toString(36).slice(2, 6);
       c.toBlob(b => {
         if (!b) return;
+        if (S.arrivals.includes(a)) idb.put({ id:a.pid, blob:b }).catch(() => {});
         const url = URL.createObjectURL(b); S.photos.push(url);
         a.photo = url;
-        S.arrivals.forEach(x => { if (x.tie && x.t === a.t && !x.photo) x.photo = url; });
+        S.arrivals.forEach(x => { if (x.pid === a.pid && !x.photo) x.photo = url; });
         if (S.finished) refreshResults();
       }, "image/jpeg", 0.85);
     } catch(e){}
@@ -987,6 +1033,7 @@
   holdButton($("undoBtn"), () => {
     if (!S.arrivals.length) return;
     const n = S.arrivals.length, a = S.arrivals.pop();
+    if (a.pid) idb.del([a.pid]).catch(() => {});
     feedback(330, 0.25, [40, 40, 40]);
     toast("Arrivée n°" + n + " supprimée (" + fmt(a.t) + ")");
     renderRaceUI();
@@ -1105,7 +1152,7 @@
   }
   function addTie(grp){
     const last = grp[grp.length-1], head = S.arrivals[grp[0]];
-    S.arrivals.splice(last + 1, 0, { t:head.t, runnerId:null, tie:true, photo:head.photo });
+    S.arrivals.splice(last + 1, 0, { t:head.t, runnerId:null, tie:true, photo:head.photo, pid:head.pid });
     changed();
   }
 
@@ -1134,7 +1181,7 @@
     arrivalGroups().forEach((grp, gi) => {
       const head = S.arrivals[grp[0]], gap = head.t - first;
       const el = document.createElement("div"); el.className = "card";
-      el.innerHTML = '<button class="ph" aria-label="Agrandir la photo">' + (head.photo ? '<img alt="" src="' + head.photo + '">' : (S.finishedFromHistory ? "Photo non gardée" : "Pas de photo")) + "</button>" +
+      el.innerHTML = '<button class="ph" aria-label="Agrandir la photo">' + (head.photo ? '<img alt="" src="' + head.photo + '">' : (head.pid ? "…" : (S.finishedFromHistory ? "Photo effacée" : "Pas de photo"))) + "</button>" +
         '<div><div class="ctop"><span class="bib">' + (grp[0] + 1) + "</span><b>" + fmt(head.t) + "</b>" +
         (gap > 0 ? "<small>" + fmtGap(gap) + "</small>" : "") + (S.videoURL ? '<button class="play">revoir</button>' : "") +
         '</div><div class="slots"></div><button class="addTie">+ Ajouter un élève</button></div>';
@@ -1170,7 +1217,7 @@
     if (head.photo) { if (img.getAttribute("src") !== head.photo) { img.src = head.photo; img.classList.remove("zoom"); } img.classList.remove("hidden"); }
     else { img.removeAttribute("src"); img.classList.add("hidden"); }
     $("pfNone").classList.toggle("hidden", !!head.photo);
-    $("pfNone").textContent = S.finishedFromHistory ? "Les photos ne sont pas gardées dans l'historique" : "Pas de photo pour cette arrivée";
+    $("pfNone").textContent = head.pid ? "Chargement…" : (S.finishedFromHistory ? "Photo effacée" : "Pas de photo pour cette arrivée");
     $("pfHint").classList.toggle("hidden", !head.photo);
     $("pfNum").textContent = grp[0] + 1;
     $("pfTime").textContent = fmt(head.t);
@@ -1247,6 +1294,40 @@
       catch(e) { if (e.name === "AbortError") return; }
     }
     download(S.videoBlob, file.name); S.videoSaved = true; toast("Vidéo enregistrée");
+  };
+  // photos avec numéro, nom(s) et temps écrits en haut
+  const loadImg = url => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = url; });
+  async function photoFiles(){
+    const files = [], head0 = [S.meta.title, S.meta.cls, S.meta.group, new Date(S.meta.date).toLocaleDateString("fr-FR")].filter(Boolean).join(" · ");
+    for (const grp of arrivalGroups()) {
+      const a = S.arrivals[grp[0]]; if (!a.photo) continue;
+      const img = await loadImg(a.photo), w = img.naturalWidth, h = img.naturalHeight;
+      const fs = Math.round(Math.min(w, h) * 0.06), band = Math.round(fs * 2.6);
+      const c = document.createElement("canvas"); c.width = w; c.height = h + band;
+      const ctx = c.getContext("2d");
+      ctx.fillStyle = "#14212B"; ctx.fillRect(0, 0, w, band);
+      ctx.drawImage(img, 0, band, w, h);
+      const names = grp.map(i => { const x = S.arrivals[i], r = runnerById(x.runnerId); return r ? runnerLabel(r) : (x.freeName || ""); }).filter(Boolean);
+      ctx.textBaseline = "middle"; ctx.fillStyle = "#fff";
+      ctx.font = "700 " + fs + 'px "Barlow",sans-serif';
+      ctx.fillText((grp[0] + 1) + ". " + (names.join(" + ") || "Non nommé") + "   " + fmt(a.t), fs * 0.5, band * 0.36, w - fs);
+      ctx.font = "500 " + Math.round(fs * 0.6) + 'px "Barlow",sans-serif'; ctx.fillStyle = "#ffffffb0";
+      ctx.fillText(head0, fs * 0.5, band * 0.78, w - fs);
+      const blob = await new Promise(r => c.toBlob(r, "image/jpeg", 0.88));
+      if (blob) files.push(new File([blob], baseFileName() + "_arrivee-" + pad(grp[0] + 1) + ".jpg", { type:"image/jpeg" }));
+    }
+    return files;
+  }
+  $("dlPhotos").onclick = async () => {
+    let files;
+    try { files = await photoFiles(); } catch(e) { toast("Photos indisponibles"); return; }
+    if (!files.length) { toast("Aucune photo pour cette course"); return; }
+    if (navigator.canShare && navigator.canShare({ files }) && navigator.maxTouchPoints > 1) {
+      try { await navigator.share({ files }); toast("Photos enregistrées"); return; }
+      catch(e) { if (e.name === "AbortError") return; }
+    }
+    for (const f of files) { download(f, f.name); await new Promise(r => setTimeout(r, 300)); }
+    toast(files.length + " photos enregistrées");
   };
   $("copyBtn").onclick = async () => {
     try { await navigator.clipboard.writeText(plainText()); toast("Classement copié"); }
@@ -1330,13 +1411,14 @@
           recStartPerf:h.recStartPerf, videoBlob:null, videoURL:null, videoSaved:true, finishedFromHistory:true });
         $("playback").removeAttribute("src");
         renderResults(); $("videoInfo").textContent = "La vidéo de cette course n'est pas conservée sur l'appareil.";
-        show("results");
+        show("results"); loadPhotos();
       };
       row.querySelector('[data-a="open"]').onclick = open;
       row.querySelector(".main").onclick = open;
       row.querySelector('[data-a="del"]').onclick = async () => {
-        if (await ask("Supprimer cette course ?", "Les temps seront effacés de l'historique.", "Supprimer", true)) {
+        if (await ask("Supprimer cette course ?", "Les temps et les photos seront effacés de l'appareil.", "Supprimer", true)) {
           store.set("cc_history", store.get("cc_history", []).filter(x => x.id !== h.id)); renderHistory();
+          deleteRacePhotos(h.id);
         }
       };
       list.appendChild(row);
@@ -1344,6 +1426,7 @@
   }
   renderHistory();
   setClock($("clock"), 0);
+  purgePhotos();
 
   // ---------- hors connexion ----------
   const standalone = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
