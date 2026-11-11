@@ -22,7 +22,7 @@
   :root{
     --chalk:#F4F5F2; --paper:#FFFFFF; --ink:#14212B; --ink-2:#55626E; --ink-3:#8A949D;
     --rule:#DCE0D9; --tartan:#B83226; --tartan-dk:#8F2219; --infield:#2C7A4B; --infield-dk:#1E5A36;
-    --signal:#F4C21B;
+    --signal:#F4C21B; --track:#1D5FAE;
     --cond:"Barlow Condensed","Arial Narrow","Roboto Condensed",system-ui,sans-serif;
     --text:"Barlow",-apple-system,"Segoe UI",Roboto,system-ui,sans-serif;
     --st:env(safe-area-inset-top,0px); --sb:env(safe-area-inset-bottom,0px);
@@ -57,7 +57,7 @@
   .page{min-height:100%;padding:calc(18px + var(--st)) calc(18px + var(--sr)) calc(120px + var(--sb)) calc(18px + var(--sl))}
   .wrap{max-width:640px;margin:0 auto}
   /* ---------- page de garde ---------- */
-  #cover{position:fixed;inset:0;z-index:30;overflow:hidden;background:var(--tartan);color:#fff;display:flex;align-items:center;justify-content:center;
+  #cover{position:fixed;inset:0;z-index:30;overflow:hidden;background:var(--track);color:#fff;display:flex;align-items:center;justify-content:center;
     padding:calc(20px + var(--st)) calc(20px + var(--sr)) calc(20px + var(--sb)) calc(20px + var(--sl))}
   #cover.hidden{display:none}
   .cv-lanes{position:absolute;inset:0;display:grid;grid-template-rows:repeat(6,1fr);
@@ -77,7 +77,7 @@
   .cv-go,.cv-help{min-height:62px;padding:0 34px;border-radius:var(--r-m);font:800 26px/1 var(--cond);letter-spacing:.3px}
   .cv-go{background:#fff;color:var(--ink);box-shadow:0 5px 0 var(--ink)}
   .cv-go:active{transform:translateY(3px);box-shadow:0 2px 0 var(--ink)}
-  .cv-help{border:2.5px solid #fff;color:#fff;background:#0002}
+  .cv-help{border:2.5px solid #fff;color:#fff;background:#0003}
   .cv-ver{position:absolute;bottom:calc(10px + var(--sb));left:0;right:0;text-align:center;font-size:13px;opacity:.7;margin:0}
   /* un seul mouvement : le titre file jusqu'à la ligne, flash de l'appareil photo */
   @keyframes dash{from{transform:translateX(-60vw);opacity:0}70%{opacity:1}to{transform:none}}
@@ -85,16 +85,16 @@
   .cv-title{animation:dash .7s cubic-bezier(.15,.8,.25,1) both}
   .cv-flash{animation:snap .6s .62s ease-out both}
   .cv-sub,.cv-acts{animation:setoff .4s .75s both}
-  .helpbtn{width:34px;height:34px;border-radius:50%;background:#fff;color:var(--tartan);font:800 20px/1 var(--cond)}
+  .helpbtn{width:34px;height:34px;border-radius:50%;background:#fff;color:var(--track);font:800 20px/1 var(--cond)}
   .hero .status + .helpbtn{margin-left:8px}
   .hero-top .app + .helpbtn{margin-left:auto}
 
   /* ---------- mode d'emploi ---------- */
-  .gd-head{position:relative;overflow:hidden;background:var(--tartan);color:#fff;
+  .gd-head{position:relative;overflow:hidden;background:var(--track);color:#fff;
     margin:calc(-18px - var(--st)) calc(-18px - var(--sr)) 22px calc(-18px - var(--sl));padding:calc(14px + var(--st)) 20px 26px}
   .gd-lanes{position:absolute;inset:0;background:repeating-linear-gradient(180deg,transparent 0 44px,#ffffff38 44px 47px)}
   .gd-in{position:relative;max-width:980px;margin:0 auto}
-  .gd-back{color:var(--tartan);background:#fff;border-radius:50%;width:40px;height:40px}
+  .gd-back{color:var(--track);background:#fff;border-radius:50%;width:40px;height:40px}
   .gd-head h1{font:800 clamp(44px,10vw,72px)/.95 var(--cond);margin:6px 0 8px}
   .gd-head p{margin:0;font-weight:600;max-width:52ch}
   .steps{display:grid;gap:14px}
@@ -132,7 +132,7 @@
   .faq details p b{color:var(--ink)}
 
   /* ---------- accueil : la piste ---------- */
-  .hero{position:relative;overflow:hidden;color:#fff;background:var(--tartan);
+  .hero{position:relative;overflow:hidden;color:#fff;background:var(--track);
     margin:calc(-18px - var(--st)) calc(-18px - var(--sr)) 6px calc(-18px - var(--sl));
     padding:calc(14px + var(--st)) calc(48px + var(--sr)) 30px calc(46px + var(--sl))}
   .hero .lanes{position:absolute;inset:0;display:grid;grid-template-rows:repeat(5,1fr);
@@ -534,7 +534,7 @@
       <button class="cv-help" id="cvGuide">Mode d'emploi</button>
     </div>
   </div>
-  <p class="cv-ver">Version 15</p>
+  <p class="cv-ver">Version 16</p>
 </section>
 
 <!-- ======================= MODE D'EMPLOI ======================= -->
@@ -668,7 +668,7 @@
       <div class="panel list" id="histList"></div>
       <button class="linkbtn hidden" id="histMore"></button>
     </div>
-    <p class="help" style="margin-top:28px;text-align:center;color:var(--ink-3)">PhotoFinish · version 15</p>
+    <p class="help" style="margin-top:28px;text-align:center;color:var(--ink-3)">PhotoFinish · version 16</p>
   </div>
   <div class="dock"><div class="wrap">
     <button class="btn go wide" id="openCam"><svg><use href="#i-cam"/></svg><span id="camLbl">Ouvrir la caméra</span></button>
