@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0d1117">
+<title>Chrono Course – Demi-fond</title>
+<style>
+  :root{
+    --bg:#0d1117; --panel:#161b22; --line:#2a313c; --text:#f0f3f6; --muted:#9aa4b1;
+    --go:#1fb45a; --finish:#f2a600; --stop:#e5484d; --accent:#4c9aff;
+    --safe-t:env(safe-area-inset-top,0px); --safe-b:env(safe-area-inset-bottom,0px);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--text);
+    font:16px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+  button{font:inherit;color:inherit;border:0;border-radius:12px;cursor:pointer;touch-action:manipulation}
+  input,textarea,select{font:inherit;color:var(--text);background:#0b0f14;border:1px solid var(--line);
+    border-radius:10px;padding:10px 12px;width:100%}
+  textarea{min-height:170px;resize:vertical}
+  label{display:block;font-size:14px;color:var(--muted);margin:14px 0 6px}
+  .hidden{display:none!important}
+  .screen{min-height:100%;padding:calc(16px + var(--safe-t)) 16px calc(24px + var(--safe-b))}
+  .wrap{max-width:720px;margin:0 auto}
+  h1{font-size:24px;margin:4px 0 2px} h2{font-size:18px;margin:24px 0 8px}
+  .sub{color:var(--muted);margin:0 0 12px}
+  .row{display:flex;gap:10px;flex-wrap:wrap} .row>*{flex:1 1 140px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-top:14px}
+  .check{display:flex;align-items:center;gap:10px;margin:12px 0 0;color:var(--text);font-size:15px}
+  .check input{width:22px;height:22px;flex:none}
+  .btn{padding:14px 18px;font-weight:600;background:#222a35;border:1px solid var(--line)}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#04111f}
+  .btn.go{background:var(--go);border-color:var(--go);color:#03140a}
+  .btn.danger{background:transparent;border-color:var(--stop);color:#ff8a8d}
+  .btn.small{padding:9px 12px;font-size:14px;font-weight:500}
+  .btn:disabled{opacity:.45}
+  .hint{font-size:13px;color:var(--muted);margin-top:6px}
+  .err{background:#3a1416;border:1px solid var(--stop);color:#ffd1d2;padding:12px;border-radius:10px;margin-top:12px}
+
+  /* ---- Écran course ---- */
+  #race{position:fixed;inset:0;background:#000;display:flex;flex-direction:column}
+  #stage{position:relative;flex:1;min-height:0;overflow:hidden}
+  #preview{width:100%;height:100%;object-fit:contain;background:#000}
+  #topbar{position:absolute;left:0;right:0;top:0;padding:calc(8px + var(--safe-t)) 12px 8px;
+    display:flex;align-items:flex-start;justify-content:space-between;gap:8px;
+    background:linear-gradient(#000c,#0000);pointer-events:none}
+  #clock{font-variant-numeric:tabular-nums;font-weight:800;font-size:clamp(40px,11vw,84px);
+    letter-spacing:1px;text-shadow:0 2px 8px #000;line-height:1}
+  #raceInfo{text-align:right;font-size:14px;color:#dfe6ee;text-shadow:0 1px 4px #000}
+  #recDot{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--stop);margin-right:6px;
+    animation:blink 1s infinite;vertical-align:middle}
+  @keyframes blink{50%{opacity:.2}}
+  #flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;transition:opacity .25s}
+  #lastList{position:absolute;left:10px;bottom:10px;max-width:60%;pointer-events:none;font-variant-numeric:tabular-nums}
+  #lastList div{background:#000b;border-radius:8px;padding:4px 10px;margin-top:4px;font-size:15px}
+  #lastList b{color:var(--finish)}
+  #chips{display:flex;gap:6px;overflow-x:auto;padding:8px 10px;background:#0b0f14;border-top:1px solid #222;
+    -webkit-overflow-scrolling:touch;min-height:48px;align-items:center}
+  #chips .chip{flex:none;padding:8px 12px;background:#1d2531;border:1px solid #2f3a49;border-radius:999px;font-size:14px;white-space:nowrap}
+  #chips .chip:active{background:var(--accent);color:#000}
+  #chips .note{color:var(--muted);font-size:13px;white-space:nowrap;padding:0 4px}
+  #controls{display:flex;gap:8px;padding:10px 10px calc(10px + var(--safe-b));background:#0b0f14}
+  #mainBtn{flex:1;min-height:92px;font-size:30px;font-weight:800;letter-spacing:1px;border-radius:16px}
+  #mainBtn.start{background:var(--go);color:#03140a}
+  #mainBtn.finish{background:var(--finish);color:#1a1200}
+  #mainBtn:active{transform:scale(.98);filter:brightness(1.15)}
+  #side{display:flex;flex-direction:column;gap:8px;width:110px}
+  #side .btn{flex:1;padding:8px;font-size:14px}
+  @media (orientation:landscape) and (max-height:520px){
+    #race{flex-direction:row}
+    #bottom{width:min(300px,38vw);display:flex;flex-direction:column;background:#0b0f14}
+    #chips{flex-wrap:wrap;overflow-y:auto;flex:1;align-content:flex-start;border-top:0;border-left:1px solid #222}
+    #controls{flex-direction:column;padding-bottom:calc(10px + var(--safe-b))}
+    #mainBtn{min-height:110px}
+    #side{width:auto;flex-direction:row}
+  }
+
+  /* ---- Modal ---- */
+  #modal{position:fixed;inset:0;background:#000a;display:flex;align-items:center;justify-content:center;padding:20px;z-index:50}
+  #modal .box{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px;max-width:420px;width:100%}
+  #modal p{margin:0 0 16px}
+  #modal .row{justify-content:flex-end}
+
+  /* ---- Résultats ---- */
+  table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+  th,td{padding:9px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+  th{font-size:13px;color:var(--muted);font-weight:500}
+  td.rank{font-weight:800;width:42px} td.time{font-weight:700;white-space:nowrap}
+  td.gap{color:var(--muted);font-size:14px;white-space:nowrap}
+  tr.seek{cursor:pointer} tr.seek:active{background:#1d2531}
+  td select{padding:6px 8px;font-size:15px}
+  #playback{width:100%;max-height:60vh;background:#000;border-radius:12px;margin-top:8px}
+  .podium td.rank{color:var(--finish)}
+  .actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:12px}
+  .hist-item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+  .hist-item:last-child{border-bottom:0}
+  .toast{position:fixed;left:50%;bottom:calc(24px + var(--safe-b));transform:translateX(-50%);background:#222a35;
+    border:1px solid var(--line);padding:10px 16px;border-radius:999px;z-index:60;font-size:15px}
+</style>
+</head>
+<body>
+
+<!-- =================== PRÉPARATION =================== -->
+<section id="setup" class="screen">
+  <div class="wrap">
+    <h1>Chrono Course</h1>
+    <p class="sub">Filmer l'arrivée, chronométrer, classer, archiver.</p>
+
+    <div class="card">
+      <div class="row">
+        <div><label for="fTitle">Épreuve</label><input id="fTitle" placeholder="ex. 1000 m"></div>
+        <div><label for="fClass">Classe / groupe</label><input id="fClass" placeholder="ex. 5C1 – garçons"></div>
+      </div>
+      <label for="fRunners">Participants (un par ligne, dossard facultatif en début de ligne)</label>
+      <textarea id="fRunners" placeholder="12 Dupont Léa&#10;7 Martin Noah&#10;Schmit Emma"></textarea>
+      <div class="hint">Tu peux laisser vide : les arrivées seront numérotées et tu pourras mettre les noms après.</div>
+    </div>
+
+    <div class="card">
+      <label for="fCam" style="margin-top:0">Caméra</label>
+      <select id="fCam">
+        <option value="environment">Caméra arrière</option>
+        <option value="user">Caméra avant</option>
+      </select>
+      <label class="check"><input type="checkbox" id="fBurn" checked> Incruster le chrono et les arrivées dans la vidéo</label>
+      <label class="check"><input type="checkbox" id="fAudio"> Enregistrer le son (micro)</label>
+    </div>
+
+    <div id="setupErr" class="err hidden"></div>
+    <div class="actions"><button class="btn primary" id="openCam">Ouvrir la caméra</button></div>
+
+    <div id="histWrap" class="hidden">
+      <h2>Courses enregistrées sur cet appareil</h2>
+      <div class="card" id="histList"></div>
+      <div class="hint">Seuls les temps sont gardés ici. Les vidéos doivent être enregistrées à la fin de chaque course.</div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== COURSE =================== -->
+<section id="race" class="hidden">
+  <div id="stage">
+    <video id="preview" playsinline muted autoplay></video>
+    <div id="flash"></div>
+    <div id="topbar">
+      <div id="clock">00:00.00</div>
+      <div id="raceInfo"><div id="recState"></div><div id="countInfo"></div></div>
+    </div>
+    <div id="lastList"></div>
+  </div>
+  <div id="bottom">
+    <div id="chips"></div>
+    <div id="controls">
+      <button id="mainBtn" class="start">DÉPART</button>
+      <div id="side">
+        <button class="btn" id="undoBtn" disabled>Annuler<br>dernière</button>
+        <button class="btn danger" id="endBtn">Terminer</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== RÉSULTATS =================== -->
+<section id="results" class="screen hidden">
+  <div class="wrap">
+    <h1 id="resTitle">Résultats</h1>
+    <p class="sub" id="resSub"></p>
+
+    <div class="card" style="padding:8px 10px">
+      <table>
+        <thead><tr><th>Rang</th><th>Participant</th><th>Temps</th><th>Écart</th></tr></thead>
+        <tbody id="resBody"></tbody>
+      </table>
+      <div class="hint" id="seekHint">Touche un temps pour revoir l'arrivée dans la vidéo.</div>
+    </div>
+
+    <div id="videoCard" class="card">
+      <video id="playback" controls playsinline></video>
+      <div class="hint" id="videoInfo"></div>
+    </div>
+
+    <h2>Archiver</h2>
+    <div class="actions">
+      <button class="btn primary" id="dlVideo">Enregistrer la vidéo</button>
+      <button class="btn primary" id="dlCsv">Enregistrer le classement (CSV)</button>
+      <button class="btn" id="shareBtn">Partager vidéo + classement</button>
+      <button class="btn" id="copyBtn">Copier le classement</button>
+    </div>
+    <div class="hint">Le CSV s'ouvre dans Excel (séparateur « ; »). Sur iPhone, « Partager » permet d'enregistrer la vidéo dans Photos ou Fichiers.</div>
+
+    <div class="actions" style="margin-top:24px">
+      <button class="btn go" id="againBtn">Nouvelle course (mêmes participants)</button>
+      <button class="btn" id="homeBtn">Retour à l'accueil</button>
+    </div>
+  </div>
+</section>
+
+<div id="modal" class="hidden"><div class="box"><p id="modalText"></p><div class="row" id="modalBtns"></div></div></div>
+<canvas id="comp" style="position:fixed;left:0;top:0;width:2px;height:2px;opacity:0;pointer-events:none"></canvas>
+
+<script>
+(() => {
+  "use strict";
+  const $ = id => document.getElementById(id);
+
+  // ---------- état ----------
+  const S = {
+    stream:null, recorder:null, chunks:[], mime:"", ext:"webm",
+    recStartPerf:0, chronoStartPerf:0, running:false, finished:false,
+    arrivals:[],   // {t (ms), runnerId|null}
+    runners:[],    // {id, bib, name}
+    meta:{}, videoBlob:null, videoURL:null, rafId:0, drawId:0, wakeLock:null,
+    burn:true, flashUntil:0, flashText:""
+  };
+
+  // ---------- utilitaires ----------
+  const pad = (n, l=2) => String(n).padStart(l, "0");
+  function fmt(ms){
+    if (ms == null || ms < 0) ms = 0;
+    const cs = Math.floor(ms / 10) % 100, s = Math.floor(ms / 1000) % 60, m = Math.floor(ms / 60000);
+    return pad(m) + ":" + pad(s) + "." + pad(cs);
+  }
+  function fmtGap(ms){ return ms <= 0 ? "" : "+" + (ms >= 60000 ? fmt(ms) : (ms/1000).toFixed(2).replace(".", ",") + " s"); }
+  const store = {
+    get(k, d){ try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch(e){ return d; } },
+    set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} }
+  };
+  function toast(msg){
+    const t = document.createElement("div"); t.className = "toast"; t.textContent = msg;
+    document.body.appendChild(t); setTimeout(() => t.remove(), 2200);
+  }
+  function ask(text, buttons){
+    return new Promise(res => {
+      $("modalText").textContent = text;
+      const box = $("modalBtns"); box.innerHTML = "";
+      buttons.forEach(([label, val, cls]) => {
+        const b = document.createElement("button"); b.className = "btn " + (cls || ""); b.textContent = label;
+        b.onclick = () => { $("modal").classList.add("hidden"); res(val); };
+        box.appendChild(b);
+      });
+      $("modal").classList.remove("hidden");
+    });
+  }
+  function show(id){ ["setup","race","results"].forEach(s => $(s).classList.toggle("hidden", s !== id)); window.scrollTo(0,0); }
+  function safeName(s){ return (s || "").normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-zA-Z0-9]+/g,"-").replace(/^-|-$/g,""); }
+  function baseFileName(){
+    const d = new Date(S.meta.date);
+    const stamp = d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())+"_"+pad(d.getHours())+"h"+pad(d.getMinutes());
+    return ["course", stamp, safeName(S.meta.title), safeName(S.meta.cls)].filter(Boolean).join("_");
+  }
+  function runnerLabel(r){ return r ? (r.bib ? r.bib + " – " : "") + r.name : ""; }
+  function runnerById(id){ return S.runners.find(r => r.id === id) || null; }
+
+  // ---------- préparation ----------
+  const saved = store.get("cc_setup", {});
+  if (saved.title) $("fTitle").value = saved.title;
+  if (saved.cls) $("fClass").value = saved.cls;
+  if (saved.runners) $("fRunners").value = saved.runners;
+  if (saved.cam) $("fCam").value = saved.cam;
+  if (saved.burn === false) $("fBurn").checked = false;
+  if (saved.audio) $("fAudio").checked = true;
+
+  function parseRunners(txt){
+    return txt.split(/\r?\n/).map(l => l.trim()).filter(Boolean).map((l, i) => {
+      const m = l.match(/^(\d{1,4})[\s.,;:\-–]+(.+)$/);
+      return m ? { id:"r"+i, bib:m[1], name:m[2].trim() } : { id:"r"+i, bib:"", name:l };
+    });
+  }
+
+  function pickMime(){
+    const list = ["video/mp4;codecs=avc1", "video/mp4", "video/webm;codecs=vp9", "video/webm;codecs=vp8", "video/webm"];
+    if (!window.MediaRecorder) return "";
+    for (const m of list) { try { if (MediaRecorder.isTypeSupported(m)) return m; } catch(e){} }
+    return "";
+  }
+
+  $("openCam").onclick = async () => {
+    const err = $("setupErr"); err.classList.add("hidden");
+    store.set("cc_setup", { title:$("fTitle").value, cls:$("fClass").value, runners:$("fRunners").value,
+      cam:$("fCam").value, burn:$("fBurn").checked, audio:$("fAudio").checked });
+
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      err.innerHTML = "La caméra n'est pas accessible. Ouvre cette page depuis une adresse <b>https://</b> dans Safari ou Chrome (pas depuis un aperçu de fichier ni une application de messagerie).";
+      err.classList.remove("hidden"); return;
+    }
+    if (!window.MediaRecorder) {
+      err.textContent = "Ce navigateur ne sait pas enregistrer de vidéo. Mets à jour le système ou utilise Safari (iOS 14.5+) ou Chrome.";
+      err.classList.remove("hidden"); return;
+    }
+    try {
+      S.stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { ideal: $("fCam").value }, width: { ideal: 1280 }, height: { ideal: 720 }, frameRate: { ideal: 30 } },
+        audio: $("fAudio").checked
+      });
+    } catch(e) {
+      err.textContent = "Accès à la caméra refusé ou impossible (" + (e.name || e) + "). Autorise la caméra pour ce site dans les réglages du navigateur, puis réessaie.";
+      err.classList.remove("hidden"); return;
+    }
+    S.runners = parseRunners($("fRunners").value);
+    S.meta = { title:$("fTitle").value.trim(), cls:$("fClass").value.trim(), date:Date.now() };
+    S.burn = $("fBurn").checked;
+    resetRace();
+    const v = $("preview"); v.srcObject = S.stream;
+    try { await v.play(); } catch(e){}
+    show("race");
+    requestWake();
+    history.pushState({race:1}, "");
+  };
+
+  function resetRace(){
+    S.arrivals = []; S.running = false; S.finished = false; S.chunks = [];
+    S.chronoStartPerf = 0; S.recStartPerf = 0;
+    if (S.videoURL) { URL.revokeObjectURL(S.videoURL); S.videoURL = null; }
+    S.videoBlob = null;
+    $("mainBtn").className = "start"; $("mainBtn").textContent = "DÉPART";
+    $("clock").textContent = fmt(0);
+    $("recState").textContent = "Prêt";
+    renderRaceUI();
+  }
+
+  async function requestWake(){
+    try { if ("wakeLock" in navigator) S.wakeLock = await navigator.wakeLock.request("screen"); } catch(e){}
+  }
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible" && !$("race").classList.contains("hidden")) requestWake();
+  });
+
+  // ---------- composition vidéo (chrono incrusté) ----------
+  function startCompositor(){
+    const v = $("preview"), c = $("comp"), ctx = c.getContext("2d");
+    const w = v.videoWidth || 1280, h = v.videoHeight || 720;
+    c.width = w; c.height = h;
+    const fs = Math.round(h * 0.085);
+    const draw = () => {
+      ctx.drawImage(v, 0, 0, w, h);
+      const now = performance.now();
+      const t = S.running ? now - S.chronoStartPerf : (S.finished ? lastTime() : 0);
+      // chrono
+      ctx.font = "800 " + fs + "px -apple-system,Segoe UI,Roboto,sans-serif";
+      const txt = fmt(t), tw = ctx.measureText(txt).width;
+      ctx.fillStyle = "rgba(0,0,0,.6)"; ctx.fillRect(w*0.02, h*0.03, tw + fs*0.6, fs*1.35);
+      ctx.fillStyle = "#fff"; ctx.textBaseline = "middle"; ctx.fillText(txt, w*0.02 + fs*0.3, h*0.03 + fs*0.7);
+      // infos
+      const info = [S.meta.title, S.meta.cls].filter(Boolean).join(" · ");
+      if (info) {
+        ctx.font = "600 " + Math.round(fs*0.42) + "px -apple-system,Segoe UI,Roboto,sans-serif";
+        const iw = ctx.measureText(info).width;
+        ctx.fillStyle = "rgba(0,0,0,.6)"; ctx.fillRect(w - iw - fs*0.6 - w*0.02, h*0.03, iw + fs*0.6, fs*0.8);
+        ctx.fillStyle = "#fff"; ctx.fillText(info, w - iw - fs*0.3 - w*0.02, h*0.03 + fs*0.4);
+      }
+      // annonce d'arrivée
+      if (now < S.flashUntil) {
+        ctx.font = "800 " + Math.round(fs*0.7) + "px -apple-system,Segoe UI,Roboto,sans-serif";
+        const aw = ctx.measureText(S.flashText).width;
+        ctx.fillStyle = "rgba(242,166,0,.92)"; ctx.fillRect(w*0.02, h - fs*1.5 - h*0.03, aw + fs*0.6, fs*1.1);
+        ctx.fillStyle = "#1a1200"; ctx.fillText(S.flashText, w*0.02 + fs*0.3, h - fs*0.95 - h*0.03);
+      }
+    };
+    // requestVideoFrameCallback quand dispo, sinon rAF
+    if (v.requestVideoFrameCallback) {
+      const loop = () => { draw(); S.drawId = v.requestVideoFrameCallback(loop); };
+      S.drawId = v.requestVideoFrameCallback(loop);
+    } else {
+      const loop = () => { draw(); S.drawId = requestAnimationFrame(loop); };
+      S.drawId = requestAnimationFrame(loop);
+    }
+    draw();
+    return c;
+  }
+  function stopCompositor(){
+    const v = $("preview");
+    if (v.cancelVideoFrameCallback && S.drawId) { try { v.cancelVideoFrameCallback(S.drawId); } catch(e){} }
+    cancelAnimationFrame(S.drawId); S.drawId = 0;
+  }
+  const lastTime = () => S.arrivals.length ? S.arrivals[S.arrivals.length-1].t : 0;
+
+  // ---------- enregistrement ----------
+  function startRecording(){
+    S.mime = pickMime();
+    S.ext = S.mime.startsWith("video/mp4") ? "mp4" : "webm";
+    let recStream = S.stream;
+    if (S.burn) {
+      try {
+        const c = startCompositor();
+        if (!c.captureStream) throw new Error("no captureStream");
+        recStream = c.captureStream(30);
+        S.stream.getAudioTracks().forEach(t => recStream.addTrack(t));
+      } catch(e) { stopCompositor(); recStream = S.stream; S.burn = false; }
+    }
+    const opts = { videoBitsPerSecond: 4000000 };
+    if (S.mime) opts.mimeType = S.mime;
+    try { S.recorder = new MediaRecorder(recStream, opts); }
+    catch(e) { S.recorder = new MediaRecorder(recStream); }
+    S.chunks = [];
+    S.recorder.ondataavailable = e => { if (e.data && e.data.size) S.chunks.push(e.data); };
+    S.recorder.onstop = () => {
+      const type = S.recorder.mimeType || S.mime || "video/webm";
+      S.videoBlob = new Blob(S.chunks, { type });
+      if (!S.mime) S.ext = type.includes("mp4") ? "mp4" : "webm";
+      S.videoURL = URL.createObjectURL(S.videoBlob);
+      showVideo();
+    };
+    S.recStartPerf = performance.now();
+    S.recorder.start(1000);
+  }
+
+  // ---------- chrono ----------
+  function tick(){
+    if (!S.running) return;
+    $("clock").textContent = fmt(performance.now() - S.chronoStartPerf);
+    S.rafId = requestAnimationFrame(tick);
+  }
+
+  function startRace(){
+    startRecording();
+    S.chronoStartPerf = performance.now();
+    S.running = true;
+    $("mainBtn").className = "finish"; $("mainBtn").textContent = "ARRIVÉE";
+    $("recState").innerHTML = '<span id="recDot"></span>Enregistrement';
+    tick();
+  }
+
+  function addArrival(){
+    const t = performance.now() - S.chronoStartPerf;
+    S.arrivals.push({ t, runnerId:null });
+    const n = S.arrivals.length;
+    S.flashText = "Arrivée " + n + " — " + fmt(t);
+    S.flashUntil = performance.now() + 1800;
+    const f = $("flash"); f.style.opacity = .35; setTimeout(() => f.style.opacity = 0, 90);
+    try { navigator.vibrate && navigator.vibrate(40); } catch(e){}
+    renderRaceUI();
+  }
+
+  $("mainBtn").addEventListener("pointerdown", e => {
+    e.preventDefault();
+    if (S.finished) return;
+    if (!S.running) startRace(); else addArrival();
+  });
+  // clavier / télécommande Bluetooth : Espace ou Entrée
+  document.addEventListener("keydown", e => {
+    if ($("race").classList.contains("hidden") || !$("modal").classList.contains("hidden")) return;
+    if (e.code === "Space" || e.key === "Enter" || e.key === "AudioVolumeUp") {
+      e.preventDefault(); if (!S.running) startRace(); else addArrival();
+    }
+  });
+
+  $("undoBtn").onclick = async () => {
+    if (!S.arrivals.length) return;
+    const a = S.arrivals[S.arrivals.length-1];
+    const ok = await ask("Supprimer l'arrivée n°" + S.arrivals.length + " (" + fmt(a.t) + ") ?", [["Non", false], ["Supprimer", true, "danger"]]);
+    if (ok) { S.arrivals.pop(); renderRaceUI(); }
+  };
+
+  $("endBtn").onclick = async () => {
+    if (!S.running) {
+      const ok = await ask("Quitter sans lancer la course ?", [["Non", false], ["Quitter", true, "danger"]]);
+      if (ok) { closeCamera(); show("setup"); renderHistory(); }
+      return;
+    }
+    const unassigned = S.runners.length ? S.runners.length - S.arrivals.filter(a => a.runnerId).length : 0;
+    let msg = "Arrêter le chrono et la vidéo ? " + S.arrivals.length + " arrivée(s) enregistrée(s).";
+    if (S.runners.length && S.arrivals.length < S.runners.length) msg += " Attention : " + (S.runners.length - S.arrivals.length) + " participant(s) sans temps.";
+    const ok = await ask(msg, [["Continuer la course", false], ["Terminer", true, "danger"]]);
+    if (ok) finishRace();
+  };
+
+  function finishRace(){
+    S.running = false; S.finished = true;
+    cancelAnimationFrame(S.rafId);
+    $("clock").textContent = fmt(lastTime());
+    try { if (S.recorder && S.recorder.state !== "inactive") S.recorder.stop(); } catch(e){}
+    setTimeout(() => { stopCompositor(); closeCamera(); }, 400);
+    saveToHistory();
+    renderResults();
+    show("results");
+  }
+
+  function closeCamera(){
+    stopCompositor();
+    if (S.stream) S.stream.getTracks().forEach(t => t.stop());
+    S.stream = null; $("preview").srcObject = null;
+    try { S.wakeLock && S.wakeLock.release(); } catch(e){} S.wakeLock = null;
+  }
+
+  // ---------- attribution des noms pendant la course ----------
+  function renderRaceUI(){
+    const n = S.arrivals.length;
+    $("undoBtn").disabled = !n;
+    $("countInfo").textContent = n + (S.runners.length ? " / " + S.runners.length : "") + " arrivé" + (n > 1 ? "s" : "");
+    const last = S.arrivals.slice(-3).map((a, i, arr) => {
+      const idx = n - arr.length + i + 1, r = runnerById(a.runnerId);
+      return "<div><b>" + idx + ".</b> " + fmt(a.t) + (r ? " · " + escapeHtml(r.name) : "") + "</div>";
+    });
+    $("lastList").innerHTML = last.join("");
+
+    const chips = $("chips"); chips.innerHTML = "";
+    if (!S.runners.length) { chips.innerHTML = '<span class="note">Aucun nom saisi : les noms pourront être ajoutés à la fin.</span>'; return; }
+    const used = new Set(S.arrivals.map(a => a.runnerId).filter(Boolean));
+    const pending = S.arrivals.findIndex(a => !a.runnerId);
+    const note = document.createElement("span"); note.className = "note";
+    note.textContent = pending >= 0 ? "Qui est n°" + (pending+1) + " ?" : (S.running ? "Touche un nom après chaque arrivée" : "Noms (facultatif)");
+    chips.appendChild(note);
+    S.runners.filter(r => !used.has(r.id)).forEach(r => {
+      const b = document.createElement("button"); b.className = "chip"; b.textContent = runnerLabel(r);
+      b.onclick = () => {
+        const i = S.arrivals.findIndex(a => !a.runnerId);
+        if (i < 0) { toast("Attends l'arrivée avant de toucher le nom"); return; }
+        S.arrivals[i].runnerId = r.id; renderRaceUI();
+      };
+      chips.appendChild(b);
+    });
+  }
+  const escapeHtml = s => String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+
+  // ---------- résultats ----------
+  function rows(){
+    const first = S.arrivals.length ? S.arrivals[0].t : 0;
+    return S.arrivals.map((a, i) => {
+      const r = runnerById(a.runnerId);
+      return { rank:i+1, bib:r ? r.bib : "", name:r ? r.name : "", t:a.t, gap:a.t - first, runnerId:a.runnerId };
+    });
+  }
+  function nonFinishers(){
+    const used = new Set(S.arrivals.map(a => a.runnerId).filter(Boolean));
+    return S.runners.filter(r => !used.has(r.id));
+  }
+
+  function renderResults(){
+    $("resTitle").textContent = S.meta.title || "Résultats";
+    const d = new Date(S.meta.date);
+    $("resSub").textContent = [S.meta.cls, d.toLocaleDateString("fr-FR", { weekday:"long", day:"numeric", month:"long", year:"numeric" }) + " à " + pad(d.getHours()) + "h" + pad(d.getMinutes())].filter(Boolean).join(" · ");
+    const body = $("resBody"); body.innerHTML = "";
+    rows().forEach((row, i) => {
+      const tr = document.createElement("tr"); if (row.rank <= 3) tr.className = "podium";
+      const tdR = document.createElement("td"); tdR.className = "rank"; tdR.textContent = row.rank;
+      const tdN = document.createElement("td");
+      if (S.runners.length) {
+        const sel = document.createElement("select");
+        const used = new Set(S.arrivals.map(a => a.runnerId).filter(Boolean));
+        sel.innerHTML = '<option value="">— choisir —</option>' + S.runners
+          .filter(r => r.id === row.runnerId || !used.has(r.id))
+          .map(r => '<option value="' + r.id + '"' + (r.id === row.runnerId ? " selected" : "") + ">" + escapeHtml(runnerLabel(r)) + "</option>").join("");
+        sel.onchange = () => { S.arrivals[i].runnerId = sel.value || null; saveToHistory(); renderResults(); };
+        tdN.appendChild(sel);
+      } else {
+        const inp = document.createElement("input"); inp.placeholder = "Nom"; inp.value = S.arrivals[i].freeName || "";
+        inp.style.padding = "6px 8px";
+        inp.onchange = () => { S.arrivals[i].freeName = inp.value.trim(); saveToHistory(); };
+        tdN.appendChild(inp);
+      }
+      const tdT = document.createElement("td"); tdT.className = "time"; tdT.textContent = fmt(row.t);
+      const tdG = document.createElement("td"); tdG.className = "gap"; tdG.textContent = fmtGap(row.gap);
+      [tdT, tdG, tdR].forEach(td => { td.style.cursor = "pointer"; td.onclick = () => seekTo(row.t); });
+      tr.append(tdR, tdN, tdT, tdG); body.appendChild(tr);
+    });
+    nonFinishers().forEach(r => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = '<td class="rank">–</td><td>' + escapeHtml(runnerLabel(r)) + '</td><td class="gap">non classé</td><td></td>';
+      body.appendChild(tr);
+    });
+    if (!S.arrivals.length) body.innerHTML = '<tr><td colspan="4" class="gap">Aucune arrivée enregistrée.</td></tr>';
+    if (!S.videoURL) $("videoInfo").textContent = "Préparation de la vidéo…";
+  }
+
+  function showVideo(){
+    const p = $("playback"); p.src = S.videoURL;
+    const mb = (S.videoBlob.size / 1048576).toFixed(1).replace(".", ",");
+    $("videoInfo").textContent = "Vidéo " + S.ext.toUpperCase() + " · " + mb + " Mo" + (S.burn ? " · chrono incrusté" : "") + ". Elle n'est pas gardée sur l'appareil : enregistre-la avant de quitter.";
+  }
+
+  function seekTo(t){
+    const p = $("playback"); if (!S.videoURL) return;
+    const offset = (S.chronoStartPerf - S.recStartPerf) / 1000;
+    const target = Math.max(0, t / 1000 + offset - 2);   // 2 s avant l'arrivée
+    const go = () => { try { p.currentTime = target; p.play().catch(()=>{}); } catch(e){} };
+    if (p.readyState >= 1) go(); else p.addEventListener("loadedmetadata", go, { once:true });
+    p.scrollIntoView({ behavior:"smooth", block:"center" });
+  }
+
+  // ---------- exports ----------
+  function csvText(){
+    const q = v => { v = String(v ?? ""); return /[;"\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
+    const d = new Date(S.meta.date);
+    const offset = (S.chronoStartPerf - S.recStartPerf) / 1000;
+    const lines = [
+      ["Épreuve", S.meta.title], ["Classe", S.meta.cls],
+      ["Date", d.toLocaleDateString("fr-FR") + " " + pad(d.getHours()) + ":" + pad(d.getMinutes())],
+      [],
+      ["Rang", "Dossard", "Nom", "Temps", "Temps (s)", "Écart (s)", "Position dans la vidéo (s)"]
+    ];
+    rows().forEach((r, i) => lines.push([r.rank, r.bib, r.name || S.arrivals[i].freeName || "", fmt(r.t),
+      (r.t/1000).toFixed(2).replace(".", ","), (r.gap/1000).toFixed(2).replace(".", ","),
+      Math.max(0, r.t/1000 + offset).toFixed(1).replace(".", ",")]));
+    nonFinishers().forEach(r => lines.push(["", r.bib, r.name, "Non classé", "", "", ""]));
+    return "﻿" + lines.map(l => l.map(q).join(";")).join("\r\n");
+  }
+  function plainText(){
+    const head = [S.meta.title, S.meta.cls, new Date(S.meta.date).toLocaleDateString("fr-FR")].filter(Boolean).join(" – ");
+    const body = rows().map((r, i) => r.rank + ". " + ((r.bib ? r.bib + " " : "") + (r.name || S.arrivals[i].freeName || "Coureur " + r.rank)) + "  " + fmt(r.t));
+    const nf = nonFinishers().map(r => "–  " + runnerLabel(r) + "  non classé");
+    return [head, ""].concat(body, nf).join("\n");
+  }
+  function download(blob, name){
+    const a = document.createElement("a"); const url = URL.createObjectURL(blob);
+    a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 30000);
+  }
+  $("dlCsv").onclick = () => download(new Blob([csvText()], { type:"text/csv;charset=utf-8" }), baseFileName() + ".csv");
+  $("dlVideo").onclick = () => {
+    if (!S.videoBlob) { toast("La vidéo est encore en préparation…"); return; }
+    download(S.videoBlob, baseFileName() + "." + S.ext); S.videoSaved = true;
+  };
+  $("copyBtn").onclick = async () => {
+    try { await navigator.clipboard.writeText(plainText()); toast("Classement copié"); }
+    catch(e) { toast("Copie impossible sur ce navigateur"); }
+  };
+  $("shareBtn").onclick = async () => {
+    const files = [new File([csvText()], baseFileName() + ".csv", { type:"text/csv" })];
+    if (S.videoBlob) files.unshift(new File([S.videoBlob], baseFileName() + "." + S.ext, { type:S.videoBlob.type }));
+    try {
+      if (navigator.canShare && navigator.canShare({ files })) {
+        await navigator.share({ files, title: S.meta.title || "Course", text: plainText() }); S.videoSaved = true;
+      } else if (navigator.share) {
+        await navigator.share({ title: S.meta.title || "Course", text: plainText() });
+        toast("Fichiers non partageables ici : utilise les boutons « Enregistrer »");
+      } else toast("Partage indisponible : utilise les boutons « Enregistrer »");
+    } catch(e) { if (e.name !== "AbortError") toast("Partage impossible : utilise les boutons « Enregistrer »"); }
+  };
+
+  async function leaveResults(){
+    if (S.videoBlob && !S.videoSaved) {
+      const ok = await ask("La vidéo n'a pas été enregistrée. Elle sera perdue. Continuer ?", [["Annuler", false], ["Continuer", true, "danger"]]);
+      if (!ok) return false;
+    }
+    return true;
+  }
+  $("againBtn").onclick = async () => { if (await leaveResults()) { S.videoSaved = false; $("playback").removeAttribute("src"); $("openCam").click(); } };
+  $("homeBtn").onclick = async () => { if (await leaveResults()) { S.videoSaved = false; $("playback").removeAttribute("src"); show("setup"); renderHistory(); } };
+  window.addEventListener("beforeunload", e => {
+    if (S.running || (S.videoBlob && !S.videoSaved)) { e.preventDefault(); e.returnValue = ""; }
+  });
+  window.addEventListener("popstate", () => {
+    if (!$("race").classList.contains("hidden")) { history.pushState({race:1}, ""); $("endBtn").click(); }
+  });
+
+  // ---------- historique (temps uniquement) ----------
+  function saveToHistory(){
+    const hist = store.get("cc_history", []);
+    const entry = { id:S.meta.date, meta:S.meta, runners:S.runners, arrivals:S.arrivals,
+      chronoStartPerf:S.chronoStartPerf, recStartPerf:S.recStartPerf };
+    const i = hist.findIndex(h => h.id === entry.id);
+    if (i >= 0) hist[i] = entry; else hist.unshift(entry);
+    store.set("cc_history", hist.slice(0, 60));
+  }
+  function renderHistory(){
+    const hist = store.get("cc_history", []);
+    $("histWrap").classList.toggle("hidden", !hist.length);
+    const list = $("histList"); list.innerHTML = "";
+    hist.forEach(h => {
+      const d = new Date(h.meta.date);
+      const div = document.createElement("div"); div.className = "hist-item";
+      const txt = document.createElement("div");
+      txt.innerHTML = "<b>" + escapeHtml(h.meta.title || "Course") + "</b>" + (h.meta.cls ? " · " + escapeHtml(h.meta.cls) : "") +
+        '<div class="hint" style="margin:0">' + d.toLocaleDateString("fr-FR") + " " + pad(d.getHours()) + "h" + pad(d.getMinutes()) + " · " + h.arrivals.length + " arrivée(s)</div>";
+      const btns = document.createElement("div"); btns.className = "row"; btns.style.flex = "none";
+      const open = document.createElement("button"); open.className = "btn small"; open.textContent = "Ouvrir";
+      open.onclick = () => {
+        Object.assign(S, { meta:h.meta, runners:h.runners, arrivals:h.arrivals, chronoStartPerf:h.chronoStartPerf,
+          recStartPerf:h.recStartPerf, videoBlob:null, videoURL:null, videoSaved:true });
+        $("playback").removeAttribute("src");
+        renderResults(); $("videoInfo").textContent = "Vidéo non conservée sur l'appareil (seuls les temps sont gardés).";
+        show("results");
+      };
+      const del = document.createElement("button"); del.className = "btn small danger"; del.textContent = "×";
+      del.onclick = async () => {
+        if (await ask("Supprimer cette course de l'historique ?", [["Non", false], ["Supprimer", true, "danger"]])) {
+          store.set("cc_history", store.get("cc_history", []).filter(x => x.id !== h.id)); renderHistory();
+        }
+      };
+      btns.style.gap = "6px"; btns.append(open, del); div.append(txt, btns); list.appendChild(div);
+    });
+  }
+  renderHistory();
+})();
+</script>
+</body>
+</html>
