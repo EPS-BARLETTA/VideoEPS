@@ -217,20 +217,6 @@
   .facts span{font-size:14px;color:var(--ink-2)}
   #playback{display:block;width:100%;max-height:56vh;background:#000;border-radius:var(--r-l)}
   .vidnote{font-size:14px;color:var(--ink-2);margin:8px 2px 0}
-  .rank{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:12px;padding:10px 14px;border-top:1.5px solid var(--rule)}
-  .rank:first-child{border-top:0}
-  .rank .bib{font-size:26px}
-  .rank:nth-child(-n+3) .bib{--pin:var(--tartan);border-color:var(--tartan);color:var(--tartan)}
-  .rank .who{min-width:0}
-  .rank .who b{display:block;font-weight:700;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .rank .who button.assign{font-size:15px;font-weight:600;color:var(--ink-2);text-decoration:underline;text-underline-offset:3px}
-  .rank .who button.assign.empty{color:var(--tartan)}
-  .rank .t{text-align:right;cursor:pointer;padding:4px 0 4px 6px}
-  .rank .t b{display:block;font:800 26px/1 var(--cond);font-variant-numeric:tabular-nums}
-  .rank .t small{display:flex;justify-content:flex-end;gap:8px;font-size:14px;color:var(--ink-2);margin-top:3px}
-  .rank .t small .play{color:var(--infield);font-weight:700}
-  .rank.dnf .who b{color:var(--ink-2);font-weight:600}
-  .rank.dnf .t{color:var(--ink-3);font-size:15px;cursor:default}
   .more{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
   .more .btn{font-size:16px;min-height:54px}
 
@@ -249,6 +235,59 @@
   #sheet .pick button .bib{font-size:18px}
   .toast{position:fixed;left:50%;top:calc(14px + var(--st));transform:translateX(-50%);z-index:70;background:var(--ink);color:#fff;
     padding:10px 18px;border-radius:99px;font-size:15px;font-weight:600;box-shadow:0 6px 20px #0003;white-space:nowrap}
+  /* ---------- groupes et import ---------- */
+  .tools{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:12px}
+  .tools .btn{min-height:46px;font-size:16px;padding:0 12px;gap:8px}
+  .tools .seg button{padding:7px 12px}
+  .tools .lab{font-size:14px;font-weight:600;color:var(--ink-2)}
+  .gblock{margin-bottom:12px}
+  .gblock .gh{display:flex;justify-content:space-between;font:700 19px/1.2 var(--cond);margin:0 2px 6px}
+  .gblock .gh small{font:600 14px var(--text);color:var(--ink-2)}
+  .gblock textarea{min-height:130px}
+  #runRow{margin:4px 0 6px}
+
+  /* ---------- cartes d'arrivée (photo + menu) ---------- */
+  .card{display:grid;grid-template-columns:clamp(110px,34%,200px) minmax(0,1fr);gap:12px;padding:12px;border-top:1.5px solid var(--rule)}
+  .card:first-child{border-top:0}
+  .card .ph{position:relative;align-self:start;aspect-ratio:4/3;border-radius:10px;overflow:hidden;background:#1d2a33;color:#fff9;
+    font-size:13px;display:flex;align-items:center;justify-content:center;text-align:center;padding:0}
+  .card .ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .card .ctop{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .card .ctop .bib{font-size:26px}
+  .card:nth-child(-n+3) .ctop .bib{--pin:var(--tartan);border-color:var(--tartan);color:var(--tartan)}
+  .card .ctop b{font:800 26px/1 var(--cond);font-variant-numeric:tabular-nums}
+  .card .ctop small{font-size:14px;color:var(--ink-2)}
+  .card .ctop .play{margin-left:auto;font-size:14px;font-weight:700;color:var(--infield)}
+  .slots{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+  .slot{display:flex;gap:6px;align-items:center}
+  .slot select,.slot input{flex:1;min-width:0;font:600 17px/1.2 var(--text);color:var(--ink);background:var(--paper);
+    border:2px solid var(--ink);border-radius:10px;padding:11px 10px;min-height:50px}
+  .slot select.empty{border-color:var(--signal);background:#FFF7D6;color:var(--ink-2)}
+  .slot .x{flex:none;width:40px;height:40px;border-radius:10px;font-size:22px;color:var(--tartan)}
+  .addTie{margin-top:8px;font-size:15px;font-weight:700;color:var(--ink-2);text-decoration:underline;text-underline-offset:3px;padding:4px 0}
+  .dnfrow{display:flex;align-items:center;gap:12px;padding:10px 14px;border-top:1.5px solid var(--rule);color:var(--ink-2)}
+  .dnfrow .bib{font-size:22px}
+
+  /* ---------- visionneuse photo d'arrivée ---------- */
+  #pf{position:fixed;inset:0;z-index:40;background:#000;display:grid;grid-template-columns:100%;grid-template-rows:minmax(0,1fr) auto}
+  #pf .pimg{position:relative;overflow:hidden;min-height:0;display:flex;align-items:center;justify-content:center;color:#fff9;padding-top:var(--st)}
+  #pf .pimg img{max-width:100%;max-height:100%;object-fit:contain;transition:transform .15s}
+  #pf .pimg img.zoom{transform:scale(2.6)}
+  #pf .pside{background:var(--paper);padding:12px calc(14px + var(--sr)) calc(12px + var(--sb)) calc(14px + var(--sl));overflow:auto;max-height:60vh}
+  #pf .phead{display:flex;align-items:center;gap:12px}
+  #pf .phead .bib{font-size:34px}
+  #pf .phead b{font:800 34px/1 var(--cond);font-variant-numeric:tabular-nums}
+  #pf .phead .iconbtn{margin-left:auto;font-size:28px;color:var(--ink)}
+  #pf .pnav{display:grid;grid-template-columns:1fr 1.4fr;gap:10px;margin-top:12px}
+  #pf .pnav .btn{min-height:54px;font-size:17px}
+  #pf .pnav .btn:disabled{opacity:.35}
+  #pfClose{position:absolute;top:calc(10px + var(--st));right:calc(10px + var(--sr));background:#fffe;color:var(--ink);border-radius:99px;width:44px;height:44px;font-size:26px;line-height:1}
+  #pfHint{position:absolute;left:10px;bottom:10px;background:#000a;color:#fff;font-size:13px;padding:4px 10px;border-radius:99px;pointer-events:none}
+  @media (orientation:landscape){
+    #pf{grid-template-columns:minmax(0,1fr) clamp(300px,36vw,420px);grid-template-rows:100%}
+    #pf .pside{max-height:none;padding-top:calc(14px + var(--st))}
+    #pfClose{right:auto;left:calc(10px + var(--sl))}
+  }
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -264,7 +303,9 @@
   <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 00-2-2H6a2 2 0 00-2 2v8a2 2 0 002 2h2"/></symbol>
   <symbol id="i-redo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 11-2.3-5.6"/><path d="M20 4v5h-5"/></symbol>
   <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
-  <symbol id="i-next" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5M5 20h14"/></symbol>
+  <symbol id="i-prev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></symbol>
+  <symbol id="i-next"viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></symbol>
 </svg>
 
 <!-- ======================= PRÉPARATION ======================= -->
@@ -285,8 +326,18 @@
     </div>
 
     <h2>Participants <span class="count" id="runnerCount"></span></h2>
-    <textarea id="fRunners" placeholder="Dupont Léa&#10;Martin Noah&#10;12 Schmit Emma" aria-label="Participants, un par ligne"></textarea>
-    <p class="help">Un élève par ligne. Un numéro en début de ligne sert de dossard. Tu peux aussi laisser vide et nommer après la course.</p>
+    <div class="tools">
+      <button class="btn" id="csvBtn"><svg><use href="#i-up"/></svg>Importer CSV</button>
+      <input type="file" id="fCsv" accept=".csv,.txt,text/csv,text/plain" class="hidden">
+      <span class="lab" style="margin-left:auto">Groupes</span>
+      <div class="seg" data-for="groups"><button data-v="1" aria-pressed="true">1</button><button data-v="2" aria-pressed="false">2</button><button data-v="3" aria-pressed="false">3</button></div>
+    </div>
+    <div id="gBlocks"></div>
+    <div id="runRow" class="hidden">
+      <div class="panel"><div class="opt"><div><div class="t">Qui court ?</div><div class="d">Les noms du menu à la fin</div></div>
+        <div class="seg" id="runSeg"></div></div></div>
+    </div>
+    <p class="help">Un élève par ligne. Un numéro en début de ligne sert de dossard. Le CSV peut avoir des colonnes Nom, Prénom, Groupe, Dossard. Tu peux aussi laisser vide et nommer après la course.</p>
 
     <h2>Réglages</h2>
     <div class="panel">
@@ -311,7 +362,7 @@
       <div class="panel list" id="histList"></div>
       <p class="help">Les temps restent sur cet appareil. Les vidéos, non : enregistre-les à la fin de chaque course.</p>
     </div>
-    <p class="help" style="margin-top:28px;text-align:center;color:var(--ink-3)">Version 8</p>
+    <p class="help" style="margin-top:28px;text-align:center;color:var(--ink-3)">Version 9</p>
   </div>
   <div class="dock"><div class="wrap">
     <button class="btn ink wide" id="openCam"><svg><use href="#i-cam"/></svg>Ouvrir la caméra</button>
@@ -357,9 +408,10 @@
     <video id="playback" controls playsinline></video>
     <p class="vidnote" id="videoInfo"></p>
 
-    <h2>Classement</h2>
+    <h2>Classement <span class="count" id="resLeft"></span></h2>
+    <button class="btn ink" id="pfOpen" style="width:100%;margin-bottom:12px"><svg><use href="#i-cam"/></svg>Valider les arrivées avec les photos</button>
     <div class="panel" id="resList"></div>
-    <p class="help">Touche un temps pour revoir l'arrivée dans la vidéo. Touche un nom pour le changer.</p>
+    <p class="help">Choisis l'élève dans le menu de chaque arrivée : il disparaît des autres menus. Touche une photo pour l'agrandir, « revoir » pour la vidéo. Plusieurs élèves arrivés ensemble : « + Ajouter un élève ».</p>
 
     <div class="more">
       <button class="btn" id="shareBtn"><svg><use href="#i-share"/></svg>Partager</button>
@@ -372,6 +424,20 @@
     <button class="btn ink wide" id="dlVideo"><svg><use href="#i-down"/></svg>Enregistrer la vidéo</button>
   </div></div>
 </section>
+
+<div id="pf" class="hidden" role="dialog" aria-modal="true" aria-label="Photo d'arrivée">
+  <div class="pimg" id="pfImgBox"><img id="pfImg" alt="Photo d'arrivée"><span id="pfNone">Pas de photo pour cette arrivée</span>
+    <button id="pfClose" aria-label="Fermer">×</button><span id="pfHint">Touche la photo pour zoomer</span></div>
+  <div class="pside">
+    <div class="phead"><span class="bib" id="pfNum">1</span><div><b id="pfTime"></b><div class="help" id="pfGap" style="margin:2px 0 0"></div></div></div>
+    <div class="slots" id="pfSlots"></div>
+    <button class="addTie" id="pfTie">+ Ajouter un élève (arrivés ensemble)</button>
+    <div class="pnav">
+      <button class="btn" id="pfPrev"><svg><use href="#i-prev"/></svg>Précédent</button>
+      <button class="btn go" id="pfNext">Suivant<svg><use href="#i-next"/></svg></button>
+    </div>
+  </div>
+</div>
 
 <div id="sheet" class="hidden"><div class="box" role="dialog" aria-modal="true"></div></div>
 <canvas id="comp" style="position:fixed;left:0;top:0;width:2px;height:2px;opacity:0;pointer-events:none"></canvas>
@@ -445,7 +511,9 @@
   const saved = store.get("cc_setup", {});
   if (saved.title) $("fTitle").value = saved.title;
   if (saved.cls) $("fClass").value = saved.cls;
-  if (saved.runners) $("fRunners").value = saved.runners;
+  S.groupsTxt = Array.isArray(saved.groupsTxt) ? saved.groupsTxt.concat(["","",""]).slice(0,3) : [saved.runners || "", "", ""];
+  S.opts.groups = saved.groups || "1";
+  S.opts.run = saved.run || "1";
   if (saved.burn === false) $("fBurn").checked = false;
   if (saved.audio) $("fAudio").checked = true;
   if (saved.beep === false) $("fBeep").checked = false;
@@ -455,7 +523,7 @@
   document.querySelectorAll(".seg").forEach(seg => {
     const key = seg.dataset.for;
     const sync = () => seg.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === S.opts[key])));
-    seg.querySelectorAll("button").forEach(b => b.onclick = () => { S.opts[key] = b.dataset.v; sync(); saveSetup(); qualityHint(); });
+    seg.querySelectorAll("button").forEach(b => b.onclick = () => { S.opts[key] = b.dataset.v; sync(); saveSetup(); qualityHint(); if (key === "groups") renderGroups(); });
     sync();
   });
   // Débits constatés sur iPhone : ~55 Mo/min en 720p. Le mode léger vise ~3 fois moins.
@@ -464,22 +532,176 @@
   function qualityHint(){ $("qualityHint").textContent = QUALITY[S.opts.quality].label; }
   qualityHint();
   function saveSetup(){
-    store.set("cc_setup", { title:$("fTitle").value, cls:$("fClass").value, runners:$("fRunners").value,
+    store.set("cc_setup", { title:$("fTitle").value, cls:$("fClass").value, groupsTxt:S.groupsTxt, groups:S.opts.groups, run:S.opts.run,
       cam:S.opts.cam, hand:S.opts.hand, quality:S.opts.quality, burn:$("fBurn").checked, audio:$("fAudio").checked, beep:$("fBeep").checked });
   }
-  function parseRunners(txt){
-    return txt.split(/\r?\n/).map(l => l.trim()).filter(Boolean).map((l, i) => {
+  function parseRunners(txt, g){
+    g = g || 1;
+    return (txt || "").split(/\r?\n/).map(l => l.trim()).filter(Boolean).map((l, i) => {
       const m = l.match(/^(\d{1,4})[\s.,;:\-–]+(.+)$/);
-      return m ? { id:"r"+i, bib:m[1], name:m[2].trim() } : { id:"r"+i, bib:"", name:l };
+      const id = "g" + g + "r" + i;
+      return m ? { id, bib:m[1], name:m[2].trim(), group:g } : { id, bib:"", name:l, group:g };
     });
   }
-  function updateCount(){
-    const n = parseRunners($("fRunners").value).length;
-    $("runnerCount").textContent = n ? n + (n > 1 ? " élèves" : " élève") : "";
+  const nGroups = () => +S.opts.groups || 1;
+  const plural = n => n + (n > 1 ? " élèves" : " élève");
+  // élèves de la course : groupe choisi, ou tous les groupes
+  function runningRunners(){
+    const N = nGroups();
+    if (N === 1) return parseRunners(S.groupsTxt[0], 1);
+    if (S.opts.run === "all") { let all = []; for (let g = 1; g <= N; g++) all = all.concat(parseRunners(S.groupsTxt[g-1], g)); return all; }
+    const g = Math.min(+S.opts.run || 1, N);
+    return parseRunners(S.groupsTxt[g-1], g);
   }
-  $("fRunners").addEventListener("input", () => { updateCount(); saveSetup(); });
+  function runLabel(){
+    const N = nGroups();
+    if (N === 1) return "";
+    return S.opts.run === "all" ? "Tous les groupes" : "Groupe " + Math.min(+S.opts.run || 1, N);
+  }
+  function updateCount(){
+    let total = 0;
+    for (let g = 1; g <= nGroups(); g++) {
+      const n = parseRunners(S.groupsTxt[g-1], g).length; total += n;
+      const c = $("gCount" + g); if (c) c.textContent = n ? plural(n) : "";
+    }
+    $("runnerCount").textContent = total ? plural(total) : "";
+  }
+  function renderGroups(){
+    const N = nGroups(), box = $("gBlocks"); box.innerHTML = "";
+    for (let g = 1; g <= N; g++) {
+      const d = document.createElement("div"); d.className = "gblock";
+      d.innerHTML = (N > 1 ? '<div class="gh">Groupe ' + g + '<small id="gCount' + g + '"></small></div>' : "") +
+        '<textarea placeholder="Dupont Léa&#10;Martin Noah&#10;12 Schmit Emma" aria-label="Groupe ' + g + ', un élève par ligne"></textarea>';
+      const ta = d.querySelector("textarea"); ta.value = S.groupsTxt[g-1] || "";
+      ta.addEventListener("input", () => { S.groupsTxt[g-1] = ta.value; updateCount(); saveSetup(); });
+      box.appendChild(d);
+    }
+    $("runRow").classList.toggle("hidden", N === 1);
+    if (N > 1) {
+      if (S.opts.run !== "all" && (+S.opts.run || 1) > N) S.opts.run = "1";
+      const seg = $("runSeg"); seg.innerHTML = "";
+      const vals = []; for (let g = 1; g <= N; g++) vals.push([String(g), "G" + g]); vals.push(["all", "Tous"]);
+      vals.forEach(([v, l]) => {
+        const b = document.createElement("button"); b.dataset.v = v; b.textContent = l;
+        b.setAttribute("aria-pressed", String(S.opts.run === v));
+        b.onclick = () => { S.opts.run = v; saveSetup(); seg.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.v === v))); };
+        seg.appendChild(b);
+      });
+    }
+    updateCount();
+  }
+  function setGroupsCount(n){
+    S.opts.groups = String(n);
+    document.querySelectorAll('.seg[data-for="groups"] button').forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === S.opts.groups)));
+    renderGroups(); saveSetup();
+  }
   ["fTitle","fClass","fBurn","fAudio","fBeep"].forEach(id => $(id).addEventListener("change", saveSetup));
-  updateCount();
+  renderGroups();
+
+  // ---------- import CSV ----------
+  function decodeFile(buf){
+    try { return new TextDecoder("utf-8", { fatal:true }).decode(buf); }
+    catch(e) { try { return new TextDecoder("windows-1252").decode(buf); } catch(e2) { return new TextDecoder().decode(buf); } }
+  }
+  function parseCSV(text){
+    text = text.replace(/^﻿/, "");
+    const first = text.split(/\r?\n/).find(l => l.trim()) || "";
+    const sep = [";", "\t", ","].map(c => [c, first.split(c).length]).sort((a, b) => b[1] - a[1])[0][0];
+    const out = []; let row = [], cell = "", q = false;
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i];
+      if (q) {
+        if (ch === '"') { if (text[i+1] === '"') { cell += '"'; i++; } else q = false; }
+        else cell += ch;
+      } else if (ch === '"') q = true;
+      else if (ch === sep) { row.push(cell); cell = ""; }
+      else if (ch === "\n" || ch === "\r") {
+        if (ch === "\r" && text[i+1] === "\n") i++;
+        row.push(cell); out.push(row); row = []; cell = "";
+      } else cell += ch;
+    }
+    if (cell || row.length) { row.push(cell); out.push(row); }
+    return out.map(r => r.map(c => c.trim())).filter(r => r.some(Boolean));
+  }
+  function studentsFromCSV(rows){
+    const norm = s => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
+    const isPrenom = c => /^(pre ?nom|prenoms|first ?name|vorname|given)/.test(c);
+    const isNom = c => !isPrenom(c) && /^(nom|noms|name|last ?name|nachname|eleve|eleves|student|familienname|nom et prenom|nom prenom|nom complet)/.test(c);
+    const isGroup = c => /^(groupe|group|gruppe|grp|gr)\b/.test(c);
+    const isBib = c => /^(dossard|bib|n°|no|num|numero|nr)\b/.test(c);
+    const isClass = c => /^(classe|class|klasse)\b/.test(c);
+    let h = -1, col = {};
+    for (let i = 0; i < Math.min(rows.length, 8); i++) {
+      const cells = rows[i].map(norm);
+      if (cells.some(c => isNom(c) || isPrenom(c))) {
+        h = i;
+        cells.forEach((c, j) => {
+          if (isPrenom(c) && col.prenom == null) col.prenom = j;
+          else if (isNom(c) && col.nom == null) col.nom = j;
+          else if (isGroup(c) && col.group == null) col.group = j;
+          else if (isBib(c) && col.bib == null) col.bib = j;
+          else if (isClass(c) && col.cls == null) col.cls = j;
+        });
+        break;
+      }
+    }
+    const list = [];
+    rows.slice(h + 1).forEach(r => {
+      let bib = "", name = "", group = "", cls = "";
+      if (h >= 0) {
+        name = [col.nom != null ? r[col.nom] : "", col.prenom != null ? r[col.prenom] : ""].filter(Boolean).join(" ");
+        if (col.bib != null) bib = (r[col.bib] || "").replace(/\D/g, "").slice(0, 4);
+        if (col.group != null) group = r[col.group] || "";
+        if (col.cls != null) cls = r[col.cls] || "";
+      } else {
+        const cells = r.filter(Boolean);
+        if (cells.length > 1 && /^\d{1,4}$/.test(cells[0])) bib = cells.shift();
+        name = cells.join(" ");
+      }
+      name = name.replace(/\s+/g, " ").trim();
+      if (name && !/^non class/i.test(name)) list.push({ bib, name, group, cls });
+    });
+    return list;
+  }
+  const lineOf = s => (s.bib ? s.bib + " " : "") + s.name;
+  $("csvBtn").onclick = () => $("fCsv").click();
+  $("fCsv").onchange = async e => {
+    const f = e.target.files && e.target.files[0]; e.target.value = "";
+    if (!f) return;
+    let list;
+    try { list = studentsFromCSV(parseCSV(decodeFile(await f.arrayBuffer()))); }
+    catch(err) { toast("Fichier illisible"); return; }
+    if (!list.length) { toast("Aucun élève trouvé dans le fichier"); return; }
+    const classes = [...new Set(list.map(s => s.cls).filter(Boolean))];
+    if (classes.length === 1 && !$("fClass").value.trim()) $("fClass").value = classes[0];
+    const groups = [...new Set(list.map(s => s.group).filter(Boolean))];
+    if (groups.length >= 1 && groups.length <= 3 && list.every(s => s.group)) {
+      // le fichier dit déjà qui est dans quel groupe
+      S.groupsTxt = groups.map(gv => list.filter(s => s.group === gv).map(lineOf).join("\n")).concat(["","",""]).slice(0,3);
+      setGroupsCount(groups.length);
+      toast(plural(list.length) + " importés en " + groups.length + (groups.length > 1 ? " groupes" : " groupe"));
+      return;
+    }
+    const N = nGroups();
+    let how = "one";
+    if (N > 1) {
+      how = await sheet((box, close) => {
+        box.innerHTML = "<h3>" + plural(list.length) + " trouvés</h3><p>Comment les placer dans les " + N + " groupes ?</p>" +
+          '<div class="acts" style="flex-direction:column"><button class="btn ink" data-v="split">Répartir en ' + N + ' groupes égaux</button>' +
+          '<button class="btn" data-v="one">Tout mettre dans le groupe 1</button></div>';
+        box.querySelectorAll("[data-v]").forEach(b => b.onclick = () => close(b.dataset.v));
+      });
+      if (!how) return;
+    }
+    if (how === "split") {
+      const size = Math.ceil(list.length / N);
+      S.groupsTxt = [0,1,2].map(g => g < N ? list.slice(g * size, (g + 1) * size).map(lineOf).join("\n") : "");
+    } else {
+      S.groupsTxt = [list.map(lineOf).join("\n"), "", ""];
+    }
+    renderGroups(); saveSetup();
+    toast(plural(list.length) + " importés");
+  };
 
   function pickMime(){
     const list = ["video/mp4;codecs=avc1", "video/mp4", "video/webm;codecs=vp9", "video/webm;codecs=vp8", "video/webm"];
@@ -508,8 +730,8 @@
       err.textContent = "Accès à la caméra refusé. Autorise la caméra pour cette application dans les réglages de Safari, puis réessaie.";
       err.classList.remove("hidden"); return;
     }
-    S.runners = parseRunners($("fRunners").value);
-    S.meta = { title:$("fTitle").value.trim(), cls:$("fClass").value.trim(), date:Date.now() };
+    S.runners = runningRunners();
+    S.meta = { title:$("fTitle").value.trim(), cls:$("fClass").value.trim(), group:runLabel(), date:Date.now() };
     S.burn = $("fBurn").checked; S.beep = $("fBeep").checked;
     $("race").classList.toggle("left", S.opts.hand === "left");
     resetRace();
@@ -521,6 +743,7 @@
 
   function resetRace(){
     S.arrivals = []; S.running = false; S.finished = false; S.chunks = []; S.videoSaved = false;
+    freePhotos();
     S.chronoStartPerf = 0; S.recStartPerf = 0;
     if (S.videoURL) { URL.revokeObjectURL(S.videoURL); S.videoURL = null; }
     S.videoBlob = null;
@@ -561,7 +784,7 @@
       const txt = fmt(t), tw = ctx.measureText("00:00.00").width, bh = fs * 1.3;
       box(m, m, tw + fs * 0.6, bh, "rgba(255,255,255,.94)");
       ctx.fillStyle = "#14212B"; ctx.fillText(txt, m + fs * 0.3, m + bh / 2 + fs * 0.05);
-      const info = [S.meta.title, S.meta.cls].filter(Boolean).join("   ");
+      const info = [S.meta.title, S.meta.cls, S.meta.group].filter(Boolean).join("   ");
       if (info) {
         ctx.font = font(600, fs * 0.42);
         const iw = Math.min(ctx.measureText(info).width, w - 2 * m - fs * 0.5), ih = fs * 0.72;
@@ -667,13 +890,44 @@
   }
   function addArrival(){
     const t = performance.now() - S.chronoStartPerf;
-    S.arrivals.push({ t, runnerId:null });
+    const a = { t, runnerId:null };
+    S.arrivals.push(a);
     const n = S.arrivals.length;
+    snapPhoto(a);
     S.flashNum = n; S.flashTime = t; S.flashUntil = performance.now() + 2000;
     const f = $("flash"); f.style.opacity = .3; setTimeout(() => f.style.opacity = 0, 80);
     feedback(1320, 0.12, 50);
     renderRaceUI();
     const b = $("lastBib"); b.classList.remove("pop"); void b.offsetWidth; b.classList.add("pop");
+  }
+
+  // ---------- photo d'arrivée : image de la caméra au moment de l'appui ----------
+  S.photos = [];
+  function freePhotos(){ (S.photos || []).forEach(u => URL.revokeObjectURL(u)); S.photos = []; }
+  function snapPhoto(a){
+    try {
+      const v = $("preview"), vw = v.videoWidth, vh = v.videoHeight;
+      if (!vw || !vh) return;
+      const sc = Math.min(1, 1280 / Math.max(vw, vh));
+      const w = Math.round(vw * sc), h = Math.round(vh * sc);
+      const c = document.createElement("canvas"); c.width = w; c.height = h;
+      const ctx = c.getContext("2d");
+      ctx.drawImage(v, 0, 0, w, h);
+      // temps incrusté en bas à gauche
+      const u = Math.min(w, h), fs = Math.round(u * 0.085), m = Math.round(u * 0.03), ah = fs * 1.3, y = h - m - ah;
+      ctx.textBaseline = "middle";
+      ctx.font = "800 " + Math.round(fs * 0.95) + 'px "Barlow Condensed","Arial Narrow",sans-serif';
+      const tTxt = fmt(a.t), tW = ctx.measureText(tTxt).width;
+      ctx.fillStyle = "rgba(184,50,38,.96)"; ctx.fillRect(m, y, tW + fs * 0.8, ah);
+      ctx.textAlign = "left"; ctx.fillStyle = "#fff"; ctx.fillText(tTxt, m + fs * 0.4, y + ah / 2 + fs * 0.05);
+      c.toBlob(b => {
+        if (!b) return;
+        const url = URL.createObjectURL(b); S.photos.push(url);
+        a.photo = url;
+        S.arrivals.forEach(x => { if (x.tie && x.t === a.t && !x.photo) x.photo = url; });
+        if (S.finished) refreshResults();
+      }, "image/jpeg", 0.85);
+    } catch(e){}
   }
 
   // ---------- son / vibration ----------
@@ -792,22 +1046,75 @@
   }
 
   // ---------- résultats ----------
+  // arrivées groupées : un groupe = un passage (plusieurs élèves si arrivés ensemble)
+  function arrivalGroups(){
+    const g = [];
+    S.arrivals.forEach((a, i) => { if (a.tie && g.length) g[g.length-1].push(i); else g.push([i]); });
+    return g;
+  }
+  function rankOf(i){ let j = i; while (j > 0 && S.arrivals[j].tie) j--; return j + 1; }
   function rows(){
     const first = S.arrivals.length ? S.arrivals[0].t : 0;
     return S.arrivals.map((a, i) => {
       const r = runnerById(a.runnerId);
-      return { rank:i+1, bib:r ? r.bib : "", name:nameOf(a), t:a.t, gap:a.t - first, runnerId:a.runnerId };
+      return { rank:rankOf(i), bib:r ? r.bib : "", name:nameOf(a), group:r && r.group ? r.group : "", t:a.t, gap:a.t - first, runnerId:a.runnerId };
     });
   }
   function nonFinishers(){
     const used = new Set(S.arrivals.map(a => a.runnerId).filter(Boolean));
     return S.runners.filter(r => !used.has(r.id));
   }
+  function changed(){ saveToHistory(); refreshResults(); }
+  function refreshResults(){
+    if (!$("results").classList.contains("hidden")) renderResults();
+    if (!$("pf").classList.contains("hidden")) renderViewer();
+  }
+
+  // menu déroulant d'une arrivée : seuls les élèves pas encore choisis
+  function slotEl(i){
+    const a = S.arrivals[i], d = document.createElement("div"); d.className = "slot";
+    if (!S.runners.length) {
+      const inp = document.createElement("input"); inp.placeholder = "Nom de l'élève"; inp.value = a.freeName || "";
+      inp.onchange = () => { a.freeName = inp.value.trim(); saveToHistory(); };
+      d.appendChild(inp);
+    } else {
+      const used = new Set(S.arrivals.filter((x, j) => j !== i).map(x => x.runnerId).filter(Boolean));
+      const sel = document.createElement("select");
+      sel.setAttribute("aria-label", "Élève de l'arrivée n°" + rankOf(i));
+      const avail = S.runners.filter(r => r.id === a.runnerId || !used.has(r.id));
+      let h = '<option value="">' + (avail.length ? "Choisir l'élève…" : "Tous les élèves sont placés") + "</option>";
+      const multi = new Set(S.runners.map(r => r.group)).size > 1;
+      const opt = r => '<option value="' + esc(r.id) + '">' + esc(runnerLabel(r)) + "</option>";
+      if (multi) {
+        [...new Set(avail.map(r => r.group))].forEach(g => {
+          h += '<optgroup label="Groupe ' + esc(g) + '">' + avail.filter(r => r.group === g).map(opt).join("") + "</optgroup>";
+        });
+      } else h += avail.map(opt).join("");
+      sel.innerHTML = h; sel.value = a.runnerId || "";
+      sel.classList.toggle("empty", !a.runnerId);
+      sel.onchange = () => { a.runnerId = sel.value || null; changed(); };
+      d.appendChild(sel);
+    }
+    if (a.tie) {
+      const x = document.createElement("button"); x.className = "x"; x.textContent = "×";
+      x.setAttribute("aria-label", "Retirer cet élève de l'arrivée");
+      x.onclick = () => { S.arrivals.splice(i, 1); changed(); };
+      d.appendChild(x);
+    }
+    return d;
+  }
+  function addTie(grp){
+    const last = grp[grp.length-1], head = S.arrivals[grp[0]];
+    S.arrivals.splice(last + 1, 0, { t:head.t, runnerId:null, tie:true, photo:head.photo });
+    changed();
+  }
+
   function renderResults(){
     $("resTitle").textContent = S.meta.title || "Course";
     const d = new Date(S.meta.date);
     const meta = [];
     if (S.meta.cls) meta.push("Classe " + esc(S.meta.cls));
+    if (S.meta.group) meta.push(esc(S.meta.group));
     meta.push(d.toLocaleDateString("fr-FR", { weekday:"long", day:"numeric", month:"long" }));
     meta.push(pad(d.getHours()) + "h" + pad(d.getMinutes()));
     $("resMeta").innerHTML = meta.map(x => "<span>" + x + "</span>").join("");
@@ -818,60 +1125,80 @@
       [R.length > 1 ? fmt(R[R.length-1].t - R[0].t) : "–", "du 1er au dernier"]
     ];
     $("resFacts").innerHTML = facts.map(([v, l]) => "<div><b>" + v + "</b><span>" + l + "</span></div>").join("");
+    const todo = S.arrivals.filter(a => !(a.runnerId || a.freeName)).length;
+    $("resLeft").textContent = S.arrivals.length ? (todo ? todo + " à nommer" : "tout est nommé") : "";
+    $("pfOpen").classList.toggle("hidden", !S.arrivals.length);
 
     const list = $("resList"); list.innerHTML = "";
-    R.forEach((row, i) => {
-      const el = document.createElement("div"); el.className = "rank";
-      const who = row.name
-        ? "<b>" + esc((row.bib ? row.bib + " " : "") + row.name) + '</b><button class="assign">changer</button>'
-        : '<b style="color:var(--ink-3)">Coureur ' + row.rank + '</b><button class="assign empty">' + (S.runners.length ? "choisir l'élève" : "écrire le nom") + "</button>";
-      el.innerHTML = '<span class="bib">' + row.rank + '</span><div class="who">' + who + '</div>' +
-        '<div class="t"><b>' + fmt(row.t) + "</b><small>" + (row.gap > 0 ? "<span>" + fmtGap(row.gap) + "</span>" : "") +
-        (S.videoURL ? '<span class="play">revoir</span>' : "") + "</small></div>";
-      el.querySelector(".t").onclick = () => seekTo(row.t);
-      el.querySelector(".who").onclick = () => assignName(i);
+    const first = S.arrivals.length ? S.arrivals[0].t : 0;
+    arrivalGroups().forEach((grp, gi) => {
+      const head = S.arrivals[grp[0]], gap = head.t - first;
+      const el = document.createElement("div"); el.className = "card";
+      el.innerHTML = '<button class="ph" aria-label="Agrandir la photo">' + (head.photo ? '<img alt="" src="' + head.photo + '">' : (S.finishedFromHistory ? "Photo non gardée" : "Pas de photo")) + "</button>" +
+        '<div><div class="ctop"><span class="bib">' + (grp[0] + 1) + "</span><b>" + fmt(head.t) + "</b>" +
+        (gap > 0 ? "<small>" + fmtGap(gap) + "</small>" : "") + (S.videoURL ? '<button class="play">revoir</button>' : "") +
+        '</div><div class="slots"></div><button class="addTie">+ Ajouter un élève</button></div>';
+      const slots = el.querySelector(".slots"); grp.forEach(i => slots.appendChild(slotEl(i)));
+      el.querySelector(".ph").onclick = () => openViewer(gi);
+      el.querySelector(".addTie").onclick = () => addTie(grp);
+      const pl = el.querySelector(".play"); if (pl) pl.onclick = () => seekTo(head.t);
       list.appendChild(el);
     });
     nonFinishers().forEach(r => {
-      const el = document.createElement("div"); el.className = "rank dnf";
-      el.innerHTML = '<span class="bib muted">–</span><div class="who"><b>' + esc(runnerLabel(r)) + '</b></div><div class="t">non classé</div>';
+      const el = document.createElement("div"); el.className = "dnfrow";
+      el.innerHTML = '<span class="bib muted">–</span><span>' + esc(runnerLabel(r)) + "</span><small style=\"margin-left:auto\">non classé</small>";
       list.appendChild(el);
     });
-    if (!R.length && !S.runners.length) list.innerHTML = '<div class="rank"><span></span><div class="who"><b style="color:var(--ink-2)">Aucune arrivée enregistrée</b></div></div>';
+    if (!S.arrivals.length && !S.runners.length) list.innerHTML = '<div class="dnfrow">Aucune arrivée enregistrée</div>';
     if (!S.videoURL && !S.finishedFromHistory) $("videoInfo").textContent = "Préparation de la vidéo…";
   }
 
-  function assignName(i){
-    const a = S.arrivals[i];
-    if (!S.runners.length) {
-      return sheet((box, close) => {
-        box.innerHTML = '<h3>Arrivée n°' + (i+1) + "</h3><p>" + fmt(a.t) + '</p><label class="field"><span>Nom</span><input id="freeIn"></label><div class="acts"><button class="btn" data-v="0">Annuler</button><button class="btn ink" data-v="1">Valider</button></div>';
-        const inp = box.querySelector("#freeIn"); inp.value = a.freeName || ""; setTimeout(() => inp.focus(), 50);
-        box.querySelectorAll("[data-v]").forEach(b => b.onclick = () => {
-          if (b.dataset.v === "1") { a.freeName = inp.value.trim(); saveToHistory(); renderResults(); }
-          close();
-        });
-      });
-    }
-    const used = new Set(S.arrivals.map(x => x.runnerId).filter(Boolean));
-    sheet((box, close) => {
-      box.innerHTML = '<h3>Arrivée n°' + (i+1) + "</h3><p>" + fmt(a.t) + ' · choisis l\'élève</p><div class="pick"></div><div class="acts"><button class="btn" data-x="clear">Retirer le nom</button><button class="btn ink" data-x="close">Fermer</button></div>';
-      const pick = box.querySelector(".pick");
-      S.runners.filter(r => r.id === a.runnerId || !used.has(r.id)).forEach(r => {
-        const b = document.createElement("button"); b.setAttribute("aria-pressed", String(r.id === a.runnerId));
-        b.innerHTML = (r.bib ? '<span class="bib">' + esc(r.bib) + "</span>" : "") + esc(r.name);
-        b.onclick = () => { a.runnerId = r.id; saveToHistory(); renderResults(); close(); };
-        pick.appendChild(b);
-      });
-      if (!pick.children.length) pick.innerHTML = '<p style="padding:0 6px">Tous les élèves ont déjà un temps.</p>';
-      box.querySelector('[data-x="clear"]').onclick = () => { a.runnerId = null; saveToHistory(); renderResults(); close(); };
-      box.querySelector('[data-x="close"]').onclick = () => close();
-    });
+  // ---------- visionneuse : photo d'arrivée + menu déroulant ----------
+  let pfIdx = 0;
+  function openViewer(gi){
+    const G = arrivalGroups(); if (!G.length) return;
+    if (gi == null) { gi = G.findIndex(g => g.some(i => !(S.arrivals[i].runnerId || S.arrivals[i].freeName))); if (gi < 0) gi = 0; }
+    pfIdx = gi; $("pf").classList.remove("hidden"); renderViewer();
+    history.pushState({pf:1}, "");
   }
+  function closeViewer(){ $("pf").classList.add("hidden"); $("pfImg").classList.remove("zoom"); renderResults(); }
+  function renderViewer(){
+    const G = arrivalGroups(); if (!G.length) { closeViewer(); return; }
+    pfIdx = Math.max(0, Math.min(pfIdx, G.length - 1));
+    const grp = G[pfIdx], head = S.arrivals[grp[0]], first = S.arrivals[0].t;
+    const img = $("pfImg");
+    if (head.photo) { if (img.getAttribute("src") !== head.photo) { img.src = head.photo; img.classList.remove("zoom"); } img.classList.remove("hidden"); }
+    else { img.removeAttribute("src"); img.classList.add("hidden"); }
+    $("pfNone").classList.toggle("hidden", !!head.photo);
+    $("pfNone").textContent = S.finishedFromHistory ? "Les photos ne sont pas gardées dans l'historique" : "Pas de photo pour cette arrivée";
+    $("pfHint").classList.toggle("hidden", !head.photo);
+    $("pfNum").textContent = grp[0] + 1;
+    $("pfTime").textContent = fmt(head.t);
+    $("pfGap").textContent = (head.t - first > 0 ? fmtGap(head.t - first) + " sur le 1er · " : "") + "passage " + (pfIdx + 1) + " / " + G.length;
+    const slots = $("pfSlots"); slots.innerHTML = ""; grp.forEach(i => slots.appendChild(slotEl(i)));
+    $("pfPrev").disabled = pfIdx === 0;
+    $("pfNext").innerHTML = pfIdx === G.length - 1 ? "Terminé" : 'Suivant<svg><use href="#i-next"/></svg>';
+  }
+  $("pfOpen").onclick = () => openViewer();
+  $("pfClose").onclick = () => history.back();
+  $("pfPrev").onclick = () => { pfIdx--; renderViewer(); };
+  $("pfNext").onclick = () => { if (pfIdx >= arrivalGroups().length - 1) history.back(); else { pfIdx++; renderViewer(); } };
+  $("pfTie").onclick = () => addTie(arrivalGroups()[pfIdx]);
+  $("pfImg").onclick = e => {
+    const img = e.currentTarget, r = img.getBoundingClientRect();
+    if (!img.classList.contains("zoom")) img.style.transformOrigin = ((e.clientX - r.left) / r.width * 100) + "% " + ((e.clientY - r.top) / r.height * 100) + "%";
+    img.classList.toggle("zoom");
+  };
+  document.addEventListener("keydown", e => {
+    if ($("pf").classList.contains("hidden") || /SELECT|INPUT/.test(document.activeElement && document.activeElement.tagName)) return;
+    if (e.key === "ArrowRight") $("pfNext").click();
+    else if (e.key === "ArrowLeft" && pfIdx > 0) $("pfPrev").click();
+    else if (e.key === "Escape") history.back();
+  });
 
   function showVideo(){
     $("playback").src = S.videoURL;
-    renderResults();
+    refreshResults();
     const mb = (S.videoBlob.size / 1048576).toFixed(1).replace(".", ",");
     $("videoInfo").textContent = "Vidéo " + S.ext.toUpperCase() + ", " + mb + " Mo" + (S.burn ? ", chrono incrusté" : "") + ". Elle n'est pas gardée sur l'appareil : enregistre-la avant de quitter.";
   }
@@ -890,17 +1217,17 @@
     const d = new Date(S.meta.date);
     const offset = (S.chronoStartPerf - S.recStartPerf) / 1000;
     const lines = [
-      ["Épreuve", S.meta.title], ["Classe", S.meta.cls],
+      ["Épreuve", S.meta.title], ["Classe", S.meta.cls]].concat(S.meta.group ? [["Groupe", S.meta.group]] : []).concat([
       ["Date", d.toLocaleDateString("fr-FR") + " " + pad(d.getHours()) + ":" + pad(d.getMinutes())], [],
-      ["N° d'arrivée", "Dossard", "Nom", "Temps", "Temps (s)", "Écart (s)", "Position dans la vidéo (s)"]
-    ];
-    rows().forEach(r => lines.push([r.rank, r.bib, r.name, fmt(r.t), (r.t/1000).toFixed(2).replace(".", ","),
+      ["N° d'arrivée", "Dossard", "Nom", "Groupe", "Temps", "Temps (s)", "Écart (s)", "Position dans la vidéo (s)"]
+    ]);
+    rows().forEach(r => lines.push([r.rank, r.bib, r.name, r.group, fmt(r.t), (r.t/1000).toFixed(2).replace(".", ","),
       (r.gap/1000).toFixed(2).replace(".", ","), Math.max(0, r.t/1000 + offset).toFixed(1).replace(".", ",")]));
-    nonFinishers().forEach(r => lines.push(["", r.bib, r.name, "Non classé", "", "", ""]));
+    nonFinishers().forEach(r => lines.push(["", r.bib, r.name, r.group || "", "Non classé", "", "", ""]));
     return "﻿" + lines.map(l => l.map(q).join(";")).join("\r\n");
   }
   function plainText(){
-    const head = [S.meta.title, S.meta.cls, new Date(S.meta.date).toLocaleDateString("fr-FR")].filter(Boolean).join(" – ");
+    const head = [S.meta.title, S.meta.cls, S.meta.group, new Date(S.meta.date).toLocaleDateString("fr-FR")].filter(Boolean).join(" – ");
     const body = rows().map(r => r.rank + ". " + (r.name ? (r.bib ? r.bib + " " : "") + r.name : "Coureur " + r.rank) + "   " + fmt(r.t));
     const nf = nonFinishers().map(r => "–  " + runnerLabel(r) + "   non classé");
     return [head, ""].concat(body, nf).join("\n");
@@ -943,19 +1270,22 @@
       if (!ok) return false;
     }
     S.finishedFromHistory = false; $("playback").removeAttribute("src");
+    $("pf").classList.add("hidden"); freePhotos();
     return true;
   }
   $("againBtn").onclick = async () => { if (await leaveResults()) $("openCam").click(); };
   $("homeBtn").onclick = async () => { if (await leaveResults()) { show("setup"); renderHistory(); } };
   window.addEventListener("beforeunload", e => { if (S.running || (S.videoBlob && !S.videoSaved)) { e.preventDefault(); e.returnValue = ""; } });
   window.addEventListener("popstate", () => {
+    if (!$("pf").classList.contains("hidden")) { closeViewer(); return; }
     if (!$("race").classList.contains("hidden")) { history.pushState({race:1}, ""); toast("Maintiens Terminer pour arrêter la course"); }
   });
 
   // ---------- historique ----------
   function saveToHistory(){
     const hist = store.get("cc_history", []);
-    const entry = { id:S.meta.date, meta:S.meta, runners:S.runners, arrivals:S.arrivals, chronoStartPerf:S.chronoStartPerf, recStartPerf:S.recStartPerf };
+    const arrivals = S.arrivals.map(a => { const o = Object.assign({}, a); delete o.photo; return o; });
+    const entry = { id:S.meta.date, meta:S.meta, runners:S.runners, arrivals, chronoStartPerf:S.chronoStartPerf, recStartPerf:S.recStartPerf };
     const i = hist.findIndex(h => h.id === entry.id);
     if (i >= 0) hist[i] = entry; else hist.unshift(entry);
     store.set("cc_history", hist.slice(0, 60));
@@ -967,12 +1297,13 @@
     hist.forEach(h => {
       const d = new Date(h.meta.date);
       const row = document.createElement("div"); row.className = "row";
-      row.innerHTML = '<div class="main"><b>' + esc(h.meta.title || "Course") + (h.meta.cls ? ", " + esc(h.meta.cls) : "") + "</b><small>" +
+      row.innerHTML = '<div class="main"><b>' + esc(h.meta.title || "Course") + (h.meta.cls ? ", " + esc(h.meta.cls) : "") + (h.meta.group ? ", " + esc(h.meta.group) : "") + "</b><small>" +
         d.toLocaleDateString("fr-FR", { day:"numeric", month:"short" }) + " à " + pad(d.getHours()) + "h" + pad(d.getMinutes()) + ", " +
         h.arrivals.length + (h.arrivals.length > 1 ? " arrivées" : " arrivée") + '</small></div>' +
         '<button class="iconbtn" data-a="del" aria-label="Supprimer"><svg><use href="#i-trash"/></svg></button>' +
         '<button class="iconbtn" data-a="open" aria-label="Ouvrir"><svg><use href="#i-next"/></svg></button>';
       const open = () => {
+        freePhotos();
         Object.assign(S, { meta:h.meta, runners:h.runners, arrivals:h.arrivals, chronoStartPerf:h.chronoStartPerf,
           recStartPerf:h.recStartPerf, videoBlob:null, videoURL:null, videoSaved:true, finishedFromHistory:true });
         $("playback").removeAttribute("src");
