@@ -297,14 +297,63 @@
   .gblock .gh{display:flex;justify-content:space-between;font:700 19px/1.2 var(--cond);margin:0 2px 6px}
   .gblock .gh small{font:600 14px var(--text);color:var(--ink-2)}
   .gblock textarea{min-height:130px}
+  /* classes en dossards */
+  .cls{position:relative;--pin:var(--ink-3)}
+  .cls .gbar{display:flex;gap:3px;height:6px;margin-top:8px;border-radius:3px;overflow:hidden}
+  .cls .gbar i{display:block;height:100%}
+  .glist{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+  .glist span{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:99px;background:var(--paper);border:1.5px solid var(--rule);font-weight:600;font-size:15px}
+  .glist span i{width:12px;height:12px;border-radius:50%;background:var(--gc)}
+  .glist span small{color:var(--ink-2);font-weight:500}
+  /* page classe */
+  .wrap.wide{max-width:980px}
+  .cname{font:800 clamp(38px,9vw,56px)/1.05 var(--cond);border:0;border-bottom:3px solid var(--ink);border-radius:0;background:transparent;padding:4px 2px 6px}
+  .cname:focus{border-color:var(--tartan)}
+  .ctools{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 18px}
+  .chipbtn{display:inline-flex;align-items:center;gap:7px;padding:9px 14px;border-radius:99px;background:var(--paper);border:1.5px solid var(--rule);font-weight:700;font-size:15px}
+  .chipbtn svg{width:18px;height:18px}
+  .chipbtn:active{background:var(--chalk)}
+  .empty{background:var(--paper);border:2px dashed var(--ink-3);border-radius:var(--r-l);padding:22px 20px;text-align:center}
+  .empty b{font:800 26px/1.1 var(--cond)} .empty p{color:var(--ink-2);margin:6px 0 16px}
+  .empty .acts{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+  .gtabs{position:sticky;top:0;z-index:5;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:10px 0;margin:0 0 6px;background:var(--chalk)}
+  .gtabs::-webkit-scrollbar{display:none}
+  .gtab{flex:none;display:flex;align-items:center;gap:8px;min-height:50px;padding:6px 16px;border-radius:var(--r-m);border:2.5px solid var(--gc);background:var(--paper);
+    color:var(--gc);font:800 21px/1 var(--cond)}
+  .gtab small{font:700 14px var(--text);background:var(--gc);color:#fff;border-radius:99px;padding:2px 8px;min-width:26px;text-align:center}
+  .gtab[aria-pressed="true"]{background:var(--gc);color:#fff;box-shadow:0 4px 0 #0002}
+  .gtab[aria-pressed="true"] small{background:#fff;color:var(--gc)}
+  .gtab.new{border-style:dashed;border-color:var(--ink-3);color:var(--ink-2);--gc:var(--ink-3)}
+  .gtab.pop small{animation:pop .28s cubic-bezier(.2,.9,.3,1.2)}
+  .gcols{display:grid;gap:16px}
+  @media (min-width:760px){.gcols{grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);align-items:start}.gactive{position:sticky;top:76px}}
+  .gactive{border-radius:var(--r-l);border:3px solid var(--gc);background:var(--paper);overflow:hidden}
+  .gactive .gh{background:var(--gc);color:#fff;padding:10px 14px;display:flex;align-items:baseline;gap:10px}
+  .gactive .gh b{font:800 28px/1 var(--cond)} .gactive .gh span{font-weight:600;font-size:15px;opacity:.9}
+  .gactive .mem{display:flex;flex-wrap:wrap;gap:6px;padding:12px}
+  .gactive .mem button{padding:8px 12px;border-radius:99px;background:var(--chalk);border:1.5px solid var(--rule);font-weight:600;font-size:15px}
+  .gactive .mem button::after{content:"×";margin-left:8px;color:var(--ink-3);font-weight:700}
+  .gactive .mem p{margin:4px 2px;color:var(--ink-2);font-size:15px}
+  .poolhead{display:flex;align-items:center;margin:2px 2px 8px}
+  .poolhead b{font:700 22px/1.1 var(--cond)}
+  #poolTiles .tile{padding:9px 12px;border-left:5px solid var(--gc)}
+  #poolTiles .tile::before{display:none}
+  #poolTiles .tile:active{transform:scale(.97);background:var(--chalk)}
+  .tile .to{display:block;font-size:12px;font-weight:700;color:var(--gc);margin-top:2px}
+  .donemsg{padding:16px;border-radius:var(--r-m);background:#E3F1E8;color:var(--infield-dk);font-weight:700;text-align:center}
+  .cfoot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;margin-top:26px;border-top:1.5px solid var(--rule);padding-top:8px}
   .classes{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;padding:2px 2px 6px;margin:0 -2px}
   .classes::-webkit-scrollbar{display:none}
-  .cls{flex:none;min-width:128px;min-height:74px;padding:10px 14px;border-radius:var(--r-m);background:var(--paper);border:2px solid var(--rule);text-align:left}
-  .cls b{display:block;font:800 26px/1 var(--cond)}
+  .cls{flex:none;min-width:140px;min-height:92px;padding:14px 18px 12px;border-radius:10px;background-color:var(--paper);border:2.5px solid var(--rule);text-align:left;
+    background-image:radial-gradient(circle,var(--pin) 0 3px,transparent 3.6px),radial-gradient(circle,var(--pin) 0 3px,transparent 3.6px),
+      radial-gradient(circle,var(--pin) 0 3px,transparent 3.6px),radial-gradient(circle,var(--pin) 0 3px,transparent 3.6px);
+    background-size:12px 12px;background-repeat:no-repeat;background-position:4px 4px,calc(100% - 4px) 4px,4px calc(100% - 4px),calc(100% - 4px) calc(100% - 4px);
+    transition:transform .15s}
+  .cls b{display:block;font:800 34px/1 var(--cond)}
   .cls small{display:block;font-size:13px;color:var(--ink-2);margin-top:4px}
-  .cls[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
-  .cls[aria-pressed="true"] small{color:#fffc}
-  .cls.add{border-style:dashed;border-color:var(--ink-3);font-weight:700;color:var(--ink-2);display:flex;align-items:center;justify-content:center}
+  .cls[aria-pressed="true"]{border-color:var(--ink);--pin:var(--tartan);transform:rotate(-2deg);box-shadow:0 5px 0 var(--ink)}
+  .classes{padding:6px 4px 12px}
+  .cls.add{background-image:none;border-style:dashed;border-color:var(--ink-3);font-weight:700;color:var(--ink-2);display:flex;align-items:center;justify-content:center}
   .runs{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
   .run{position:relative;text-align:left;padding:12px 40px 12px 14px;min-height:96px;border-radius:var(--r-l);background:var(--paper);border:3px solid var(--gc);color:var(--ink)}
   .run b{display:block;font:800 clamp(22px,6vw,28px)/1 var(--cond);color:var(--gc);white-space:nowrap}
@@ -330,13 +379,6 @@
   .gcard .names{display:flex;flex-wrap:wrap;gap:6px}
   .gcard .names button{padding:6px 10px;border-radius:99px;background:var(--chalk);border:1.5px solid var(--rule);font-size:15px;font-weight:600}
   .gcard .names button::after{content:" ×";color:var(--ink-3)}
-  #grpBar{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
-  #grpBar .btn{flex:none;color:#fff;background:var(--gc);border-color:var(--gc);min-width:120px}
-  #grpBar .btn.del{background:var(--paper);color:var(--tartan);border-color:var(--tartan);min-width:0}
-  #grpBar .btn.new{background:var(--paper);color:var(--ink);border:2px dashed var(--ink-3)}
-  #grpBar .btn:disabled{opacity:.4}
-  #grpBar .hint{flex:1;display:flex;align-items:center;justify-content:center;min-height:58px;color:var(--ink-2);font-weight:600;
-    background:var(--paper);border:1.5px solid var(--rule);border-radius:var(--r-m)}
 
   /* ---------- cartes d'arrivée (photo + menu) ---------- */
   .card{display:grid;grid-template-columns:clamp(110px,34%,200px) minmax(0,1fr);gap:12px;padding:12px;border-top:1.5px solid var(--rule)}
@@ -420,10 +462,10 @@
     <h2>Classe</h2>
     <div class="classes" id="classList"></div>
 
-    <div id="runWrap" class="hidden">
-      <h2>Qui court ? <span class="count" id="runnerCount"></span></h2>
-      <div class="runs" id="runCards"></div>
-      <button class="linkbtn" id="editCls"><svg><use href="#i-groups"/></svg>Modifier la liste et les groupes</button>
+
+    <div id="clsInfo" class="hidden">
+      <div class="glist" id="gOverview"></div>
+      <button class="linkbtn" id="editCls"><svg><use href="#i-groups"/></svg>Modifier la classe et les groupes</button>
     </div>
 
     <h2>Épreuve</h2>
@@ -455,7 +497,7 @@
       <div class="panel list" id="histList"></div>
       <button class="linkbtn hidden" id="histMore"></button>
     </div>
-    <p class="help" style="margin-top:28px;text-align:center;color:var(--ink-3)">Version 13</p>
+    <p class="help" style="margin-top:28px;text-align:center;color:var(--ink-3)">Version 14</p>
   </div>
   <div class="dock"><div class="wrap">
     <button class="btn go wide" id="openCam"><svg><use href="#i-cam"/></svg><span id="camLbl">Ouvrir la caméra</span></button>
@@ -464,30 +506,39 @@
 
 <!-- ======================= CLASSE : liste et groupes ======================= -->
 <section id="grp" class="page hidden">
-  <div class="wrap">
-    <div class="topbar"><button class="iconbtn" id="grpBack" aria-label="Retour"><svg><use href="#i-back"/></svg></button></div>
-    <label class="field"><span>Nom de la classe</span><input id="cName" placeholder="5C1" autocomplete="off" style="font:800 30px/1.1 var(--cond)"></label>
-    <div class="tools">
-      <button class="btn" id="csvBtn"><svg><use href="#i-up"/></svg>Importer CSV</button>
+  <div class="wrap wide">
+    <div class="topbar"><button class="iconbtn" id="grpBack" aria-label="Retour"><svg><use href="#i-back"/></svg></button>
+      <button class="btn go" id="grpOk" style="margin-left:auto;min-height:44px;font-size:16px">Terminé</button></div>
+    <input id="cName" class="cname" placeholder="Nom de la classe" autocomplete="off" aria-label="Nom de la classe">
+    <div class="ctools">
+      <button class="chipbtn" id="csvBtn"><svg><use href="#i-up"/></svg>Importer CSV</button>
       <input type="file" id="fCsv" accept=".csv,.txt,text/csv,text/plain" class="hidden">
-      <button class="btn" id="addNames"><svg><use href="#i-groups"/></svg>Ajouter des noms</button>
+      <button class="chipbtn" id="addNames"><svg><use href="#i-groups"/></svg>Modifier la liste</button>
+      <button class="chipbtn" id="grpRand"><svg><use href="#i-redo"/></svg>Groupes au hasard</button>
     </div>
-    <div id="clsEmpty" class="tip hidden">Importe la liste en CSV (colonnes Nom, Prénom, et si tu veux Groupe, Dossard, Classe) ou ajoute les noms à la main.</div>
-    <div id="poolWrap">
-      <h2>À placer dans un groupe <span class="count" id="poolCount"></span>
-        <button class="addTie" id="grpAll" style="margin:0 0 0 auto">Tout cocher</button></h2>
-      <div class="tiles" id="poolTiles"></div>
-      <p class="help">Coche des élèves, puis touche le groupe en bas. Sans groupe, toute la classe court ensemble.</p>
+
+    <div id="clsEmpty" class="empty hidden">
+      <b>Ajoute les élèves de la classe</b>
+      <p>Importe la liste exportée de l'école (CSV avec Nom et Prénom), ou tape les noms.</p>
+      <div class="acts"><button class="btn ink" id="emptyCsv"><svg><use href="#i-up"/></svg>Importer un CSV</button><button class="btn" id="emptyNames">Taper les noms</button></div>
     </div>
-    <div id="grpDone" class="help hidden" style="font-size:16px;font-weight:600;color:var(--infield);margin-top:18px">Tous les élèves sont dans un groupe.</div>
-    <div id="grpList"></div>
-    <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:22px">
-      <button class="btn" id="grpReset" style="flex:1"><svg><use href="#i-redo"/></svg>Défaire les groupes</button>
-      <button class="btn" id="clsDel" style="flex:1;color:var(--tartan)"><svg><use href="#i-trash"/></svg>Supprimer la classe</button>
+
+    <div id="clsBody" class="hidden">
+      <div class="gtabs" id="gTabs"></div>
+      <div class="gcols">
+        <div class="gactive" id="gActive"></div>
+        <div class="gpool">
+          <div class="poolhead"><b id="poolTitle">À placer</b><button class="linkbtn" id="poolAll" style="margin:0 0 0 auto"></button></div>
+          <div class="tiles" id="poolTiles"></div>
+          <div id="grpDone" class="donemsg hidden">✓ Tous les élèves ont un groupe</div>
+        </div>
+      </div>
+      <div class="cfoot">
+        <button class="linkbtn" id="grpReset"><svg><use href="#i-redo"/></svg>Défaire les groupes</button>
+        <button class="linkbtn" id="clsDel" style="color:var(--tartan)"><svg><use href="#i-trash"/></svg>Supprimer la classe</button>
+      </div>
     </div>
-    <button class="btn go" id="grpOk" style="width:100%;margin-top:10px">Terminé</button>
   </div>
-  <div class="dock"><div class="wrap"><div id="grpBar"></div></div></div>
 </section>
 
 <!-- ======================= COURSE ======================= -->
@@ -718,7 +769,9 @@
       const b = document.createElement("button"); b.className = "cls";
       b.setAttribute("aria-pressed", String(c.id === S.classId));
       const ng = groupsOf(c).length;
-      b.innerHTML = "<b>" + esc(c.name || "Sans nom") + "</b><small>" + plural(c.items.length) + (ng ? " · " + ng + " groupe" + (ng > 1 ? "s" : "") : "") + "</small>";
+      const gs = groupsOf(c);
+      b.innerHTML = "<b>" + esc(c.name || "Sans nom") + "</b><small>" + plural(c.items.length) + (ng ? " · " + ng + " groupe" + (ng > 1 ? "s" : "") : "") + "</small>" +
+        (gs.length ? '<span class="gbar">' + gs.map(g => '<i style="flex:' + c.items.filter(x => x.g === g).length + ";background:" + gColor(g) + '"></i>').join("") + "</span>" : "");
       b.onclick = () => { if (S.classId === c.id) { openClass(c.id); return; } S.classId = c.id; saveSetup(); renderSetup(true); };
       list.appendChild(b);
     });
@@ -726,12 +779,11 @@
     add.onclick = () => openClass(null);
     list.appendChild(add);
     const c = curClass();
-    $("runWrap").classList.toggle("hidden", !c);
+    $("clsInfo").classList.toggle("hidden", !c);
     if (!c) return;
-    const v = runValue(c), n = itemsRunning(c, v).length;
-    $("runnerCount").textContent = plural(n);
-    runCards($("runCards"), c, v, val => { S.opts.run = val; saveSetup(); renderSetup(); });
-    renderHero();
+    const ov = $("gOverview"), gs = groupsOf(c);
+    ov.innerHTML = gs.length ? gs.map(g => '<span style="--gc:' + gColor(g) + '"><i></i>Groupe ' + g + " <small>" + c.items.filter(x => x.g === g).length + "</small></span>").join("")
+      : '<span style="--gc:var(--ink-3)"><i></i>Pas de groupe : toute la classe court ensemble</span>';
   }
   ["fTitle","fBurn","fAudio","fBeep"].forEach(id => $(id).addEventListener("change", () => { saveSetup(); renderSettingsSum(); }));
   // épreuves courantes en un toucher
@@ -752,12 +804,10 @@
     if (animate) { el.classList.remove("go"); void el.offsetWidth; el.classList.add("go"); }
     const plate = $("heroRun");
     if (c) {
-      const v = runValue(c), n = itemsRunning(c, v).length;
-      plate.style.setProperty("--gc", v === "all" ? "var(--ink)" : gColor(+v));
-      plate.innerHTML = "<i></i>" + (v === "all" ? "Toute la classe" : "Groupe " + v) + " · " + plural(n);
+      const ng = groupsOf(c).length;
+      plate.innerHTML = plural(c.items.length) + (ng ? " · " + ng + " groupe" + (ng > 1 ? "s" : "") : "");
     } else plate.textContent = S.classes.length ? "Choisis ta classe" : "Crée ta première classe";
     $("heroEvt").textContent = $("fTitle").value.trim();
-    $("camLbl").textContent = c ? "Ouvrir la caméra · " + (v => v === "all" ? "toute la classe" : "groupe " + v)(runValue(c)) : "Ouvrir la caméra";
   }
   function renderSettingsSum(){
     $("setSum").textContent = [S.opts.cam === "user" ? "caméra avant" : "caméra arrière", "vidéo " + (S.opts.quality === "light" ? "légère" : "normale"),
@@ -860,7 +910,7 @@
           if (!first) first = target;
         });
         S.classId = first.id; saveClasses(); saveSetup();
-        G.cls = first; G.isNew = false; G.sel.clear(); renderClass();
+        G.cls = first; G.isNew = false; $("cName").value = first.name; G.active = 0; renderClass();
         toast(classes.length + " classes créées");
         return;
       }
@@ -879,30 +929,35 @@
     const offset = mode === "add" ? groupsOf(c).reduce((m, g) => Math.max(m, g), 0) : 0;
     const items = itemsFromList(list, offset);
     c.items = mode === "add" ? c.items.concat(items) : items;
-    G.sel.clear(); persistClass(); renderClass();
+    G.active = 0; persistClass(); renderClass();
     const ng = new Set(items.map(x => x.g).filter(Boolean)).size;
     toast(plural(list.length) + " importés" + (ng ? " en " + ng + " groupe" + (ng > 1 ? "s" : "") : ""));
   };
-  $("addNames").onclick = async () => {
+  // modifier toute la liste d'un coup (ajouter, corriger, retirer) ; les groupes des noms inchangés sont gardés
+  async function editList(){
+    const c = G.cls, cur = c.items.slice().sort((a, b) => (a.g || 99) - (b.g || 99)).map(x => x.line).join("\n");
     const txt = await sheet((box, close) => {
-      box.innerHTML = "<h3>Ajouter des élèves</h3><p>Un élève par ligne. Un numéro en début de ligne sert de dossard.</p>" +
+      box.innerHTML = "<h3>Liste des élèves</h3><p>Un élève par ligne. Ajoute, corrige ou efface des lignes.</p>" +
         '<textarea id="namesIn" placeholder="Dupont Léa&#10;Martin Noah&#10;12 Schmit Emma"></textarea>' +
-        '<div class="acts" style="margin-top:12px"><button class="btn" data-v="0">Annuler</button><button class="btn ink" data-v="1">Ajouter</button></div>';
-      const ta = box.querySelector("#namesIn"); setTimeout(() => ta.focus(), 50);
-      box.querySelectorAll("[data-v]").forEach(b => b.onclick = () => close(b.dataset.v === "1" ? ta.value : ""));
+        '<div class="acts" style="margin-top:12px"><button class="btn" data-v="0">Annuler</button><button class="btn ink" data-v="1">Enregistrer</button></div>';
+      const ta = box.querySelector("#namesIn"); ta.value = cur; setTimeout(() => ta.focus(), 50);
+      box.querySelectorAll("[data-v]").forEach(b => b.onclick = () => close(b.dataset.v === "1" ? ta.value : null));
     });
-    const lines = (txt || "").split(/\r?\n/).map(l => l.trim()).filter(Boolean);
-    if (!lines.length) return;
-    lines.forEach(l => G.cls.items.push({ line:l, g:0 }));
-    persistClass(); renderClass(); toast(plural(lines.length) + " ajoutés");
-  };
+    if (txt == null) return;
+    const old = new Map(); c.items.forEach(x => { if (!old.has(x.line)) old.set(x.line, x.g); });
+    c.items = txt.split(/\r?\n/).map(l => l.trim()).filter(Boolean).map(l => ({ line:l, g:old.has(l) ? old.get(l) : 0 }));
+    persistClass(); renderClass();
+  }
+  $("addNames").onclick = editList;
+  $("emptyNames").onclick = editList;
+  $("emptyCsv").onclick = () => $("fCsv").click();
 
-  // ---------- page classe : liste, cases à cocher, groupes ----------
-  const G = { cls:null, isNew:false, sel:new Set() };
+  // ---------- page classe : on choisit un groupe, puis on touche les élèves ----------
+  const G = { cls:null, isNew:false, active:0 };
   function openClass(id){
     const c = id ? S.classes.find(x => x.id === id) : null;
     G.cls = c || { id:"c" + Date.now(), name:"", items:[] };
-    G.isNew = !c; G.sel = new Set();
+    G.isNew = !c; G.active = 0;
     $("cName").value = G.cls.name;
     show("grp"); renderClass();
     history.pushState({grp:1}, "");
@@ -919,72 +974,84 @@
     saveClasses();
   }
   $("cName").addEventListener("input", () => { G.cls.name = $("cName").value.trim(); persistClass(); });
-  function maxG(){ return G.cls.items.reduce((m, x) => Math.max(m, x.g), 0); }
+  const freshGroup = c => { let g = 1; while (c.items.some(x => x.g === g)) g++; return g; };
   function renderClass(){
-    const c = G.cls;
-    if ($("cName").value.trim() !== c.name && document.activeElement !== $("cName")) $("cName").value = c.name;
-    const pool = c.items.map((x, i) => [x, i]).filter(([x]) => x.g === 0);
-    $("clsEmpty").classList.toggle("hidden", !!c.items.length);
-    $("poolWrap").classList.toggle("hidden", !pool.length);
-    $("poolCount").textContent = pool.length ? plural(pool.length) : "";
-    $("grpAll").textContent = pool.length && pool.every(([, i]) => G.sel.has(i)) ? "Tout décocher" : "Tout cocher";
-    $("grpDone").classList.toggle("hidden", !c.items.length || !!pool.length);
-    $("grpReset").classList.toggle("hidden", !maxG());
+    const c = G.cls, gs = groupsOf(c);
+    const has = c.items.length;
+    $("clsEmpty").classList.toggle("hidden", !!has);
+    $("clsBody").classList.toggle("hidden", !has);
+    $("grpRand").classList.toggle("hidden", c.items.length < 2);
+    $("addNames").innerHTML = '<svg><use href="#i-groups"/></svg>' + (has ? "Modifier la liste" : "Taper les noms");
     $("clsDel").classList.toggle("hidden", G.isNew);
-    const tiles = $("poolTiles"); tiles.innerHTML = "";
-    pool.forEach(([x, i]) => {
+    $("grpReset").classList.toggle("hidden", !gs.length);
+    if (!has) return;
+    // groupe actif : celui choisi, sinon le premier, sinon un nouveau
+    if (!G.active || (!gs.includes(G.active) && G.active !== freshGroup(c))) G.active = gs.length ? gs[0] : 1;
+    const A = G.active, col = gColor(A);
+    // onglets des groupes
+    const tabs = $("gTabs"); tabs.innerHTML = "";
+    const shown = gs.includes(A) ? gs : gs.concat([A]).sort((a, b) => a - b);
+    shown.forEach(g => {
+      const b = document.createElement("button"); b.className = "gtab"; b.style.setProperty("--gc", gColor(g));
+      b.setAttribute("aria-pressed", String(g === A));
+      b.innerHTML = "Groupe " + g + "<small>" + c.items.filter(x => x.g === g).length + "</small>";
+      b.onclick = () => { G.active = g; renderClass(); };
+      tabs.appendChild(b);
+    });
+    if (gs.includes(A) || !shown.includes(freshGroup(c))) {
+      const nb = document.createElement("button"); nb.className = "gtab new"; nb.textContent = "+ Nouveau groupe";
+      nb.onclick = () => { G.active = freshGroup(c); renderClass(); };
+      tabs.appendChild(nb);
+    }
+    // groupe actif : ses élèves (toucher = retirer)
+    const mem = c.items.filter(x => x.g === A), act = $("gActive");
+    act.style.setProperty("--gc", col);
+    act.innerHTML = '<div class="gh"><b>Groupe ' + A + "</b><span>" + plural(mem.length) + '</span></div><div class="mem"></div>';
+    const mb = act.querySelector(".mem");
+    if (!mem.length) mb.innerHTML = "<p>Touche les élèves de la liste pour les mettre dans ce groupe.</p>";
+    mem.forEach(x => {
+      const b = document.createElement("button"); b.textContent = itemName(x.line).name;
+      b.setAttribute("aria-label", "Retirer " + itemName(x.line).name + " du groupe " + A);
+      b.onclick = () => { x.g = 0; persistClass(); renderClass(); };
+      mb.appendChild(b);
+    });
+    // élèves sans groupe : un toucher = dans le groupe actif
+    const pool = c.items.filter(x => x.g === 0);
+    $("poolTitle").textContent = pool.length ? "Sans groupe (" + pool.length + ")" : "Sans groupe";
+    $("poolAll").textContent = pool.length > 1 ? "Tous dans le groupe " + A : "";
+    $("poolAll").classList.toggle("hidden", pool.length < 2);
+    $("grpDone").classList.toggle("hidden", !!pool.length);
+    const tiles = $("poolTiles"); tiles.innerHTML = ""; tiles.style.setProperty("--gc", col);
+    pool.forEach(x => {
       const t = document.createElement("button"); t.className = "tile";
       const n = itemName(x.line);
-      t.innerHTML = esc(n.name) + (n.bib ? "<small>n° " + esc(n.bib) + "</small>" : "");
-      t.setAttribute("aria-pressed", String(G.sel.has(i)));
-      t.onclick = () => { G.sel.has(i) ? G.sel.delete(i) : G.sel.add(i); renderClass(); };
+      t.innerHTML = esc(n.name) + '<span class="to">+ groupe ' + A + "</span>";
+      t.onclick = () => {
+        x.g = A; persistClass(); renderClass();
+        const tab = [...$("gTabs").children].find(e => e.getAttribute("aria-pressed") === "true");
+        if (tab) { tab.classList.remove("pop"); void tab.offsetWidth; tab.classList.add("pop"); }
+      };
       tiles.appendChild(t);
     });
-    const M = maxG(), list = $("grpList"); list.innerHTML = "";
-    for (let g = 1; g <= M; g++) {
-      const mem = c.items.filter(x => x.g === g);
-      if (!mem.length) continue;
-      const card = document.createElement("div"); card.className = "gcard"; card.style.setProperty("--gc", gColor(g));
-      card.innerHTML = "<h3>Groupe " + g + "<small>" + plural(mem.length) + " · touche un nom pour le retirer du groupe</small></h3><div class=\"names\"></div>";
-      const names = card.querySelector(".names");
-      mem.forEach(x => {
-        const b = document.createElement("button"); b.textContent = itemName(x.line).name;
-        b.onclick = () => { x.g = 0; G.sel.clear(); persistClass(); renderClass(); };
-        names.appendChild(b);
-      });
-      list.appendChild(card);
-    }
-    const bar = $("grpBar"); bar.innerHTML = "";
-    const k = G.sel.size;
-    bar.closest(".dock").classList.toggle("hidden", !pool.length);
-    if (!pool.length) return;
-    if (!k) { bar.innerHTML = '<span class="hint">Coche des élèves, puis choisis leur groupe</span>'; return; }
-    let fresh = 1; while (c.items.some(x => x.g === fresh)) fresh++;
-    for (let g = 1; g <= Math.max(M, fresh); g++) {
-      const used = c.items.some(x => x.g === g);
-      if (!used && g !== fresh) continue;
-      const b = document.createElement("button"); b.className = "btn" + (used ? "" : " new");
-      b.style.setProperty("--gc", gColor(g));
-      b.innerHTML = (used ? "" : "+ ") + "Groupe " + g + '<small style="font-weight:500;opacity:.85">(' + k + ")</small>";
-      b.onclick = () => { G.sel.forEach(i => c.items[i].g = g); G.sel.clear(); persistClass(); renderClass(); toast(plural(k) + " dans le groupe " + g); };
-      bar.appendChild(b);
-    }
-    const del = document.createElement("button"); del.className = "btn del"; del.setAttribute("aria-label", "Retirer de la classe");
-    del.innerHTML = '<svg><use href="#i-trash"/></svg>';
-    del.onclick = async () => {
-      if (!(await ask("Retirer " + plural(k) + " de la classe ?", "", "Retirer", true))) return;
-      c.items = c.items.filter((x, i) => !G.sel.has(i)); G.sel.clear(); persistClass(); renderClass();
-    };
-    bar.appendChild(del);
   }
-  $("grpAll").onclick = () => {
-    const pool = G.cls.items.map((x, i) => i).filter(i => G.cls.items[i].g === 0);
-    if (pool.every(i => G.sel.has(i))) G.sel.clear(); else pool.forEach(i => G.sel.add(i));
-    renderClass();
+  $("poolAll").onclick = () => { G.cls.items.forEach(x => { if (x.g === 0) x.g = G.active; }); persistClass(); renderClass(); };
+  $("grpRand").onclick = async () => {
+    const c = G.cls;
+    const n = await sheet((box, close) => {
+      box.innerHTML = "<h3>Groupes au hasard</h3><p>Toute la classe (" + plural(c.items.length) + ") est mélangée puis répartie. Les groupes actuels sont remplacés.</p>" +
+        '<div class="acts" style="flex-wrap:wrap">' + [2, 3, 4, 5].filter(k => k <= c.items.length).map(k => '<button class="btn ink" data-v="' + k + '">' + k + " groupes</button>").join("") + "</div>" +
+        '<div class="acts" style="margin-top:10px"><button class="btn" data-v="0">Annuler</button></div>';
+      box.querySelectorAll("[data-v]").forEach(b => b.onclick = () => close(+b.dataset.v));
+    });
+    if (!n) return;
+    const idx = c.items.map((x, i) => i);
+    for (let i = idx.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [idx[i], idx[j]] = [idx[j], idx[i]]; }
+    idx.forEach((ix, k) => c.items[ix].g = (k % n) + 1);
+    G.active = 1; persistClass(); renderClass(); toast(n + " groupes formés au hasard");
   };
   $("grpReset").onclick = async () => {
-    if (await ask("Défaire les groupes ?", "Tous les élèves reviennent dans la liste à placer. La classe est gardée.", "Défaire", true)) {
-      G.cls.items.forEach(x => x.g = 0); G.sel.clear(); persistClass(); renderClass();
+    if (await ask("Défaire les groupes ?", "Tous les élèves reviennent sans groupe. La classe est gardée.", "Défaire", true)) {
+      G.cls.items.forEach(x => x.g = 0); G.active = 1; persistClass(); renderClass();
     }
   };
   $("clsDel").onclick = async () => {
@@ -1002,11 +1069,11 @@
       c.items.forEach(x => { if (x.g) x.g = map[x.g]; });
       if (!G.isNew) { S.classId = c.id; saveClasses(); saveSetup(); }
     }
-    G.cls = null; show("setup"); renderSetup();
+    G.cls = null; show("setup"); renderSetup(true);
   }
   $("grpOk").onclick = async () => {
     const c = G.cls, left = c.items.filter(x => x.g === 0).length;
-    if (left && maxG()) {
+    if (left && groupsOf(c).length) {
       const ok = await ask(plural(left) + " sans groupe", "Ils ne courront qu'avec « Toute la classe ».", "C'est bon");
       if (!ok) return;
     }
@@ -1023,9 +1090,23 @@
     return "";
   }
 
+  function askWhoRuns(c){
+    return sheet((box, close) => {
+      box.innerHTML = '<h3>Qui court ?</h3><p>' + esc(c.name || "") + (S.meta && $("fTitle").value.trim() ? " · " + esc($("fTitle").value.trim()) : "") + '</p><div class="runs"></div>' +
+        '<div class="acts" style="margin-top:14px"><button class="btn" data-x="0">Annuler</button></div>';
+      runCards(box.querySelector(".runs"), c, runValue(c), val => close(val));
+      box.querySelector('[data-x="0"]').onclick = () => close(undefined);
+    });
+  }
   $("openCam").onclick = async () => {
     const err = $("setupErr"); err.classList.add("hidden");
     saveSetup(); unlockAudio();
+    const cc0 = curClass();
+    if (cc0 && groupsOf(cc0).length) {
+      const v = await askWhoRuns(cc0);
+      if (!v) { if ($("setup").classList.contains("hidden")) { show("setup"); renderSetup(); renderHistory(); } return; }
+      S.opts.run = v; saveSetup();
+    }
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       err.textContent = "La caméra n'est pas disponible ici. Ouvre l'application depuis son adresse https:// dans Safari ou Chrome, ou depuis son icône sur l'écran d'accueil.";
       err.classList.remove("hidden"); return;
@@ -1741,17 +1822,6 @@
   }
   $("againBtn").onclick = async () => {
     if (!(await leaveResults())) return;
-    const c = curClass();
-    if (c && groupsOf(c).length) {
-      const v = await sheet((box, close) => {
-        box.innerHTML = "<h3>Qui court ?</h3><p>" + esc(c.name) + "</p><div class=\"runs\"></div>" +
-          '<div class="acts" style="margin-top:14px"><button class="btn" data-x="0">Annuler</button></div>';
-        runCards(box.querySelector(".runs"), c, runValue(c), val => close(val));
-        box.querySelector('[data-x="0"]').onclick = () => close(undefined);
-      });
-      if (!v) { show("setup"); renderSetup(); renderHistory(); return; }
-      S.opts.run = v; saveSetup(); renderSetup();
-    }
     $("openCam").click();
   };
 
