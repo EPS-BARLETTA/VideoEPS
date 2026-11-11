@@ -30,7 +30,8 @@
   .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-top:14px}
   .check{display:flex;align-items:center;gap:10px;margin:12px 0 0;color:var(--text);font-size:15px}
   .check input{width:22px;height:22px;flex:none}
-  .btn{padding:14px 18px;font-weight:600;background:#222a35;border:1px solid var(--line)}
+  .btn{padding:16px 18px;min-height:58px;font-size:17px;font-weight:700;background:#222a35;border:1px solid var(--line)}
+  .btn:active{filter:brightness(1.25)}
   .btn.primary{background:var(--accent);border-color:var(--accent);color:#04111f}
   .btn.go{background:var(--go);border-color:var(--go);color:#03140a}
   .btn.danger{background:transparent;border-color:var(--stop);color:#ff8a8d}
@@ -56,25 +57,44 @@
   #lastList{position:absolute;left:10px;bottom:10px;max-width:60%;pointer-events:none;font-variant-numeric:tabular-nums}
   #lastList div{background:#000b;border-radius:8px;padding:4px 10px;margin-top:4px;font-size:15px}
   #lastList b{color:var(--finish)}
-  #chips{display:flex;gap:6px;overflow-x:auto;padding:8px 10px;background:#0b0f14;border-top:1px solid #222;
-    -webkit-overflow-scrolling:touch;min-height:48px;align-items:center}
-  #chips .chip{flex:none;padding:8px 12px;background:#1d2531;border:1px solid #2f3a49;border-radius:999px;font-size:14px;white-space:nowrap}
+  #race{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:none}
+  #stage{min-height:34vh}
+  #bottom{display:flex;flex-direction:column;gap:10px;background:#0b0f14;
+    padding:10px 10px calc(10px + var(--safe-b));border-top:1px solid #222}
+  #chips{display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y;
+    min-height:56px;align-items:center}
+  #chips .chip{flex:none;min-height:54px;padding:10px 18px;background:#1d2531;border:2px solid #34425a;
+    border-radius:14px;font-size:19px;font-weight:600;white-space:nowrap}
   #chips .chip:active{background:var(--accent);color:#000}
-  #chips .note{color:var(--muted);font-size:13px;white-space:nowrap;padding:0 4px}
-  #controls{display:flex;gap:8px;padding:10px 10px calc(10px + var(--safe-b));background:#0b0f14}
-  #mainBtn{flex:1;min-height:92px;font-size:30px;font-weight:800;letter-spacing:1px;border-radius:16px}
+  #chips .note{flex:none;font-size:17px;font-weight:700;white-space:nowrap;padding:0 6px;color:var(--muted)}
+  #chips .note.ask{color:var(--finish)}
+  #mainBtn{flex:none;height:max(150px,30vh);border-radius:22px;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:4px;box-shadow:0 6px 0 #0006}
+  #mainBtn .lbl{font-size:clamp(40px,11vw,72px);font-weight:900;letter-spacing:2px;line-height:1}
+  #mainBtn .sub{font-size:clamp(16px,4vw,22px);font-weight:600;opacity:.8;font-variant-numeric:tabular-nums}
   #mainBtn.start{background:var(--go);color:#03140a}
   #mainBtn.finish{background:var(--finish);color:#1a1200}
-  #mainBtn:active{transform:scale(.98);filter:brightness(1.15)}
-  #side{display:flex;flex-direction:column;gap:8px;width:110px}
-  #side .btn{flex:1;padding:8px;font-size:14px}
-  @media (orientation:landscape) and (max-height:520px){
+  #mainBtn.pressed{transform:translateY(4px) scale(.985);box-shadow:0 2px 0 #0006;filter:brightness(1.2)}
+  #side{display:flex;gap:10px}
+  .hold{position:relative;overflow:hidden;flex:1;min-height:64px;border-radius:16px;background:#222a35;
+    border:2px solid #3a4656;font-size:18px;font-weight:700}
+  .hold.danger{border-color:var(--stop);color:#ff9a9d}
+  .hold .fill{position:absolute;inset:0;width:0;background:#ffffff30;transition:none}
+  .hold.danger .fill{background:#e5484d55}
+  .hold.holding .fill{width:100%;transition:width .8s linear}
+  .hold .lbl{position:relative;display:flex;flex-direction:column;align-items:center;line-height:1.15}
+  .hold small{font-size:12px;font-weight:500;opacity:.7}
+  .hold:disabled{opacity:.35}
+  @media (orientation:landscape){
     #race{flex-direction:row}
-    #bottom{width:min(300px,38vw);display:flex;flex-direction:column;background:#0b0f14}
-    #chips{flex-wrap:wrap;overflow-y:auto;flex:1;align-content:flex-start;border-top:0;border-left:1px solid #222}
-    #controls{flex-direction:column;padding-bottom:calc(10px + var(--safe-b))}
-    #mainBtn{min-height:110px}
-    #side{width:auto;flex-direction:row}
+    #race.left{flex-direction:row-reverse}
+    #stage{min-height:0}
+    #bottom{width:min(420px,42vw);border-top:0;border-left:1px solid #222;
+      padding:calc(10px + var(--safe-t)) calc(10px + env(safe-area-inset-right,0px)) calc(10px + var(--safe-b)) 10px}
+    #race.left #bottom{border-left:0;border-right:1px solid #222;
+      padding-left:calc(10px + env(safe-area-inset-left,0px));padding-right:10px}
+    #chips{flex-wrap:wrap;overflow-y:auto;overflow-x:hidden;flex:0 1 auto;max-height:34vh;align-content:flex-start}
+    #mainBtn{flex:1;height:auto;min-height:150px}
   }
 
   /* ---- Modal ---- */
@@ -126,6 +146,12 @@
       </select>
       <label class="check"><input type="checkbox" id="fBurn" checked> Incruster le chrono et les arrivées dans la vidéo</label>
       <label class="check"><input type="checkbox" id="fAudio"> Enregistrer le son (micro)</label>
+      <label class="check"><input type="checkbox" id="fBeep" checked> Bip + vibration à chaque arrivée</label>
+      <label for="fHand">Téléphone tenu à l'horizontale : boutons à</label>
+      <select id="fHand">
+        <option value="right">droite (main droite)</option>
+        <option value="left">gauche (main gauche)</option>
+      </select>
     </div>
 
     <div id="setupErr" class="err hidden"></div>
@@ -152,12 +178,10 @@
   </div>
   <div id="bottom">
     <div id="chips"></div>
-    <div id="controls">
-      <button id="mainBtn" class="start">DÉPART</button>
-      <div id="side">
-        <button class="btn" id="undoBtn" disabled>Annuler<br>dernière</button>
-        <button class="btn danger" id="endBtn">Terminer</button>
-      </div>
+    <button id="mainBtn" class="start"><span class="lbl" id="mainLbl">DÉPART</span><span class="sub" id="mainSub">chrono + vidéo</span></button>
+    <div id="side">
+      <button class="hold" id="undoBtn" disabled><span class="fill"></span><span class="lbl">↶ Annuler dernière<small>maintenir appuyé</small></span></button>
+      <button class="hold danger" id="endBtn"><span class="fill"></span><span class="lbl">■ Terminer<small>maintenir appuyé</small></span></button>
     </div>
   </div>
 </section>
@@ -261,6 +285,8 @@
   if (saved.cam) $("fCam").value = saved.cam;
   if (saved.burn === false) $("fBurn").checked = false;
   if (saved.audio) $("fAudio").checked = true;
+  if (saved.beep === false) $("fBeep").checked = false;
+  if (saved.hand) $("fHand").value = saved.hand;
 
   function parseRunners(txt){
     return txt.split(/\r?\n/).map(l => l.trim()).filter(Boolean).map((l, i) => {
@@ -279,7 +305,11 @@
   $("openCam").onclick = async () => {
     const err = $("setupErr"); err.classList.add("hidden");
     store.set("cc_setup", { title:$("fTitle").value, cls:$("fClass").value, runners:$("fRunners").value,
-      cam:$("fCam").value, burn:$("fBurn").checked, audio:$("fAudio").checked });
+      cam:$("fCam").value, burn:$("fBurn").checked, audio:$("fAudio").checked,
+      beep:$("fBeep").checked, hand:$("fHand").value });
+    S.beep = $("fBeep").checked;
+    $("race").classList.toggle("left", $("fHand").value === "left");
+    unlockAudio();
 
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       err.innerHTML = "La caméra n'est pas accessible. Ouvre cette page depuis une adresse <b>https://</b> dans Safari ou Chrome (pas depuis un aperçu de fichier ni une application de messagerie).";
@@ -314,7 +344,7 @@
     S.chronoStartPerf = 0; S.recStartPerf = 0;
     if (S.videoURL) { URL.revokeObjectURL(S.videoURL); S.videoURL = null; }
     S.videoBlob = null;
-    $("mainBtn").className = "start"; $("mainBtn").textContent = "DÉPART";
+    $("mainBtn").className = "start"; $("mainLbl").textContent = "DÉPART"; $("mainSub").textContent = "chrono + vidéo";
     $("clock").textContent = fmt(0);
     $("recState").textContent = "Prêt";
     renderRaceUI();
@@ -417,9 +447,49 @@
     startRecording();
     S.chronoStartPerf = performance.now();
     S.running = true;
-    $("mainBtn").className = "finish"; $("mainBtn").textContent = "ARRIVÉE";
+    $("mainBtn").className = "finish"; $("mainLbl").textContent = "ARRIVÉE";
     $("recState").innerHTML = '<span id="recDot"></span>Enregistrement';
+    feedback(880, 0.35, [80, 60, 80]);
+    renderRaceUI();
     tick();
+  }
+
+  // ---------- retour sonore / vibration ----------
+  let audioCtx = null;
+  function unlockAudio(){
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === "suspended") audioCtx.resume();
+    } catch(e){}
+  }
+  function feedback(freq, dur, vib){
+    if (!S.beep) return;
+    try { navigator.vibrate && navigator.vibrate(vib); } catch(e){}
+    try {
+      if (!audioCtx) return;
+      const o = audioCtx.createOscillator(), g = audioCtx.createGain(), t0 = audioCtx.currentTime;
+      o.type = "square"; o.frequency.value = freq;
+      g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(0.35, t0 + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+      o.connect(g).connect(audioCtx.destination); o.start(t0); o.stop(t0 + dur + 0.02);
+    } catch(e){}
+  }
+
+  // ---------- boutons « maintenir appuyé » (anti fausse manip) ----------
+  function holdButton(btn, action){
+    let timer = 0, fired = false;
+    const cancel = () => {
+      if (timer && !fired && btn.classList.contains("holding")) toast("Maintiens le bouton appuyé");
+      clearTimeout(timer); timer = 0; btn.classList.remove("holding");
+    };
+    btn.addEventListener("pointerdown", e => {
+      if (btn.disabled) return;
+      e.preventDefault(); unlockAudio(); fired = false;
+      btn.classList.add("holding");
+      timer = setTimeout(() => { fired = true; btn.classList.remove("holding"); action(); }, 800);
+    });
+    ["pointerup", "pointerleave", "pointercancel"].forEach(ev => btn.addEventListener(ev, cancel));
+    btn.addEventListener("contextmenu", e => e.preventDefault());
   }
 
   function addArrival(){
@@ -429,15 +499,23 @@
     S.flashText = "Arrivée " + n + " — " + fmt(t);
     S.flashUntil = performance.now() + 1800;
     const f = $("flash"); f.style.opacity = .35; setTimeout(() => f.style.opacity = 0, 90);
-    try { navigator.vibrate && navigator.vibrate(40); } catch(e){}
+    feedback(1320, 0.12, 50);
     renderRaceUI();
   }
 
+  // Bouton principal : réagit dès le contact du doigt (pas au relâché)
+  let lastPress = 0;
   $("mainBtn").addEventListener("pointerdown", e => {
     e.preventDefault();
     if (S.finished) return;
+    const now = performance.now();
+    if (now - lastPress < 120) return;          // anti-rebond (doigt qui glisse / double contact)
+    lastPress = now;
+    unlockAudio();
+    const b = $("mainBtn"); b.classList.add("pressed"); setTimeout(() => b.classList.remove("pressed"), 110);
     if (!S.running) startRace(); else addArrival();
   });
+  $("mainBtn").addEventListener("contextmenu", e => e.preventDefault());
   // clavier / télécommande Bluetooth : Espace ou Entrée
   document.addEventListener("keydown", e => {
     if ($("race").classList.contains("hidden") || !$("modal").classList.contains("hidden")) return;
@@ -446,25 +524,19 @@
     }
   });
 
-  $("undoBtn").onclick = async () => {
+  holdButton($("undoBtn"), () => {
     if (!S.arrivals.length) return;
-    const a = S.arrivals[S.arrivals.length-1];
-    const ok = await ask("Supprimer l'arrivée n°" + S.arrivals.length + " (" + fmt(a.t) + ") ?", [["Non", false], ["Supprimer", true, "danger"]]);
-    if (ok) { S.arrivals.pop(); renderRaceUI(); }
-  };
+    const n = S.arrivals.length, a = S.arrivals.pop();
+    feedback(330, 0.25, [40, 40, 40]);
+    toast("Arrivée n°" + n + " (" + fmt(a.t) + ") supprimée");
+    renderRaceUI();
+  });
 
-  $("endBtn").onclick = async () => {
-    if (!S.running) {
-      const ok = await ask("Quitter sans lancer la course ?", [["Non", false], ["Quitter", true, "danger"]]);
-      if (ok) { closeCamera(); show("setup"); renderHistory(); }
-      return;
-    }
-    const unassigned = S.runners.length ? S.runners.length - S.arrivals.filter(a => a.runnerId).length : 0;
-    let msg = "Arrêter le chrono et la vidéo ? " + S.arrivals.length + " arrivée(s) enregistrée(s).";
-    if (S.runners.length && S.arrivals.length < S.runners.length) msg += " Attention : " + (S.runners.length - S.arrivals.length) + " participant(s) sans temps.";
-    const ok = await ask(msg, [["Continuer la course", false], ["Terminer", true, "danger"]]);
-    if (ok) finishRace();
-  };
+  holdButton($("endBtn"), () => {
+    if (!S.running) { closeCamera(); show("setup"); renderHistory(); return; }
+    feedback(440, 0.5, 200);
+    finishRace();
+  });
 
   function finishRace(){
     S.running = false; S.finished = true;
@@ -494,12 +566,13 @@
       return "<div><b>" + idx + ".</b> " + fmt(a.t) + (r ? " · " + escapeHtml(r.name) : "") + "</div>";
     });
     $("lastList").innerHTML = last.join("");
+    if (S.running) $("mainSub").textContent = n ? "dernier : n°" + n + " · " + fmt(S.arrivals[n-1].t) : "touche à chaque passage";
 
     const chips = $("chips"); chips.innerHTML = "";
     if (!S.runners.length) { chips.innerHTML = '<span class="note">Aucun nom saisi : les noms pourront être ajoutés à la fin.</span>'; return; }
     const used = new Set(S.arrivals.map(a => a.runnerId).filter(Boolean));
     const pending = S.arrivals.findIndex(a => !a.runnerId);
-    const note = document.createElement("span"); note.className = "note";
+    const note = document.createElement("span"); note.className = "note" + (pending >= 0 ? " ask" : "");
     note.textContent = pending >= 0 ? "Qui est n°" + (pending+1) + " ?" : (S.running ? "Touche un nom après chaque arrivée" : "Noms (facultatif)");
     chips.appendChild(note);
     S.runners.filter(r => !used.has(r.id)).forEach(r => {
