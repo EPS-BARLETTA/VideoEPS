@@ -6,6 +6,11 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0d1117">
+<meta name="apple-mobile-web-app-title" content="Chrono EPS">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
 <title>Chrono Course – Demi-fond</title>
 <style>
   :root{
@@ -127,6 +132,11 @@
   <div class="wrap">
     <h1>Chrono Course</h1>
     <p class="sub">Filmer l'arrivée, chronométrer, classer, archiver.</p>
+    <div id="offlineState" class="hint" style="margin:-4px 0 4px"></div>
+    <div id="installTip" class="card hidden" style="border-color:var(--accent)">
+      <b>Pour l'utiliser sans Wi-Fi au stade</b>
+      <div class="hint" style="color:var(--text)">Ajoute-la à l'écran d'accueil : bouton <b>Partager</b> de Safari, puis <b>« Sur l'écran d'accueil »</b>. Ouvre-la ensuite toujours depuis cette icône.</div>
+    </div>
 
     <div class="card">
       <div class="row">
@@ -756,6 +766,23 @@
     });
   }
   renderHistory();
+
+  // ---------- hors connexion ----------
+  const standalone = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  if (isIOS && !standalone) $("installTip").classList.remove("hidden");
+  function offlineStatus(ready){
+    const net = navigator.onLine ? "" : " · actuellement sans réseau";
+    $("offlineState").textContent = ready ? "✓ Disponible hors connexion" + net
+      : (location.protocol === "https:" ? "Préparation du mode hors connexion…" : "");
+  }
+  window.addEventListener("online", () => offlineStatus(!!navigator.serviceWorker?.controller));
+  window.addEventListener("offline", () => offlineStatus(!!navigator.serviceWorker?.controller));
+  if ("serviceWorker" in navigator && location.protocol === "https:") {
+    offlineStatus(!!navigator.serviceWorker.controller);
+    navigator.serviceWorker.register("sw.js").then(() => navigator.serviceWorker.ready)
+      .then(() => offlineStatus(true)).catch(() => offlineStatus(false));
+  }
 })();
 </script>
 </body>
