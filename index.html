@@ -56,6 +56,44 @@
   /* ---------- écrans de page ---------- */
   .page{min-height:100%;padding:calc(18px + var(--st)) calc(18px + var(--sr)) calc(120px + var(--sb)) calc(18px + var(--sl))}
   .wrap{max-width:640px;margin:0 auto}
+  /* ---------- accueil : la piste ---------- */
+  .hero{position:relative;overflow:hidden;color:#fff;background:var(--tartan);
+    margin:calc(-18px - var(--st)) calc(-18px - var(--sr)) 6px calc(-18px - var(--sl));
+    padding:calc(14px + var(--st)) calc(48px + var(--sr)) 30px calc(46px + var(--sl))}
+  .hero .lanes{position:absolute;inset:0;display:grid;grid-template-rows:repeat(5,1fr);
+    background:radial-gradient(#ffffff0d 1px,transparent 1.4px) 0 0/5px 5px}
+  .hero .lanes i{border-bottom:3px solid #ffffffd0;font:800 18px/1 var(--cond);font-style:normal;color:#ffffffb0;
+    display:flex;align-items:center;padding-left:calc(14px + var(--sl))}
+  .hero .lanes i:first-child{border-top:3px solid #ffffffd0}
+  .hero .finish{position:absolute;top:0;bottom:0;right:calc(14px + var(--sr));width:22px;
+    background:conic-gradient(#fff 25%,var(--ink) 0 50%,#fff 0 75%,var(--ink) 0) 0 0/11px 11px}
+  .hero-in{position:relative;max-width:640px;margin:0 auto}
+  .hero-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  .hero-top .bib{font-size:18px}
+  .hero-top .app{font:700 20px/1 var(--cond);letter-spacing:.3px}
+  .hero .status{color:#fff;margin-left:auto;background:#00000033;padding:4px 10px;border-radius:99px;font-size:13px}
+  .hero .status.ok::before{background:#7EE2A2}
+  .hero-cls{font:800 clamp(64px,19vw,132px)/.86 var(--cond);letter-spacing:-.5px;text-shadow:0 3px 0 #0003;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hero-cls.small{font-size:clamp(40px,11vw,84px)}
+  .hero-sub{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin-top:14px}
+  .hero .plate{background:#fff;color:var(--ink);border-radius:8px;padding:6px 12px 5px;font:800 22px/1 var(--cond);box-shadow:0 3px 0 #0003}
+  .hero .plate i{font-style:normal;display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:8px;background:var(--gc,var(--ink));vertical-align:1px}
+  .hero .evt{font:700 22px/1 var(--cond);color:#fff}
+  @keyframes setoff{from{transform:translateX(-18px);opacity:0}}
+  .hero-cls.go{animation:setoff .3s cubic-bezier(.2,.8,.3,1)}
+  .quick{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .quick button{padding:8px 14px;border-radius:99px;border:1.5px solid var(--rule);background:var(--paper);font-weight:600;font-size:15px}
+  .quick button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+  .linkbtn{display:inline-flex;align-items:center;gap:8px;margin-top:12px;font-weight:700;font-size:15px;color:var(--ink-2);padding:6px 2px}
+  .linkbtn svg{width:20px;height:20px}
+  .fold{margin-top:30px}
+  .fold summary{list-style:none;display:flex;align-items:baseline;gap:10px;cursor:pointer;padding:6px 0 10px}
+  .fold summary::-webkit-details-marker{display:none}
+  .fold summary .t{font:700 24px/1.1 var(--cond)}
+  .fold summary .d{flex:1;font-size:14px;color:var(--ink-2)}
+  .fold summary::after{content:"";width:10px;height:10px;border-right:2.5px solid var(--ink-2);border-bottom:2.5px solid var(--ink-2);transform:rotate(45deg) translateY(-3px);margin-right:6px}
+  .fold[open] summary::after{transform:rotate(-135deg)}
   .brand{display:flex;align-items:center;gap:12px;margin-bottom:22px}
   .brand .bib{font-size:22px}
   .brand h1{font:800 34px/1 var(--cond);margin:0;letter-spacing:.2px}
@@ -267,9 +305,9 @@
   .cls[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
   .cls[aria-pressed="true"] small{color:#fffc}
   .cls.add{border-style:dashed;border-color:var(--ink-3);font-weight:700;color:var(--ink-2);display:flex;align-items:center;justify-content:center}
-  .runs{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+  .runs{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
   .run{position:relative;text-align:left;padding:12px 40px 12px 14px;min-height:96px;border-radius:var(--r-l);background:var(--paper);border:3px solid var(--gc);color:var(--ink)}
-  .run b{display:block;font:800 26px/1 var(--cond);color:var(--gc)}
+  .run b{display:block;font:800 clamp(22px,6vw,28px)/1 var(--cond);color:var(--gc);white-space:nowrap}
   .run .n{display:block;font-weight:700;font-size:15px;margin-top:4px}
   .run .p{display:block;font-size:13px;color:var(--ink-2);margin-top:4px;line-height:1.3;max-height:2.6em;overflow:hidden}
   .run[aria-pressed="true"]{background:var(--gc);color:#fff}
@@ -367,17 +405,17 @@
 
 <!-- ======================= PRÉPARATION ======================= -->
 <section id="setup" class="page">
+  <header class="hero" id="hero">
+    <div class="lanes" aria-hidden="true"><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i></div>
+    <div class="finish" aria-hidden="true"></div>
+    <div class="hero-in">
+      <div class="hero-top"><span class="bib">EPS</span><span class="app">Chrono course</span><span id="offlineState" class="status"></span></div>
+      <div class="hero-cls" id="heroCls">À vos marques</div>
+      <div class="hero-sub"><span class="plate" id="heroRun">Choisis ta classe</span><span class="evt" id="heroEvt"></span></div>
+    </div>
+  </header>
   <div class="wrap">
-    <header class="brand">
-      <span class="bib">EPS</span>
-      <div><h1>Chrono course</h1><p>Filmer l'arrivée, chronométrer, classer.</p></div>
-      <span id="offlineState" class="status"></span>
-    </header>
-
     <div id="installTip" class="tip hidden">Pour l'utiliser au stade sans Wi-Fi, ajoute l'application à l'écran d'accueil : <b>Partager</b>, puis <b>Sur l'écran d'accueil</b>. Ouvre-la ensuite depuis cette icône.</div>
-
-    <h2>La course</h2>
-    <label class="field"><span>Épreuve</span><input id="fTitle" placeholder="2 × 800 m" autocomplete="off"></label>
 
     <h2>Classe</h2>
     <div class="classes" id="classList"></div>
@@ -385,36 +423,42 @@
     <div id="runWrap" class="hidden">
       <h2>Qui court ? <span class="count" id="runnerCount"></span></h2>
       <div class="runs" id="runCards"></div>
-      <button class="btn" id="editCls" style="width:100%;margin-top:10px"><svg><use href="#i-groups"/></svg>Modifier la classe et les groupes</button>
+      <button class="linkbtn" id="editCls"><svg><use href="#i-groups"/></svg>Modifier la liste et les groupes</button>
     </div>
 
-    <h2>Réglages</h2>
-    <div class="panel">
-      <div class="opt"><div><div class="t">Caméra</div></div>
-        <div class="seg" data-for="cam"><button data-v="environment" aria-pressed="true">Arrière</button><button data-v="user" aria-pressed="false">Avant</button></div></div>
-      <div class="opt"><div><div class="t">Boutons à l'horizontale</div><div class="d">Côté de la main qui tape</div></div>
-        <div class="seg" data-for="hand"><button data-v="left" aria-pressed="false">Gauche</button><button data-v="right" aria-pressed="true">Droite</button></div></div>
-      <div class="opt"><div><div class="t">Qualité vidéo</div><div class="d" id="qualityHint"></div></div>
-        <div class="seg" data-for="quality"><button data-v="normal" aria-pressed="false">Normale</button><button data-v="light" aria-pressed="true">Légère</button></div></div>
-      <label class="opt"><div><div class="t">Chrono dans la vidéo</div><div class="d">Temps et numéros incrustés à l'image</div></div>
-        <span class="sw"><input type="checkbox" id="fBurn" checked><i></i></span></label>
-      <label class="opt"><div><div class="t">Bip à chaque arrivée</div><div class="d">Confirme sans regarder l'écran</div></div>
-        <span class="sw"><input type="checkbox" id="fBeep" checked><i></i></span></label>
-      <label class="opt"><div><div class="t">Son de la vidéo</div><div class="d">Enregistre le micro</div></div>
-        <span class="sw"><input type="checkbox" id="fAudio"><i></i></span></label>
-    </div>
+    <h2>Épreuve</h2>
+    <input id="fTitle" placeholder="Nom de l'épreuve" autocomplete="off" aria-label="Épreuve">
+    <div class="quick" id="quickEvt"></div>
+
+    <details class="fold" id="setDet">
+      <summary><span class="t">Réglages</span><span class="d" id="setSum"></span></summary>
+      <div class="panel">
+        <div class="opt"><div><div class="t">Caméra</div></div>
+          <div class="seg" data-for="cam"><button data-v="environment" aria-pressed="true">Arrière</button><button data-v="user" aria-pressed="false">Avant</button></div></div>
+        <div class="opt"><div><div class="t">Boutons à l'horizontale</div><div class="d">Côté de la main qui tape</div></div>
+          <div class="seg" data-for="hand"><button data-v="left" aria-pressed="false">Gauche</button><button data-v="right" aria-pressed="true">Droite</button></div></div>
+        <div class="opt"><div><div class="t">Qualité vidéo</div><div class="d" id="qualityHint"></div></div>
+          <div class="seg" data-for="quality"><button data-v="normal" aria-pressed="false">Normale</button><button data-v="light" aria-pressed="true">Légère</button></div></div>
+        <label class="opt"><div><div class="t">Chrono dans la vidéo</div><div class="d">Temps et numéros incrustés à l'image</div></div>
+          <span class="sw"><input type="checkbox" id="fBurn" checked><i></i></span></label>
+        <label class="opt"><div><div class="t">Bip à chaque arrivée</div><div class="d">Confirme sans regarder l'écran</div></div>
+          <span class="sw"><input type="checkbox" id="fBeep" checked><i></i></span></label>
+        <label class="opt"><div><div class="t">Son de la vidéo</div><div class="d">Enregistre le micro</div></div>
+          <span class="sw"><input type="checkbox" id="fAudio"><i></i></span></label>
+      </div>
+    </details>
 
     <div id="setupErr" class="err hidden"></div>
 
     <div id="histWrap" class="hidden">
-      <h2>Courses précédentes</h2>
+      <h2>Courses précédentes <span class="count" id="histCount"></span></h2>
       <div class="panel list" id="histList"></div>
-      <p class="help">Les temps restent sur cet appareil. Les vidéos, non : enregistre-les à la fin de chaque course.</p>
+      <button class="linkbtn hidden" id="histMore"></button>
     </div>
-    <p class="help" style="margin-top:28px;text-align:center;color:var(--ink-3)">Version 12</p>
+    <p class="help" style="margin-top:28px;text-align:center;color:var(--ink-3)">Version 13</p>
   </div>
   <div class="dock"><div class="wrap">
-    <button class="btn ink wide" id="openCam"><svg><use href="#i-cam"/></svg>Ouvrir la caméra</button>
+    <button class="btn go wide" id="openCam"><svg><use href="#i-cam"/></svg><span id="camLbl">Ouvrir la caméra</span></button>
   </div></div>
 </section>
 
@@ -613,7 +657,7 @@
   document.querySelectorAll(".seg").forEach(seg => {
     const key = seg.dataset.for;
     const sync = () => seg.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === S.opts[key])));
-    seg.querySelectorAll("button").forEach(b => b.onclick = () => { S.opts[key] = b.dataset.v; sync(); saveSetup(); qualityHint(); });
+    seg.querySelectorAll("button").forEach(b => b.onclick = () => { S.opts[key] = b.dataset.v; sync(); saveSetup(); qualityHint(); if (typeof renderSettingsSum === "function") renderSettingsSum(); });
     sync();
   });
   // Débits constatés sur iPhone : ~55 Mo/min en 720p. Le mode léger vise ~3 fois moins.
@@ -667,14 +711,15 @@
     groupsOf(c).forEach(g => card(String(g), "Groupe " + g, c.items.filter(x => x.g === g), gColor(g)));
     card("all", "Toute la classe", c.items, "#14212B");
   }
-  function renderSetup(){
+  function renderSetup(animate){
+    renderHero(animate);
     const list = $("classList"); list.innerHTML = "";
     S.classes.forEach(c => {
       const b = document.createElement("button"); b.className = "cls";
       b.setAttribute("aria-pressed", String(c.id === S.classId));
       const ng = groupsOf(c).length;
       b.innerHTML = "<b>" + esc(c.name || "Sans nom") + "</b><small>" + plural(c.items.length) + (ng ? " · " + ng + " groupe" + (ng > 1 ? "s" : "") : "") + "</small>";
-      b.onclick = () => { if (S.classId === c.id) { openClass(c.id); return; } S.classId = c.id; saveSetup(); renderSetup(); };
+      b.onclick = () => { if (S.classId === c.id) { openClass(c.id); return; } S.classId = c.id; saveSetup(); renderSetup(true); };
       list.appendChild(b);
     });
     const add = document.createElement("button"); add.className = "cls add"; add.textContent = "+ Nouvelle classe";
@@ -686,8 +731,38 @@
     const v = runValue(c), n = itemsRunning(c, v).length;
     $("runnerCount").textContent = plural(n);
     runCards($("runCards"), c, v, val => { S.opts.run = val; saveSetup(); renderSetup(); });
+    renderHero();
   }
-  ["fTitle","fBurn","fAudio","fBeep"].forEach(id => $(id).addEventListener("change", saveSetup));
+  ["fTitle","fBurn","fAudio","fBeep"].forEach(id => $(id).addEventListener("change", () => { saveSetup(); renderSettingsSum(); }));
+  // épreuves courantes en un toucher
+  const EVENTS = ["800 m", "1000 m", "1200 m", "2 × 500 m", "3 × 500 m", "2 × 800 m"];
+  function renderQuick(){
+    const v = $("fTitle").value.trim(), q = $("quickEvt"); q.innerHTML = "";
+    EVENTS.forEach(e => {
+      const b = document.createElement("button"); b.textContent = e; b.setAttribute("aria-pressed", String(v === e));
+      b.onclick = () => { $("fTitle").value = v === e ? "" : e; saveSetup(); renderQuick(); renderHero(); };
+      q.appendChild(b);
+    });
+  }
+  $("fTitle").addEventListener("input", () => { renderQuick(); renderHero(); });
+  function renderHero(animate){
+    const c = curClass(), el = $("heroCls");
+    el.textContent = c ? (c.name || "Sans nom") : "À vos marques";
+    el.classList.toggle("small", !c || (c.name || "").length > 6);
+    if (animate) { el.classList.remove("go"); void el.offsetWidth; el.classList.add("go"); }
+    const plate = $("heroRun");
+    if (c) {
+      const v = runValue(c), n = itemsRunning(c, v).length;
+      plate.style.setProperty("--gc", v === "all" ? "var(--ink)" : gColor(+v));
+      plate.innerHTML = "<i></i>" + (v === "all" ? "Toute la classe" : "Groupe " + v) + " · " + plural(n);
+    } else plate.textContent = S.classes.length ? "Choisis ta classe" : "Crée ta première classe";
+    $("heroEvt").textContent = $("fTitle").value.trim();
+    $("camLbl").textContent = c ? "Ouvrir la caméra · " + (v => v === "all" ? "toute la classe" : "groupe " + v)(runValue(c)) : "Ouvrir la caméra";
+  }
+  function renderSettingsSum(){
+    $("setSum").textContent = [S.opts.cam === "user" ? "caméra avant" : "caméra arrière", "vidéo " + (S.opts.quality === "light" ? "légère" : "normale"),
+      $("fBeep").checked ? "bip" : "sans bip"].join(", ");
+  }
 
   // ---------- import CSV ----------
   function decodeFile(buf){
@@ -939,7 +1014,7 @@
   };
   $("grpBack").onclick = () => history.back();
   $("editCls").onclick = () => openClass(S.classId);
-  renderSetup();
+  renderSetup(); renderQuick(); renderSettingsSum();
 
   function pickMime(){
     const list = ["video/mp4;codecs=avc1", "video/mp4", "video/webm;codecs=vp9", "video/webm;codecs=vp8", "video/webm"];
@@ -1701,7 +1776,12 @@
     const hist = store.get("cc_history", []);
     $("histWrap").classList.toggle("hidden", !hist.length);
     const list = $("histList"); list.innerHTML = "";
-    hist.forEach(h => {
+    $("histCount").textContent = hist.length > 3 ? hist.length : "";
+    const more = $("histMore");
+    more.classList.toggle("hidden", hist.length <= 3);
+    more.textContent = S.histAll ? "Afficher seulement les dernières" : "Voir les " + hist.length + " courses";
+    more.onclick = () => { S.histAll = !S.histAll; renderHistory(); };
+    (S.histAll ? hist : hist.slice(0, 3)).forEach(h => {
       const d = new Date(h.meta.date);
       const row = document.createElement("div"); row.className = "row";
       row.innerHTML = '<div class="main"><b>' + esc(h.meta.title || "Course") + (h.meta.cls ? ", " + esc(h.meta.cls) : "") + (h.meta.group ? ", " + esc(h.meta.group) : "") + "</b><small>" +
