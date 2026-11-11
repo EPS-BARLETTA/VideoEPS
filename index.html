@@ -145,6 +145,21 @@
   #lastList .tag span:last-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   #panel{grid-area:panel;display:flex;flex-direction:column;gap:10px;background:var(--paper);border-top:1.5px solid var(--rule);
     padding:10px calc(10px + var(--sr)) calc(10px + var(--sb)) calc(10px + var(--sl))}
+  #chipRow{display:flex;gap:8px;align-items:stretch;flex:none;min-width:0}
+  #chipRow #chips{flex:1;min-width:0}
+  #tieBtn{flex:none;width:76px;border-radius:var(--r-m);background:#FFF7D6;border:2px solid #EAD58A;font-size:13px;font-weight:700;color:var(--ink);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.05;padding:4px}
+  #tieBtn b{font:800 24px/1 var(--cond)}
+  #tieBtn:disabled{opacity:.35}
+  #tieBtn:active{background:var(--signal)}
+  #prog{position:absolute;right:12px;top:12px;pointer-events:none;background:#fffffff0;border-radius:12px;padding:4px 12px;box-shadow:0 2px 10px #0005;
+    display:flex;align-items:baseline;gap:4px;font-family:var(--cond);color:var(--ink)}
+  #prog b{font-size:clamp(30px,7vw,48px);font-weight:800;line-height:1}
+  #prog span{font-size:clamp(18px,4vw,26px);font-weight:700;color:var(--ink-2)}
+  #prog.done{background:var(--infield);color:#fff} #prog.done span{color:#fffc}
+  #prog.over{background:var(--tartan);color:#fff} #prog.over span{color:#fffc}
+  #doneBanner{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:var(--infield);color:#fff;font:800 clamp(26px,6vw,44px)/1.1 var(--cond);
+    padding:16px 26px;border-radius:var(--r-l);box-shadow:0 8px 30px #0008;text-align:center;pointer-events:none}
   #chips{display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y;
     min-height:52px;align-items:center;flex:none;scrollbar-width:none}
   #chips::-webkit-scrollbar{display:none}
@@ -244,8 +259,24 @@
   .gblock .gh{display:flex;justify-content:space-between;font:700 19px/1.2 var(--cond);margin:0 2px 6px}
   .gblock .gh small{font:600 14px var(--text);color:var(--ink-2)}
   .gblock textarea{min-height:130px}
-  #runRow{margin:4px 0 6px}
-  #runSeg{flex-wrap:wrap;align-self:flex-start;margin-top:8px}
+  .classes{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;padding:2px 2px 6px;margin:0 -2px}
+  .classes::-webkit-scrollbar{display:none}
+  .cls{flex:none;min-width:128px;min-height:74px;padding:10px 14px;border-radius:var(--r-m);background:var(--paper);border:2px solid var(--rule);text-align:left}
+  .cls b{display:block;font:800 26px/1 var(--cond)}
+  .cls small{display:block;font-size:13px;color:var(--ink-2);margin-top:4px}
+  .cls[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+  .cls[aria-pressed="true"] small{color:#fffc}
+  .cls.add{border-style:dashed;border-color:var(--ink-3);font-weight:700;color:var(--ink-2);display:flex;align-items:center;justify-content:center}
+  .runs{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+  .run{position:relative;text-align:left;padding:12px 40px 12px 14px;min-height:96px;border-radius:var(--r-l);background:var(--paper);border:3px solid var(--gc);color:var(--ink)}
+  .run b{display:block;font:800 26px/1 var(--cond);color:var(--gc)}
+  .run .n{display:block;font-weight:700;font-size:15px;margin-top:4px}
+  .run .p{display:block;font-size:13px;color:var(--ink-2);margin-top:4px;line-height:1.3;max-height:2.6em;overflow:hidden}
+  .run[aria-pressed="true"]{background:var(--gc);color:#fff}
+  .run[aria-pressed="true"] b,.run[aria-pressed="true"] .p{color:#fff}
+  .run[aria-pressed="true"]::after{content:"✓";position:absolute;top:8px;right:10px;width:28px;height:28px;border-radius:50%;background:#fff;color:var(--gc);
+    font-weight:800;display:flex;align-items:center;justify-content:center}
+  .run.all{grid-column:1/-1;min-height:64px}
   .tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
   .tile{min-height:56px;padding:8px 10px 8px 38px;position:relative;text-align:left;background:var(--paper);border:2px solid var(--rule);
     border-radius:var(--r-m);font-weight:600;font-size:16px;line-height:1.2}
@@ -263,6 +294,7 @@
   .gcard .names button::after{content:" ×";color:var(--ink-3)}
   #grpBar{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
   #grpBar .btn{flex:none;color:#fff;background:var(--gc);border-color:var(--gc);min-width:120px}
+  #grpBar .btn.del{background:var(--paper);color:var(--tartan);border-color:var(--tartan);min-width:0}
   #grpBar .btn.new{background:var(--paper);color:var(--ink);border:2px dashed var(--ink-3)}
   #grpBar .btn:disabled{opacity:.4}
   #grpBar .hint{flex:1;display:flex;align-items:center;justify-content:center;min-height:58px;color:var(--ink-2);font-weight:600;
@@ -286,6 +318,8 @@
     border:2px solid var(--ink);border-radius:10px;padding:11px 10px;min-height:50px}
   .slot select.empty{border-color:var(--signal);background:#FFF7D6;color:var(--ink-2)}
   .slot .x{flex:none;width:40px;height:40px;border-radius:10px;font-size:22px;color:var(--tartan)}
+  .tieAdd{margin-top:8px;width:100%;min-height:46px;border-radius:10px;border:2px dashed var(--ink-3);font-size:15px;font-weight:700;color:var(--ink)}
+  .tieAdd:active{background:var(--chalk)}
   .addTie{margin-top:8px;font-size:15px;font-weight:700;color:var(--ink-2);text-decoration:underline;text-underline-offset:3px;padding:4px 0}
   .dnfrow{display:flex;align-items:center;gap:12px;padding:10px 14px;border-top:1.5px solid var(--rule);color:var(--ink-2)}
   .dnfrow .bib{font-size:22px}
@@ -343,24 +377,16 @@
     <div id="installTip" class="tip hidden">Pour l'utiliser au stade sans Wi-Fi, ajoute l'application à l'écran d'accueil : <b>Partager</b>, puis <b>Sur l'écran d'accueil</b>. Ouvre-la ensuite depuis cette icône.</div>
 
     <h2>La course</h2>
-    <div class="grid2">
-      <label class="field"><span>Épreuve</span><input id="fTitle" placeholder="2 × 800 m" autocomplete="off"></label>
-      <label class="field"><span>Classe</span><input id="fClass" placeholder="5C1" autocomplete="off"></label>
-    </div>
+    <label class="field"><span>Épreuve</span><input id="fTitle" placeholder="2 × 800 m" autocomplete="off"></label>
 
-    <h2>Participants <span class="count" id="runnerCount"></span></h2>
-    <div class="tools">
-      <button class="btn" id="csvBtn"><svg><use href="#i-up"/></svg>Importer CSV</button>
-      <input type="file" id="fCsv" accept=".csv,.txt,text/csv,text/plain" class="hidden">
-      <button class="btn ink" id="grpBtn"><svg><use href="#i-groups"/></svg>Former les groupes</button>
+    <h2>Classe</h2>
+    <div class="classes" id="classList"></div>
+
+    <div id="runWrap" class="hidden">
+      <h2>Qui court ? <span class="count" id="runnerCount"></span></h2>
+      <div class="runs" id="runCards"></div>
+      <button class="btn" id="editCls" style="width:100%;margin-top:10px"><svg><use href="#i-groups"/></svg>Modifier la classe et les groupes</button>
     </div>
-    <div id="poolNote" class="tip hidden"></div>
-    <div id="gBlocks"></div>
-    <div id="runRow" class="hidden">
-      <div class="panel"><div class="opt" style="flex-direction:column;align-items:stretch"><div><div class="t">Qui court ?</div><div class="d">Les noms du menu à la fin</div></div>
-        <div class="seg" id="runSeg"></div></div></div>
-    </div>
-    <p class="help">Un élève par ligne. Un numéro en début de ligne sert de dossard. Le CSV peut avoir des colonnes Nom, Prénom, Groupe, Dossard ; sans colonne Groupe, tu formes les groupes en cochant les élèves. Tu peux aussi laisser vide et nommer après la course.</p>
 
     <h2>Réglages</h2>
     <div class="panel">
@@ -385,28 +411,37 @@
       <div class="panel list" id="histList"></div>
       <p class="help">Les temps restent sur cet appareil. Les vidéos, non : enregistre-les à la fin de chaque course.</p>
     </div>
-    <p class="help" style="margin-top:28px;text-align:center;color:var(--ink-3)">Version 11</p>
+    <p class="help" style="margin-top:28px;text-align:center;color:var(--ink-3)">Version 12</p>
   </div>
   <div class="dock"><div class="wrap">
     <button class="btn ink wide" id="openCam"><svg><use href="#i-cam"/></svg>Ouvrir la caméra</button>
   </div></div>
 </section>
 
-<!-- ======================= FORMER LES GROUPES ======================= -->
+<!-- ======================= CLASSE : liste et groupes ======================= -->
 <section id="grp" class="page hidden">
   <div class="wrap">
     <div class="topbar"><button class="iconbtn" id="grpBack" aria-label="Retour"><svg><use href="#i-back"/></svg></button></div>
-    <header class="reshead"><h1>Former les groupes</h1>
-      <div class="meta"><span>Coche des élèves, puis touche le groupe en bas.</span></div></header>
-    <h2>À placer <span class="count" id="poolCount"></span>
-      <button class="addTie" id="grpAll" style="margin:0 0 0 auto">Tout cocher</button></h2>
-    <div class="tiles" id="poolTiles"></div>
-    <div id="grpDone" class="help hidden" style="font-size:16px;font-weight:600;color:var(--infield)">Tous les élèves sont placés.</div>
-    <div id="grpList"></div>
-    <div style="display:flex;gap:10px;margin-top:22px">
-      <button class="btn" id="grpReset" style="flex:1"><svg><use href="#i-redo"/></svg>Tout recommencer</button>
-      <button class="btn go" id="grpOk" style="flex:1">Terminé</button>
+    <label class="field"><span>Nom de la classe</span><input id="cName" placeholder="5C1" autocomplete="off" style="font:800 30px/1.1 var(--cond)"></label>
+    <div class="tools">
+      <button class="btn" id="csvBtn"><svg><use href="#i-up"/></svg>Importer CSV</button>
+      <input type="file" id="fCsv" accept=".csv,.txt,text/csv,text/plain" class="hidden">
+      <button class="btn" id="addNames"><svg><use href="#i-groups"/></svg>Ajouter des noms</button>
     </div>
+    <div id="clsEmpty" class="tip hidden">Importe la liste en CSV (colonnes Nom, Prénom, et si tu veux Groupe, Dossard, Classe) ou ajoute les noms à la main.</div>
+    <div id="poolWrap">
+      <h2>À placer dans un groupe <span class="count" id="poolCount"></span>
+        <button class="addTie" id="grpAll" style="margin:0 0 0 auto">Tout cocher</button></h2>
+      <div class="tiles" id="poolTiles"></div>
+      <p class="help">Coche des élèves, puis touche le groupe en bas. Sans groupe, toute la classe court ensemble.</p>
+    </div>
+    <div id="grpDone" class="help hidden" style="font-size:16px;font-weight:600;color:var(--infield);margin-top:18px">Tous les élèves sont dans un groupe.</div>
+    <div id="grpList"></div>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:22px">
+      <button class="btn" id="grpReset" style="flex:1"><svg><use href="#i-redo"/></svg>Défaire les groupes</button>
+      <button class="btn" id="clsDel" style="flex:1;color:var(--tartan)"><svg><use href="#i-trash"/></svg>Supprimer la classe</button>
+    </div>
+    <button class="btn go" id="grpOk" style="width:100%;margin-top:10px">Terminé</button>
   </div>
   <div class="dock"><div class="wrap"><div id="grpBar"></div></div></div>
 </section>
@@ -426,9 +461,11 @@
     <div id="flash"></div>
     <div id="vidClock"><div class="clock" id="clock2"></div></div>
     <div id="lastList"></div>
+    <div id="prog" class="hidden"><b id="progN">0</b><span id="progT">/ 0</span></div>
+    <div id="doneBanner" class="hidden">✓ Tout le groupe est passé</div>
   </div>
   <div id="panel">
-    <div id="chips"></div>
+    <div id="chipRow"><button id="tieBtn" disabled><b>+1</b>ensemble</button><div id="chips"></div></div>
     <button id="mainBtn" class="start">
       <span class="txt"><span class="lbl" id="mainLbl">Départ</span><span class="msub" id="mainSub">Lance le chrono et la vidéo</span></span>
       <span class="bib hidden" id="lastBib"><span class="no">n°</span><span id="lastNum">1</span></span>
@@ -453,13 +490,13 @@
     <h2>Classement <span class="count" id="resLeft"></span></h2>
     <button class="btn ink" id="pfOpen" style="width:100%;margin-bottom:12px"><svg><use href="#i-cam"/></svg>Valider les arrivées avec les photos</button>
     <div class="panel" id="resList"></div>
-    <p class="help">Choisis l'élève dans le menu de chaque arrivée : il disparaît des autres menus. Touche une photo pour l'agrandir, « revoir » pour la vidéo. Plusieurs élèves arrivés ensemble : « + Ajouter un élève ».</p>
+    <p class="help">Choisis l'élève dans le menu de chaque arrivée : il disparaît des autres menus. Touche une photo pour l'agrandir, « revoir » pour la vidéo. Plusieurs élèves arrivés ensemble : « + 2e élève sur cette photo ».</p>
 
     <div class="more">
       <button class="btn" id="dlPhotos" style="grid-column:1/-1"><svg><use href="#i-down"/></svg>Enregistrer les photos (avec les noms)</button>
       <button class="btn" id="shareBtn"><svg><use href="#i-share"/></svg>Partager</button>
       <button class="btn" id="copyBtn"><svg><use href="#i-copy"/></svg>Copier le texte</button>
-      <button class="btn" id="dlCsv"><svg><use href="#i-down"/></svg>Fichier Excel (CSV)</button>
+      <button class="btn" id="dlCsv"><svg><use href="#i-down"/></svg>Fiche résultats</button>
       <button class="btn go" id="againBtn"><svg><use href="#i-redo"/></svg>Nouvelle course</button>
     </div>
   </div>
@@ -474,7 +511,7 @@
   <div class="pside">
     <div class="phead"><span class="bib" id="pfNum">1</span><div><b id="pfTime"></b><div class="help" id="pfGap" style="margin:2px 0 0"></div></div></div>
     <div class="slots" id="pfSlots"></div>
-    <button class="addTie" id="pfTie">+ Ajouter un élève (arrivés ensemble)</button>
+    <button class="tieAdd" id="pfTie">+ Ajouter un élève (ex aequo)</button>
     <div class="pnav">
       <button class="btn" id="pfPrev"><svg><use href="#i-prev"/></svg>Précédent</button>
       <button class="btn go" id="pfNext">Suivant<svg><use href="#i-next"/></svg></button>
@@ -553,11 +590,20 @@
   // ---------- préparation ----------
   const saved = store.get("cc_setup", {});
   if (saved.title) $("fTitle").value = saved.title;
-  if (saved.cls) $("fClass").value = saved.cls;
-  S.groupsTxt = Array.isArray(saved.groupsTxt) ? (saved.groups ? saved.groupsTxt.slice(0, +saved.groups || 1) : saved.groupsTxt.slice()) : [saved.runners || ""];
-  if (!S.groupsTxt.length) S.groupsTxt = [""];
-  S.poolTxt = saved.poolTxt || "";
-  S.opts.run = saved.run || "1";
+  // classes enregistrées : { id, name, items:[{ line, g }] }, g = 0 si l'élève n'est dans aucun groupe
+  S.classes = store.get("cc_classes", null);
+  if (!S.classes) {
+    // reprise des listes des versions précédentes
+    S.classes = [];
+    const old = Array.isArray(saved.groupsTxt) ? (saved.groups ? saved.groupsTxt.slice(0, +saved.groups || 1) : saved.groupsTxt) : [saved.runners || ""];
+    const items = [], lines = t => (t || "").split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+    old.forEach((t, gi) => lines(t).forEach(l => items.push({ line:l, g:old.length > 1 ? gi + 1 : 0 })));
+    lines(saved.poolTxt).forEach(l => items.push({ line:l, g:0 }));
+    if (items.length) S.classes.push({ id:"c" + Date.now(), name:saved.cls || "Ma classe", items });
+    store.set("cc_classes", S.classes);
+  }
+  S.classId = saved.classId || (S.classes[0] && S.classes[0].id) || "";
+  S.opts.run = saved.run || "all";
   if (saved.burn === false) $("fBurn").checked = false;
   if (saved.audio) $("fAudio").checked = true;
   if (saved.beep === false) $("fBeep").checked = false;
@@ -567,7 +613,7 @@
   document.querySelectorAll(".seg").forEach(seg => {
     const key = seg.dataset.for;
     const sync = () => seg.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === S.opts[key])));
-    seg.querySelectorAll("button").forEach(b => b.onclick = () => { S.opts[key] = b.dataset.v; sync(); saveSetup(); qualityHint(); if (key === "groups") renderGroups(); });
+    seg.querySelectorAll("button").forEach(b => b.onclick = () => { S.opts[key] = b.dataset.v; sync(); saveSetup(); qualityHint(); });
     sync();
   });
   // Débits constatés sur iPhone : ~55 Mo/min en 720p. Le mode léger vise ~3 fois moins.
@@ -576,72 +622,72 @@
   function qualityHint(){ $("qualityHint").textContent = QUALITY[S.opts.quality].label; }
   qualityHint();
   function saveSetup(){
-    store.set("cc_setup", { title:$("fTitle").value, cls:$("fClass").value, groupsTxt:S.groupsTxt, poolTxt:S.poolTxt, run:S.opts.run,
+    store.set("cc_setup", { title:$("fTitle").value, classId:S.classId, run:S.opts.run,
       cam:S.opts.cam, hand:S.opts.hand, quality:S.opts.quality, burn:$("fBurn").checked, audio:$("fAudio").checked, beep:$("fBeep").checked });
   }
-  function parseRunners(txt, g){
-    g = g || 1;
-    return (txt || "").split(/\r?\n/).map(l => l.trim()).filter(Boolean).map((l, i) => {
-      const m = l.match(/^(\d{1,4})[\s.,;:\-–]+(.+)$/);
-      const id = "g" + g + "r" + i;
-      return m ? { id, bib:m[1], name:m[2].trim(), group:g } : { id, bib:"", name:l, group:g };
-    });
-  }
-  const nGroups = () => Math.max(1, S.groupsTxt.length);
+  const saveClasses = () => store.set("cc_classes", S.classes);
   const GCOL = ["#2C7A4B","#1F5FA8","#B83226","#8A4FB0","#C77A0A","#0F8A8A","#A63A73","#55626E"];
   const gColor = g => GCOL[(g - 1) % GCOL.length];
   const plural = n => n + (n > 1 ? " élèves" : " élève");
-  // élèves de la course : groupe choisi, ou tous les groupes
+  const itemName = l => { const m = l.match(/^(\d{1,4})[\s.,;:\-–]+(.+)$/); return m ? { bib:m[1], name:m[2].trim() } : { bib:"", name:l }; };
+  const curClass = () => S.classes.find(c => c.id === S.classId) || null;
+  const groupsOf = c => c ? [...new Set(c.items.map(x => x.g).filter(Boolean))].sort((a, b) => a - b) : [];
+  // valeur « Qui court » valide pour la classe : numéro de groupe, ou "all"
+  function runValue(c){
+    const gs = groupsOf(c);
+    if (!gs.length || S.opts.run === "all") return "all";
+    return gs.includes(+S.opts.run) ? String(+S.opts.run) : String(gs[0]);
+  }
+  function itemsRunning(c, run){
+    if (!c) return [];
+    run = run || runValue(c);
+    return c.items.filter(x => run === "all" || x.g === +run);
+  }
+  // élèves de la course : groupe choisi, ou toute la classe
   function runningRunners(){
-    const N = nGroups();
-    if (N === 1) return parseRunners(S.groupsTxt[0], 1);
-    if (S.opts.run === "all") { let all = []; for (let g = 1; g <= N; g++) all = all.concat(parseRunners(S.groupsTxt[g-1], g)); return all; }
-    const g = Math.min(+S.opts.run || 1, N);
-    return parseRunners(S.groupsTxt[g-1], g);
+    const c = curClass(); if (!c) return [];
+    return itemsRunning(c).map(x => { const n = itemName(x.line); return { id:"s" + c.items.indexOf(x), bib:n.bib, name:n.name, group:x.g || "" }; });
   }
   function runLabel(){
-    const N = nGroups();
-    if (N === 1) return "";
-    return S.opts.run === "all" ? "Tous les groupes" : "Groupe " + Math.min(+S.opts.run || 1, N);
+    const c = curClass(); if (!c || !groupsOf(c).length) return "";
+    const v = runValue(c); return v === "all" ? "Toute la classe" : "Groupe " + v;
   }
-  function updateCount(){
-    let total = 0;
-    for (let g = 1; g <= nGroups(); g++) {
-      const n = parseRunners(S.groupsTxt[g-1], g).length; total += n;
-      const c = $("gCount" + g); if (c) c.textContent = n ? plural(n) : "";
-    }
-    $("runnerCount").textContent = total ? plural(total) : "";
+  // cartes « Qui court ? » (accueil et nouvelle course)
+  function runCards(box, c, current, pick){
+    box.innerHTML = "";
+    const card = (val, title, items, col) => {
+      const b = document.createElement("button"); b.className = "run" + (val === "all" ? " all" : "");
+      b.style.setProperty("--gc", col);
+      b.setAttribute("aria-pressed", String(current === val));
+      const names = items.map(x => itemName(x.line).name.split(" ").slice(-1)[0]).join(", ");
+      b.innerHTML = "<b>" + esc(title) + '</b><span class="n">' + plural(items.length) + '</span>' + (val !== "all" ? '<span class="p">' + esc(names) + "</span>" : "");
+      b.onclick = () => pick(val);
+      box.appendChild(b);
+    };
+    groupsOf(c).forEach(g => card(String(g), "Groupe " + g, c.items.filter(x => x.g === g), gColor(g)));
+    card("all", "Toute la classe", c.items, "#14212B");
   }
-  function renderGroups(){
-    const N = nGroups(), box = $("gBlocks"); box.innerHTML = "";
-    for (let g = 1; g <= N; g++) {
-      const d = document.createElement("div"); d.className = "gblock";
-      d.innerHTML = (N > 1 ? '<div class="gh" style="color:' + gColor(g) + '">Groupe ' + g + '<small id="gCount' + g + '"></small></div>' : "") +
-        '<textarea placeholder="Dupont Léa&#10;Martin Noah&#10;12 Schmit Emma" aria-label="Groupe ' + g + ', un élève par ligne"></textarea>';
-      const ta = d.querySelector("textarea"); ta.value = S.groupsTxt[g-1] || "";
-      ta.addEventListener("input", () => { S.groupsTxt[g-1] = ta.value; updateCount(); saveSetup(); });
-      box.appendChild(d);
-    }
-    $("runRow").classList.toggle("hidden", N === 1);
-    const np = parseRunners(S.poolTxt).length;
-    $("poolNote").classList.toggle("hidden", !np);
-    $("poolNote").innerHTML = np ? "<b>" + plural(np) + " sans groupe</b> : touche « Former les groupes » pour les placer." : "";
-    if (N > 1) {
-      if (S.opts.run !== "all" && (+S.opts.run || 1) > N) S.opts.run = "1";
-      const seg = $("runSeg"); seg.innerHTML = "";
-      const vals = []; for (let g = 1; g <= N; g++) vals.push([String(g), "G" + g]); vals.push(["all", "Tous"]);
-      vals.forEach(([v, l]) => {
-        const b = document.createElement("button"); b.dataset.v = v; b.textContent = l;
-        b.setAttribute("aria-pressed", String(S.opts.run === v));
-        b.onclick = () => { S.opts.run = v; saveSetup(); seg.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.v === v))); };
-        seg.appendChild(b);
-      });
-    }
-    updateCount();
+  function renderSetup(){
+    const list = $("classList"); list.innerHTML = "";
+    S.classes.forEach(c => {
+      const b = document.createElement("button"); b.className = "cls";
+      b.setAttribute("aria-pressed", String(c.id === S.classId));
+      const ng = groupsOf(c).length;
+      b.innerHTML = "<b>" + esc(c.name || "Sans nom") + "</b><small>" + plural(c.items.length) + (ng ? " · " + ng + " groupe" + (ng > 1 ? "s" : "") : "") + "</small>";
+      b.onclick = () => { if (S.classId === c.id) { openClass(c.id); return; } S.classId = c.id; saveSetup(); renderSetup(); };
+      list.appendChild(b);
+    });
+    const add = document.createElement("button"); add.className = "cls add"; add.textContent = "+ Nouvelle classe";
+    add.onclick = () => openClass(null);
+    list.appendChild(add);
+    const c = curClass();
+    $("runWrap").classList.toggle("hidden", !c);
+    if (!c) return;
+    const v = runValue(c), n = itemsRunning(c, v).length;
+    $("runnerCount").textContent = plural(n);
+    runCards($("runCards"), c, v, val => { S.opts.run = val; saveSetup(); renderSetup(); });
   }
-
-  ["fTitle","fClass","fBurn","fAudio","fBeep"].forEach(id => $(id).addEventListener("change", saveSetup));
-  renderGroups();
+  ["fTitle","fBurn","fAudio","fBeep"].forEach(id => $(id).addEventListener("change", saveSetup));
 
   // ---------- import CSV ----------
   function decodeFile(buf){
@@ -709,6 +755,12 @@
     return list;
   }
   const lineOf = s => (s.bib ? s.bib + " " : "") + s.name;
+  // convertit la liste du CSV en éléments de classe (groupes du fichier gardés s'il y en a)
+  function itemsFromList(list, offset){
+    const groups = [...new Set(list.map(s => s.group).filter(Boolean))];
+    const useG = groups.length >= 1 && groups.length <= 12 && list.every(s => s.group);
+    return list.map(s => ({ line:lineOf(s), g:useG ? offset + groups.indexOf(s.group) + 1 : 0 }));
+  }
   $("csvBtn").onclick = () => $("fCsv").click();
   $("fCsv").onchange = async e => {
     const f = e.target.files && e.target.files[0]; e.target.value = "";
@@ -717,111 +769,177 @@
     try { list = studentsFromCSV(parseCSV(decodeFile(await f.arrayBuffer()))); }
     catch(err) { toast("Fichier illisible"); return; }
     if (!list.length) { toast("Aucun élève trouvé dans le fichier"); return; }
+    const c = G.cls;
     const classes = [...new Set(list.map(s => s.cls).filter(Boolean))];
-    if (classes.length === 1 && !$("fClass").value.trim()) $("fClass").value = classes[0];
-    const groups = [...new Set(list.map(s => s.group).filter(Boolean))];
-    if (groups.length >= 1 && groups.length <= 12 && list.every(s => s.group)) {
-      // le fichier dit déjà qui est dans quel groupe
-      S.groupsTxt = groups.map(gv => list.filter(s => s.group === gv).map(lineOf).join("\n"));
-      S.poolTxt = ""; S.opts.run = "1";
-      renderGroups(); saveSetup();
-      toast(plural(list.length) + " importés en " + groups.length + (groups.length > 1 ? " groupes" : " groupe"));
-      return;
+    // plusieurs classes dans le fichier : une classe par valeur
+    if (classes.length > 1 && !c.items.length) {
+      const ok = await ask("Créer " + classes.length + " classes ?", classes.join(", ") + " (" + plural(list.length) + ")", "Créer");
+      if (ok) {
+        let first = null;
+        classes.forEach(cn => {
+          const sub = list.filter(s => s.cls === cn);
+          const ex = S.classes.find(x => x.name === cn);
+          const target = ex || { id:"c" + Date.now() + Math.random().toString(36).slice(2, 5), name:cn, items:[] };
+          target.items = itemsFromList(sub, 0);
+          if (!ex) S.classes.push(target);
+          if (!first) first = target;
+        });
+        S.classId = first.id; saveClasses(); saveSetup();
+        G.cls = first; G.isNew = false; G.sel.clear(); renderClass();
+        toast(classes.length + " classes créées");
+        return;
+      }
     }
-    S.groupsTxt = [""]; S.poolTxt = list.map(lineOf).join("\n"); S.opts.run = "1";
-    renderGroups(); saveSetup();
-    toast(plural(list.length) + " importés");
-    openGrouping();
+    if (classes.length === 1 && !c.name) c.name = classes[0];
+    let mode = "replace";
+    if (c.items.length) {
+      mode = await sheet((box, close) => {
+        box.innerHTML = "<h3>" + plural(list.length) + " dans le fichier</h3><p>La classe a déjà " + plural(c.items.length) + ".</p>" +
+          '<div class="acts" style="flex-direction:column"><button class="btn ink" data-v="replace">Remplacer la liste</button>' +
+          '<button class="btn" data-v="add">Ajouter à la liste</button><button class="btn" data-v="">Annuler</button></div>';
+        box.querySelectorAll("[data-v]").forEach(b => b.onclick = () => close(b.dataset.v));
+      });
+      if (!mode) return;
+    }
+    const offset = mode === "add" ? groupsOf(c).reduce((m, g) => Math.max(m, g), 0) : 0;
+    const items = itemsFromList(list, offset);
+    c.items = mode === "add" ? c.items.concat(items) : items;
+    G.sel.clear(); persistClass(); renderClass();
+    const ng = new Set(items.map(x => x.g).filter(Boolean)).size;
+    toast(plural(list.length) + " importés" + (ng ? " en " + ng + " groupe" + (ng > 1 ? "s" : "") : ""));
+  };
+  $("addNames").onclick = async () => {
+    const txt = await sheet((box, close) => {
+      box.innerHTML = "<h3>Ajouter des élèves</h3><p>Un élève par ligne. Un numéro en début de ligne sert de dossard.</p>" +
+        '<textarea id="namesIn" placeholder="Dupont Léa&#10;Martin Noah&#10;12 Schmit Emma"></textarea>' +
+        '<div class="acts" style="margin-top:12px"><button class="btn" data-v="0">Annuler</button><button class="btn ink" data-v="1">Ajouter</button></div>';
+      const ta = box.querySelector("#namesIn"); setTimeout(() => ta.focus(), 50);
+      box.querySelectorAll("[data-v]").forEach(b => b.onclick = () => close(b.dataset.v === "1" ? ta.value : ""));
+    });
+    const lines = (txt || "").split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+    if (!lines.length) return;
+    lines.forEach(l => G.cls.items.push({ line:l, g:0 }));
+    persistClass(); renderClass(); toast(plural(lines.length) + " ajoutés");
   };
 
-  // ---------- former les groupes : cases à cocher ----------
-  const G = { items:[], sel:new Set() };
-  function openGrouping(){
-    G.items = []; G.sel = new Set();
-    S.groupsTxt.forEach((t, gi) => (t || "").split(/\r?\n/).map(l => l.trim()).filter(Boolean).forEach(l => G.items.push({ line:l, g:gi + 1 })));
-    (S.poolTxt || "").split(/\r?\n/).map(l => l.trim()).filter(Boolean).forEach(l => G.items.push({ line:l, g:0 }));
-    if (!G.items.length) { toast("Importe ou écris d'abord la liste des élèves"); return; }
-    // une seule liste sans groupe : tout est à placer
-    if (!G.items.some(x => x.g === 0) && S.groupsTxt.length === 1) G.items.forEach(x => x.g = 0);
-    show("grp"); renderGrouping();
+  // ---------- page classe : liste, cases à cocher, groupes ----------
+  const G = { cls:null, isNew:false, sel:new Set() };
+  function openClass(id){
+    const c = id ? S.classes.find(x => x.id === id) : null;
+    G.cls = c || { id:"c" + Date.now(), name:"", items:[] };
+    G.isNew = !c; G.sel = new Set();
+    $("cName").value = G.cls.name;
+    show("grp"); renderClass();
     history.pushState({grp:1}, "");
+    if (G.isNew) setTimeout(() => $("cName").focus(), 100);
   }
-  const itemName = l => { const m = l.match(/^(\d{1,4})[\s.,;:\-–]+(.+)$/); return m ? { bib:m[1], name:m[2] } : { bib:"", name:l }; };
-  function maxG(){ return G.items.reduce((m, x) => Math.max(m, x.g), 0); }
-  function renderGrouping(){
-    const pool = G.items.map((x, i) => [x, i]).filter(([x]) => x.g === 0);
+  // enregistre la classe ouverte (une nouvelle classe n'est gardée que si elle a un nom ou des élèves)
+  function persistClass(){
+    const c = G.cls; if (!c) return;
+    c.name = $("cName").value.trim() || c.name || "";
+    if (G.isNew) {
+      if (!c.name && !c.items.length) return;
+      S.classes.push(c); G.isNew = false; S.classId = c.id; saveSetup();
+    }
+    saveClasses();
+  }
+  $("cName").addEventListener("input", () => { G.cls.name = $("cName").value.trim(); persistClass(); });
+  function maxG(){ return G.cls.items.reduce((m, x) => Math.max(m, x.g), 0); }
+  function renderClass(){
+    const c = G.cls;
+    if ($("cName").value.trim() !== c.name && document.activeElement !== $("cName")) $("cName").value = c.name;
+    const pool = c.items.map((x, i) => [x, i]).filter(([x]) => x.g === 0);
+    $("clsEmpty").classList.toggle("hidden", !!c.items.length);
+    $("poolWrap").classList.toggle("hidden", !pool.length);
     $("poolCount").textContent = pool.length ? plural(pool.length) : "";
-    $("grpAll").classList.toggle("hidden", !pool.length);
     $("grpAll").textContent = pool.length && pool.every(([, i]) => G.sel.has(i)) ? "Tout décocher" : "Tout cocher";
-    $("grpDone").classList.toggle("hidden", !!pool.length);
+    $("grpDone").classList.toggle("hidden", !c.items.length || !!pool.length);
+    $("grpReset").classList.toggle("hidden", !maxG());
+    $("clsDel").classList.toggle("hidden", G.isNew);
     const tiles = $("poolTiles"); tiles.innerHTML = "";
     pool.forEach(([x, i]) => {
       const t = document.createElement("button"); t.className = "tile";
       const n = itemName(x.line);
       t.innerHTML = esc(n.name) + (n.bib ? "<small>n° " + esc(n.bib) + "</small>" : "");
       t.setAttribute("aria-pressed", String(G.sel.has(i)));
-      t.onclick = () => { G.sel.has(i) ? G.sel.delete(i) : G.sel.add(i); renderGrouping(); };
+      t.onclick = () => { G.sel.has(i) ? G.sel.delete(i) : G.sel.add(i); renderClass(); };
       tiles.appendChild(t);
     });
     const M = maxG(), list = $("grpList"); list.innerHTML = "";
     for (let g = 1; g <= M; g++) {
-      const mem = G.items.map((x, i) => [x, i]).filter(([x]) => x.g === g);
+      const mem = c.items.filter(x => x.g === g);
       if (!mem.length) continue;
-      const c = document.createElement("div"); c.className = "gcard"; c.style.setProperty("--gc", gColor(g));
-      c.innerHTML = "<h3>Groupe " + g + "<small>" + plural(mem.length) + " · touche un nom pour le retirer</small></h3><div class=\"names\"></div>";
-      const names = c.querySelector(".names");
-      mem.forEach(([x]) => {
+      const card = document.createElement("div"); card.className = "gcard"; card.style.setProperty("--gc", gColor(g));
+      card.innerHTML = "<h3>Groupe " + g + "<small>" + plural(mem.length) + " · touche un nom pour le retirer du groupe</small></h3><div class=\"names\"></div>";
+      const names = card.querySelector(".names");
+      mem.forEach(x => {
         const b = document.createElement("button"); b.textContent = itemName(x.line).name;
-        b.onclick = () => { x.g = 0; renderGrouping(); };
+        b.onclick = () => { x.g = 0; G.sel.clear(); persistClass(); renderClass(); };
         names.appendChild(b);
       });
-      list.appendChild(c);
+      list.appendChild(card);
     }
     const bar = $("grpBar"); bar.innerHTML = "";
     const k = G.sel.size;
-    if (!pool.length) { bar.innerHTML = '<span class="hint">Touche « Terminé » pour valider</span>'; return; }
+    bar.closest(".dock").classList.toggle("hidden", !pool.length);
+    if (!pool.length) return;
     if (!k) { bar.innerHTML = '<span class="hint">Coche des élèves, puis choisis leur groupe</span>'; return; }
-    let fresh = 1; while (G.items.some(x => x.g === fresh)) fresh++;
+    let fresh = 1; while (c.items.some(x => x.g === fresh)) fresh++;
     for (let g = 1; g <= Math.max(M, fresh); g++) {
-      const used = G.items.some(x => x.g === g);
+      const used = c.items.some(x => x.g === g);
       if (!used && g !== fresh) continue;
       const b = document.createElement("button"); b.className = "btn" + (used ? "" : " new");
       b.style.setProperty("--gc", gColor(g));
       b.innerHTML = (used ? "" : "+ ") + "Groupe " + g + '<small style="font-weight:500;opacity:.85">(' + k + ")</small>";
-      b.onclick = () => { G.sel.forEach(i => G.items[i].g = g); G.sel.clear(); renderGrouping(); toast(plural(k) + " dans le groupe " + g); };
+      b.onclick = () => { G.sel.forEach(i => c.items[i].g = g); G.sel.clear(); persistClass(); renderClass(); toast(plural(k) + " dans le groupe " + g); };
       bar.appendChild(b);
     }
+    const del = document.createElement("button"); del.className = "btn del"; del.setAttribute("aria-label", "Retirer de la classe");
+    del.innerHTML = '<svg><use href="#i-trash"/></svg>';
+    del.onclick = async () => {
+      if (!(await ask("Retirer " + plural(k) + " de la classe ?", "", "Retirer", true))) return;
+      c.items = c.items.filter((x, i) => !G.sel.has(i)); G.sel.clear(); persistClass(); renderClass();
+    };
+    bar.appendChild(del);
   }
   $("grpAll").onclick = () => {
-    const pool = G.items.map((x, i) => i).filter(i => G.items[i].g === 0);
+    const pool = G.cls.items.map((x, i) => i).filter(i => G.cls.items[i].g === 0);
     if (pool.every(i => G.sel.has(i))) G.sel.clear(); else pool.forEach(i => G.sel.add(i));
-    renderGrouping();
+    renderClass();
   };
   $("grpReset").onclick = async () => {
-    if (await ask("Tout recommencer ?", "Tous les élèves reviennent dans la liste à placer.", "Recommencer", true)) {
-      G.items.forEach(x => x.g = 0); G.sel.clear(); renderGrouping();
+    if (await ask("Défaire les groupes ?", "Tous les élèves reviennent dans la liste à placer. La classe est gardée.", "Défaire", true)) {
+      G.cls.items.forEach(x => x.g = 0); G.sel.clear(); persistClass(); renderClass();
     }
   };
-  function saveGrouping(){
-    const used = [...new Set(G.items.map(x => x.g).filter(Boolean))].sort((a, b) => a - b);
-    if (!used.length) { S.groupsTxt = [G.items.map(x => x.line).join("\n")]; S.poolTxt = ""; }
-    else {
-      S.groupsTxt = used.map(g => G.items.filter(x => x.g === g).map(x => x.line).join("\n"));
-      S.poolTxt = G.items.filter(x => x.g === 0).map(x => x.line).join("\n");
+  $("clsDel").onclick = async () => {
+    if (!(await ask("Supprimer la classe " + (G.cls.name || "") + " ?", "La liste et les groupes seront effacés. L'historique des courses est gardé.", "Supprimer", true))) return;
+    S.classes = S.classes.filter(x => x.id !== G.cls.id); saveClasses();
+    if (S.classId === G.cls.id) S.classId = (S.classes[0] && S.classes[0].id) || "";
+    G.cls = null; saveSetup(); history.back();
+  };
+  // en quittant : groupes renumérotés 1, 2, 3… sans trou
+  function closeClass(){
+    const c = G.cls;
+    if (c) {
+      persistClass();
+      const map = {}; groupsOf(c).forEach((g, i) => map[g] = i + 1);
+      c.items.forEach(x => { if (x.g) x.g = map[x.g]; });
+      if (!G.isNew) { S.classId = c.id; saveClasses(); saveSetup(); }
     }
-    if (S.opts.run !== "all" && (+S.opts.run || 1) > S.groupsTxt.length) S.opts.run = "1";
-    renderGroups(); saveSetup();
+    G.cls = null; show("setup"); renderSetup();
   }
   $("grpOk").onclick = async () => {
-    const left = G.items.filter(x => x.g === 0).length, used = maxG();
-    if (left && used) {
-      const ok = await ask(plural(left) + " sans groupe", "Ils resteront de côté (pas dans les menus) jusqu'à ce que tu les places.", "Valider quand même");
+    const c = G.cls, left = c.items.filter(x => x.g === 0).length;
+    if (left && maxG()) {
+      const ok = await ask(plural(left) + " sans groupe", "Ils ne courront qu'avec « Toute la classe ».", "C'est bon");
       if (!ok) return;
     }
-    saveGrouping(); history.back();
+    history.back();
   };
-  $("grpBack").onclick = () => { saveGrouping(); history.back(); };
-  $("grpBtn").onclick = openGrouping;
+  $("grpBack").onclick = () => history.back();
+  $("editCls").onclick = () => openClass(S.classId);
+  renderSetup();
 
   function pickMime(){
     const list = ["video/mp4;codecs=avc1", "video/mp4", "video/webm;codecs=vp9", "video/webm;codecs=vp8", "video/webm"];
@@ -851,7 +969,8 @@
       err.classList.remove("hidden"); return;
     }
     S.runners = runningRunners();
-    S.meta = { title:$("fTitle").value.trim(), cls:$("fClass").value.trim(), group:runLabel(), date:Date.now() };
+    const cc = curClass();
+    S.meta = { title:$("fTitle").value.trim(), cls:cc ? cc.name : "", group:runLabel(), date:Date.now() };
     S.burn = $("fBurn").checked; S.beep = $("fBeep").checked;
     $("race").classList.toggle("left", S.opts.hand === "left");
     resetRace();
@@ -862,7 +981,8 @@
   };
 
   function resetRace(){
-    S.arrivals = []; S.running = false; S.finished = false; S.chunks = []; S.videoSaved = false;
+    S.arrivals = []; S.running = false; S.finished = false; S.chunks = []; S.videoSaved = false; S.doneShown = false;
+    $("doneBanner").classList.add("hidden");
     freePhotos();
     S.chronoStartPerf = 0; S.recStartPerf = 0;
     if (S.videoURL) { URL.revokeObjectURL(S.videoURL); S.videoURL = null; }
@@ -1152,7 +1272,7 @@
   holdButton($("undoBtn"), () => {
     if (!S.arrivals.length) return;
     const n = S.arrivals.length, a = S.arrivals.pop();
-    if (a.pid) idb.del([a.pid]).catch(() => {});
+    if (a.pid && !S.arrivals.some(x => x.pid === a.pid)) idb.del([a.pid]).catch(() => {});
     feedback(330, 0.25, [40, 40, 40]);
     toast("Arrivée n°" + n + " supprimée (" + fmt(a.t) + ")");
     renderRaceUI();
@@ -1179,25 +1299,50 @@
   }
 
   // ---------- interface de course ----------
+  // plusieurs élèves sur la même arrivée : même temps, même photo, même place
+  $("tieBtn").addEventListener("click", () => {
+    if (!S.running || !S.arrivals.length) return;
+    const last = S.arrivals[S.arrivals.length - 1];
+    S.arrivals.push({ t:last.t, runnerId:null, tie:true, pid:last.pid, photo:last.photo });
+    const grp = arrivalGroups(), g = grp[grp.length - 1];
+    feedback(1100, 0.1, 40);
+    toast("Arrivée n°" + (g[0] + 1) + " : " + g.length + " élèves ensemble");
+    renderRaceUI();
+  });
+  let doneTimer = 0;
   function renderRaceUI(){
-    const n = S.arrivals.length;
+    const n = S.arrivals.length, N = S.runners.length;
     $("undoBtn").disabled = !n;
-    $("countInfo").textContent = S.runners.length ? n + " / " + S.runners.length + " arrivés" : n + (n > 1 ? " arrivés" : " arrivé");
+    $("tieBtn").disabled = !S.running || !n;
+    $("countInfo").textContent = N ? n + " / " + N + " passés" : n + (n > 1 ? " passés" : " passé");
+    $("prog").classList.toggle("hidden", !N);
+    $("progN").textContent = n; $("progT").textContent = "/ " + N;
+    $("prog").classList.toggle("done", !!N && n === N);
+    $("prog").classList.toggle("over", !!N && n > N);
+    if (N && n === N && S.running && !S.doneShown) {
+      S.doneShown = true;
+      $("doneBanner").classList.remove("hidden");
+      feedback(1320, 0.12, [60, 60, 60]); setTimeout(() => feedback(1760, 0.2, 0), 160);
+      clearTimeout(doneTimer); doneTimer = setTimeout(() => $("doneBanner").classList.add("hidden"), 2500);
+    }
+    if (n < N) { S.doneShown = false; $("doneBanner").classList.add("hidden"); }
     $("lastList").innerHTML = S.arrivals.slice(-3).map((a, i, arr) => {
-      const idx = n - arr.length + i + 1, nm = nameOf(a);
-      return '<div class="tag"><span class="bib">' + idx + '</span><span class="num">' + fmt(a.t) + "</span>" + (nm ? "<span>" + esc(nm) + "</span>" : "") + "</div>";
+      const idx = n - arr.length + i, nm = nameOf(a);
+      return '<div class="tag"><span class="bib">' + rankOf(idx) + (a.tie ? "=" : "") + '</span><span class="num">' + fmt(a.t) + "</span>" + (nm ? "<span>" + esc(nm) + "</span>" : "") + "</div>";
     }).join("");
     if (S.running) {
-      $("mainSub").textContent = n ? "Dernier temps " + fmt(S.arrivals[n-1].t) : "Touche à chaque passage";
+      const left = N - n;
+      $("mainSub").textContent = !n ? "Touche à chaque passage" :
+        (N ? (left > 0 ? "Encore " + left + " · " : (left === 0 ? "Tout le monde est passé · " : "")) : "") + "dernier " + fmt(S.arrivals[n-1].t);
       $("lastBib").classList.toggle("hidden", !n);
-      $("lastNum").textContent = n;
+      $("lastNum").textContent = n ? rankOf(n - 1) : "";
     }
     const chips = $("chips"); chips.innerHTML = "";
     if (!S.runners.length) { chips.innerHTML = '<span class="note">Pas de liste : tu nommeras les élèves à la fin.</span>'; return; }
     const used = new Set(S.arrivals.map(a => a.runnerId).filter(Boolean));
     const pending = S.arrivals.findIndex(a => !a.runnerId);
     const note = document.createElement("span"); note.className = "note";
-    note.innerHTML = pending >= 0 ? 'Qui est le <span class="bib ask">' + (pending + 1) + "</span> ?" : (S.running ? "Touche le nom après l'arrivée" : "Élèves");
+    note.innerHTML = pending >= 0 ? 'Qui est le <span class="bib ask">' + rankOf(pending) + "</span> ?" : (S.running ? "Touche le nom après l'arrivée" : "Élèves");
     chips.appendChild(note);
     S.runners.filter(r => !used.has(r.id)).forEach(r => {
       const b = document.createElement("button"); b.className = "chip";
@@ -1303,10 +1448,10 @@
       el.innerHTML = '<button class="ph" aria-label="Agrandir la photo">' + (head.photo ? '<img alt="" src="' + head.photo + '">' : (head.pid ? "…" : (S.finishedFromHistory ? "Photo effacée" : "Pas de photo"))) + "</button>" +
         '<div><div class="ctop"><span class="bib">' + (grp[0] + 1) + "</span><b>" + fmt(head.t) + "</b>" +
         (gap > 0 ? "<small>" + fmtGap(gap) + "</small>" : "") + (S.videoURL ? '<button class="play">revoir</button>' : "") +
-        '</div><div class="slots"></div><button class="addTie">+ Ajouter un élève</button></div>';
+        '</div><div class="slots"></div><button class="tieAdd">+ ' + (grp.length + 1) + 'e élève sur cette photo (ex aequo)</button></div>';
       const slots = el.querySelector(".slots"); grp.forEach(i => slots.appendChild(slotEl(i)));
       el.querySelector(".ph").onclick = () => openViewer(gi);
-      el.querySelector(".addTie").onclick = () => addTie(grp);
+      el.querySelector(".tieAdd").onclick = () => addTie(grp);
       const pl = el.querySelector(".play"); if (pl) pl.onclick = () => seekTo(head.t);
       list.appendChild(el);
     });
@@ -1317,6 +1462,7 @@
     });
     if (!S.arrivals.length && !S.runners.length) list.innerHTML = '<div class="dnfrow">Aucune arrivée enregistrée</div>';
     if (!S.videoURL && !S.finishedFromHistory) $("videoInfo").textContent = "Préparation de la vidéo…";
+    prepReport();
   }
 
   // ---------- visionneuse : photo d'arrivée + menu déroulant ----------
@@ -1342,6 +1488,7 @@
     $("pfTime").textContent = fmt(head.t);
     $("pfGap").textContent = (head.t - first > 0 ? fmtGap(head.t - first) + " sur le 1er · " : "") + "passage " + (pfIdx + 1) + " / " + G.length;
     const slots = $("pfSlots"); slots.innerHTML = ""; grp.forEach(i => slots.appendChild(slotEl(i)));
+    $("pfTie").textContent = "+ " + (grp.length + 1) + "e élève sur cette photo (ex aequo)";
     $("pfPrev").disabled = pfIdx === 0;
     $("pfNext").innerHTML = pfIdx === G.length - 1 ? "Terminé" : 'Suivant<svg><use href="#i-next"/></svg>';
   }
@@ -1378,20 +1525,58 @@
   }
 
   // ---------- exports ----------
-  function csvText(){
-    const q = v => { v = String(v ?? ""); return /[;"\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
-    const d = new Date(S.meta.date);
-    const offset = (S.chronoStartPerf - S.recStartPerf) / 1000;
-    const lines = [
-      ["Épreuve", S.meta.title], ["Classe", S.meta.cls]].concat(S.meta.group ? [["Groupe", S.meta.group]] : []).concat([
-      ["Date", d.toLocaleDateString("fr-FR") + " " + pad(d.getHours()) + ":" + pad(d.getMinutes())], [],
-      ["N° d'arrivée", "Dossard", "Nom", "Groupe", "Temps", "Temps (s)", "Écart (s)", "Position dans la vidéo (s)"]
-    ]);
-    rows().forEach(r => lines.push([r.rank, r.bib, r.name, r.group, fmt(r.t), (r.t/1000).toFixed(2).replace(".", ","),
-      (r.gap/1000).toFixed(2).replace(".", ","), Math.max(0, r.t/1000 + offset).toFixed(1).replace(".", ",")]));
-    nonFinishers().forEach(r => lines.push(["", r.bib, r.name, r.group || "", "Non classé", "", "", ""]));
-    return "﻿" + lines.map(l => l.map(q).join(";")).join("\r\n");
+  // fiche de résultats lisible (page HTML autonome, photos incluses)
+  async function thumb(url){
+    try {
+      const img = await loadImg(url), w = 360, h = Math.round(img.naturalHeight * w / img.naturalWidth);
+      const c = document.createElement("canvas"); c.width = w; c.height = h;
+      c.getContext("2d").drawImage(img, 0, 0, w, h);
+      return c.toDataURL("image/jpeg", 0.72);
+    } catch(e) { return ""; }
   }
+  async function reportHTML(){
+    const d = new Date(S.meta.date), first = S.arrivals.length ? S.arrivals[0].t : 0;
+    const title = S.meta.title || "Course";
+    const meta = [S.meta.cls ? "Classe " + S.meta.cls : "", S.meta.group, d.toLocaleDateString("fr-FR", { weekday:"long", day:"numeric", month:"long", year:"numeric" }) + " à " + pad(d.getHours()) + "h" + pad(d.getMinutes())].filter(Boolean);
+    let body = "";
+    for (const grp of arrivalGroups()) {
+      const a = S.arrivals[grp[0]], rank = grp[0] + 1, gap = a.t - first;
+      const ph = a.photo ? await thumb(a.photo) : "";
+      grp.forEach((i, k) => {
+        const x = S.arrivals[i], r = runnerById(x.runnerId), nm = r ? r.name : (x.freeName || "");
+        body += "<tr" + (rank <= 3 ? ' class="pod"' : "") + ">" +
+          (k === 0 ? '<td class="pl" rowspan="' + grp.length + '">' + rank + (grp.length > 1 ? "<small>ex aequo</small>" : "") + "</td>" : "") +
+          "<td>" + (nm ? esc(nm) : '<i>non nommé</i>') + (r && r.bib ? ' <small>n° ' + esc(r.bib) + "</small>" : "") + "</td>" +
+          (k === 0 ? '<td class="t" rowspan="' + grp.length + '">' + fmt(a.t) + '</td><td class="g" rowspan="' + grp.length + '">' + (gap > 0 ? fmtGap(gap) : "") + "</td>" +
+            '<td class="ph" rowspan="' + grp.length + '">' + (ph ? '<img src="' + ph + '" alt="">' : "") + "</td>" : "") + "</tr>";
+      });
+    }
+    const nf = nonFinishers();
+    const R0 = rows();
+    const facts = [[R0.length, R0.length > 1 ? "classés" : "classé"], [R0.length ? fmt(R0[0].t) : "–", "meilleur temps"], [nf.length, "non classé" + (nf.length > 1 ? "s" : "")]];
+    return '<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>' + esc(title + (S.meta.cls ? " – " + S.meta.cls : "")) + "</title><style>" +
+      "body{margin:0;background:#F4F5F2;color:#14212B;font:16px/1.45 -apple-system,'Segoe UI',Roboto,sans-serif}" +
+      ".w{max-width:860px;margin:0 auto;padding:28px 20px 40px}h1{font-size:34px;margin:0;line-height:1.05}.m{color:#55626E;margin-top:6px}" +
+      ".f{display:flex;gap:28px;border-top:2px solid #14212B;margin:18px 0 22px;padding-top:10px}.f b{display:block;font-size:26px}.f span{color:#55626E;font-size:14px}" +
+      "table{width:100%;border-collapse:collapse;background:#fff;border-radius:14px;overflow:hidden}th{text-align:left;font-size:13px;color:#55626E;font-weight:600;padding:10px 12px;border-bottom:2px solid #DCE0D9}" +
+      "td{padding:10px 12px;border-bottom:1px solid #DCE0D9;vertical-align:middle}td small{color:#8A949D;font-size:13px}" +
+      ".pl{font-size:24px;font-weight:800;width:56px;text-align:center}.pl small{display:block;font-size:11px;font-weight:600}.pod .pl{color:#B83226}" +
+      ".t{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}.g{color:#55626E;white-space:nowrap}" +
+      ".ph{width:150px}.ph img{width:150px;border-radius:8px;display:block}h2{font-size:20px;margin:26px 0 8px}.nf{background:#fff;border-radius:14px;padding:6px 16px}.nf div{padding:8px 0;border-bottom:1px solid #DCE0D9}.nf div:last-child{border:0}" +
+      ".p{margin-top:22px;padding:12px 18px;border:0;border-radius:10px;background:#14212B;color:#fff;font-size:16px;font-weight:700}" +
+      ".foot{margin-top:28px;color:#8A949D;font-size:13px}@media print{body{background:#fff}.p{display:none}tr{break-inside:avoid}}" +
+      "@media (max-width:560px){.ph{width:96px}.ph img{width:96px}.g{display:none}th.g{display:none}}" +
+      '</style></head><body><div class="w"><h1>' + esc(title) + '</h1><div class="m">' + meta.map(esc).join(" · ") + "</div>" +
+      '<div class="f">' + facts.map(([v, l]) => "<div><b>" + v + "</b><span>" + l + "</span></div>").join("") + "</div>" +
+      (body ? '<table><thead><tr><th>Place</th><th>Élève</th><th>Temps</th><th class="g">Écart</th><th>Photo</th></tr></thead><tbody>' + body + "</tbody></table>" : "<p>Aucune arrivée.</p>") +
+      (nf.length ? "<h2>Non classés</h2><div class=\"nf\">" + nf.map(r => "<div>" + esc(runnerLabel(r)) + "</div>").join("") + "</div>" : "") +
+      '<button class="p" onclick="print()">Imprimer ou enregistrer en PDF</button>' +
+      '<div class="foot">Chrono EPS · temps pris à la main sur la vidéo de l\'arrivée</div></div></body></html>';
+  }
+  async function reportFile(){ return new File([await reportHTML()], baseFileName() + ".html", { type:"text/html" }); }
+  // préparée à l'avance : la feuille de partage de l'iPad doit s'ouvrir tout de suite après le toucher
+  let repTimer = 0;
+  function prepReport(){ S.report = null; clearTimeout(repTimer); repTimer = setTimeout(async () => { try { S.report = await reportFile(); } catch(e){} }, 400); }
   function plainText(){
     const head = [S.meta.title, S.meta.cls, S.meta.group, new Date(S.meta.date).toLocaleDateString("fr-FR")].filter(Boolean).join(" – ");
     const body = rows().map(r => r.rank + ". " + (r.name ? (r.bib ? r.bib + " " : "") + r.name : "Coureur " + r.rank) + "   " + fmt(r.t));
@@ -1403,7 +1588,13 @@
     a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 30000);
   }
-  $("dlCsv").onclick = () => { download(new Blob([csvText()], { type:"text/csv;charset=utf-8" }), baseFileName() + ".csv"); toast("Classement enregistré"); };
+  $("dlCsv").onclick = async () => {
+    const f = S.report || await reportFile();
+    if (navigator.canShare && navigator.canShare({ files:[f] }) && navigator.maxTouchPoints > 1) {
+      try { await navigator.share({ files:[f] }); return; } catch(e) { if (e.name === "AbortError") return; }
+    }
+    download(f, f.name); toast("Fiche enregistrée");
+  };
   $("dlVideo").onclick = async () => {
     if (!S.videoBlob) { toast(S.finishedFromHistory ? "La vidéo de cette course n'est plus sur l'appareil" : "Vidéo en préparation…"); return; }
     const file = new File([S.videoBlob], baseFileName() + "." + S.ext, { type:S.videoBlob.type });
@@ -1453,7 +1644,7 @@
     catch(e) { toast("Copie impossible sur cet appareil"); }
   };
   $("shareBtn").onclick = async () => {
-    const files = [new File([csvText()], baseFileName() + ".csv", { type:"text/csv" })];
+    const files = [S.report || await reportFile()];
     if (S.videoBlob) files.unshift(new File([S.videoBlob], baseFileName() + "." + S.ext, { type:S.videoBlob.type }));
     try {
       if (navigator.canShare && navigator.canShare({ files })) {
@@ -1475,31 +1666,24 @@
   }
   $("againBtn").onclick = async () => {
     if (!(await leaveResults())) return;
-    const N = nGroups();
-    if (N > 1) {
+    const c = curClass();
+    if (c && groupsOf(c).length) {
       const v = await sheet((box, close) => {
-        const vals = []; for (let g = 1; g <= N; g++) vals.push([String(g), "Groupe " + g, parseRunners(S.groupsTxt[g-1], g).length]);
-        vals.push(["all", "Tous les groupes", runningRunnersCount()]);
-        box.innerHTML = "<h3>Qui court ?</h3><p>Les noms du menu à la fin de la course.</p><div class=\"pick\"></div>" +
-          '<div class="acts"><button class="btn" data-x="0">Annuler</button></div>';
-        const pick = box.querySelector(".pick");
-        vals.forEach(([val, lab, n]) => {
-          const b = document.createElement("button"); b.setAttribute("aria-pressed", String(S.opts.run === val));
-          b.innerHTML = esc(lab) + '<small style="margin-left:auto;color:var(--ink-2);font-weight:500">' + plural(n) + "</small>";
-          b.onclick = () => close(val); pick.appendChild(b);
-        });
+        box.innerHTML = "<h3>Qui court ?</h3><p>" + esc(c.name) + "</p><div class=\"runs\"></div>" +
+          '<div class="acts" style="margin-top:14px"><button class="btn" data-x="0">Annuler</button></div>';
+        runCards(box.querySelector(".runs"), c, runValue(c), val => close(val));
         box.querySelector('[data-x="0"]').onclick = () => close(undefined);
       });
-      if (!v) { show("setup"); renderHistory(); return; }
-      S.opts.run = v; saveSetup(); renderGroups();
+      if (!v) { show("setup"); renderSetup(); renderHistory(); return; }
+      S.opts.run = v; saveSetup(); renderSetup();
     }
     $("openCam").click();
   };
-  function runningRunnersCount(){ let n = 0; for (let g = 1; g <= nGroups(); g++) n += parseRunners(S.groupsTxt[g-1], g).length; return n; }
+
   $("homeBtn").onclick = async () => { if (await leaveResults()) { show("setup"); renderHistory(); } };
   window.addEventListener("beforeunload", e => { if (S.running || (S.videoBlob && !S.videoSaved)) { e.preventDefault(); e.returnValue = ""; } });
   window.addEventListener("popstate", () => {
-    if (!$("grp").classList.contains("hidden")) { saveGrouping(); show("setup"); return; }
+    if (!$("grp").classList.contains("hidden")) { closeClass(); return; }
     if (!$("pf").classList.contains("hidden")) { closeViewer(); return; }
     if (!$("race").classList.contains("hidden")) { history.pushState({race:1}, ""); toast("Maintiens Terminer pour arrêter la course"); }
   });
