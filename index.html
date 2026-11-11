@@ -46,60 +46,90 @@
   .err{background:#3a1416;border:1px solid var(--stop);color:#ffd1d2;padding:12px;border-radius:10px;margin-top:12px}
 
   /* ---- Écran course ---- */
-  #race{position:fixed;inset:0;background:#000;display:flex;flex-direction:column}
-  #stage{position:relative;flex:1;min-height:0;overflow:hidden}
-  #preview{width:100%;height:100%;object-fit:contain;background:#000}
-  #topbar{position:absolute;left:0;right:0;top:0;padding:calc(8px + var(--safe-t)) 12px 8px;
-    display:flex;align-items:flex-start;justify-content:space-between;gap:8px;
-    background:linear-gradient(#000c,#0000);pointer-events:none}
-  #clock{font-variant-numeric:tabular-nums;font-weight:800;font-size:clamp(40px,11vw,84px);
-    letter-spacing:1px;text-shadow:0 2px 8px #000;line-height:1}
-  #raceInfo{text-align:right;font-size:14px;color:#dfe6ee;text-shadow:0 1px 4px #000}
+  :root{--sl:env(safe-area-inset-left,0px);--sr:env(safe-area-inset-right,0px);--col:clamp(280px,40vw,440px)}
+  #race{position:fixed;inset:0;background:#000;display:grid;
+    grid-template-columns:100%;grid-template-rows:auto minmax(0,1fr) auto;
+    grid-template-areas:"hud" "stage" "panel";
+    -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:none}
+  #race.hidden{display:none}
+  /* bandeau chrono (hors de l'image) */
+  #hud{grid-area:hud;display:grid;grid-template-columns:72px minmax(0,1fr) 72px;grid-template-areas:"undo clock end";
+    gap:8px;align-items:stretch;background:#0b0f14;border-bottom:1px solid #222;
+    padding:calc(6px + var(--safe-t)) calc(8px + var(--sr)) 6px calc(8px + var(--sl))}
+  #undoBtn{grid-area:undo} #endBtn{grid-area:end}
+  #clockBox{grid-area:clock;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  #clock{font-variant-numeric:tabular-nums;font-weight:800;line-height:1;white-space:nowrap;letter-spacing:.5px;
+    font-size:clamp(34px,calc((100vw - 180px) / 4.8),88px)}
+  #raceInfo{display:flex;gap:12px;justify-content:center;font-size:clamp(13px,3.6vw,16px);max-width:100%;overflow:hidden;color:#c9d2dc;margin-top:5px;white-space:nowrap}
+  #countInfo{font-weight:700;color:var(--finish)}
   #recDot{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--stop);margin-right:6px;
     animation:blink 1s infinite;vertical-align:middle}
   @keyframes blink{50%{opacity:.2}}
+  /* image caméra */
+  #stage{grid-area:stage;position:relative;overflow:hidden;background:#000;min-height:0}
+  #preview{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000}
   #flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;transition:opacity .25s}
-  #lastList{position:absolute;left:10px;bottom:10px;max-width:60%;pointer-events:none;font-variant-numeric:tabular-nums}
-  #lastList div{background:#000b;border-radius:8px;padding:4px 10px;margin-top:4px;font-size:15px}
+  #lastList{position:absolute;left:8px;right:8px;bottom:8px;display:flex;flex-direction:column;align-items:flex-start;
+    gap:4px;pointer-events:none;font-variant-numeric:tabular-nums}
+  #lastList div{background:#000d;border-radius:8px;padding:4px 10px;font-size:16px;font-weight:600;
+    max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   #lastList b{color:var(--finish)}
-  #race{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:none}
-  #stage{min-height:34vh}
-  #bottom{display:flex;flex-direction:column;gap:10px;background:#0b0f14;
-    padding:10px 10px calc(10px + var(--safe-b));border-top:1px solid #222}
-  #chips{display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y;
-    min-height:56px;align-items:center}
-  #chips .chip{flex:none;min-height:54px;padding:10px 18px;background:#1d2531;border:2px solid #34425a;
-    border-radius:14px;font-size:19px;font-weight:600;white-space:nowrap}
+  /* commandes */
+  #panel{grid-area:panel;display:flex;flex-direction:column;gap:8px;background:#0b0f14;border-top:1px solid #222;
+    padding:8px calc(8px + var(--sr)) calc(8px + var(--safe-b)) calc(8px + var(--sl))}
+  #chips{display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y;
+    min-height:52px;align-items:center;flex:none}
+  #chips .chip{flex:none;min-height:50px;padding:8px 16px;background:#1d2531;border:2px solid #34425a;
+    border-radius:14px;font-size:18px;font-weight:600;white-space:nowrap}
   #chips .chip:active{background:var(--accent);color:#000}
-  #chips .note{flex:none;font-size:17px;font-weight:700;white-space:nowrap;padding:0 6px;color:var(--muted)}
+  #chips .note{flex:none;font-size:16px;font-weight:700;white-space:nowrap;padding:0 4px;color:var(--muted)}
   #chips .note.ask{color:var(--finish)}
-  #mainBtn{flex:none;height:max(150px,30vh);border-radius:22px;display:flex;flex-direction:column;
-    align-items:center;justify-content:center;gap:4px;box-shadow:0 6px 0 #0006}
-  #mainBtn .lbl{font-size:clamp(40px,11vw,72px);font-weight:900;letter-spacing:2px;line-height:1}
-  #mainBtn .sub{font-size:clamp(16px,4vw,22px);font-weight:600;opacity:.8;font-variant-numeric:tabular-nums}
+  #mainBtn{flex:none;height:clamp(110px,24vh,210px);border-radius:20px;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:4px;box-shadow:0 5px 0 #0006}
+  #mainBtn .lbl{font-size:clamp(38px,11vw,76px);font-weight:900;letter-spacing:2px;line-height:1}
+  #mainBtn .msub{font-size:clamp(15px,4vw,22px);font-weight:600;opacity:.8;font-variant-numeric:tabular-nums;
+    max-width:94%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   #mainBtn.start{background:var(--go);color:#03140a}
   #mainBtn.finish{background:var(--finish);color:#1a1200}
-  #mainBtn.pressed{transform:translateY(4px) scale(.985);box-shadow:0 2px 0 #0006;filter:brightness(1.2)}
-  #side{display:flex;gap:10px}
-  .hold{position:relative;overflow:hidden;flex:1;min-height:64px;border-radius:16px;background:#222a35;
-    border:2px solid #3a4656;font-size:18px;font-weight:700}
+  #mainBtn.pressed{transform:translateY(4px) scale(.985);box-shadow:0 1px 0 #0006;filter:brightness(1.2)}
+  /* boutons « maintenir » */
+  .hold{position:relative;overflow:hidden;border-radius:14px;background:#222a35;border:2px solid #3a4656;
+    padding:4px;font-size:13px;font-weight:700;min-height:0}
   .hold.danger{border-color:var(--stop);color:#ff9a9d}
-  .hold .fill{position:absolute;inset:0;width:0;background:#ffffff30;transition:none}
-  .hold.danger .fill{background:#e5484d55}
+  .hold .fill{position:absolute;left:0;top:0;bottom:0;width:0;background:#ffffff30}
+  .hold.danger .fill{background:#e5484d66}
   .hold.holding .fill{width:100%;transition:width .8s linear}
-  .hold .lbl{position:relative;display:flex;flex-direction:column;align-items:center;line-height:1.15}
-  .hold small{font-size:12px;font-weight:500;opacity:.7}
+  .hold .lbl{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;line-height:1.1}
+  .hold .ico{font-size:22px;line-height:1}
+  .hold small{font-size:10px;font-weight:500;opacity:.7}
   .hold:disabled{opacity:.35}
+
+  /* ---------- PAYSAGE : image à gauche, colonne de commandes à droite ---------- */
   @media (orientation:landscape){
-    #race{flex-direction:row}
-    #race.left{flex-direction:row-reverse}
-    #stage{min-height:0}
-    #bottom{width:min(420px,42vw);border-top:0;border-left:1px solid #222;
-      padding:calc(10px + var(--safe-t)) calc(10px + env(safe-area-inset-right,0px)) calc(10px + var(--safe-b)) 10px}
-    #race.left #bottom{border-left:0;border-right:1px solid #222;
-      padding-left:calc(10px + env(safe-area-inset-left,0px));padding-right:10px}
-    #chips{flex-wrap:wrap;overflow-y:auto;overflow-x:hidden;flex:0 1 auto;max-height:34vh;align-content:flex-start}
-    #mainBtn{flex:1;height:auto;min-height:150px}
+    #race{grid-template-columns:minmax(0,1fr) var(--col);grid-template-rows:auto minmax(0,1fr);
+      grid-template-areas:"stage hud" "stage panel"}
+    #race.left{grid-template-columns:var(--col) minmax(0,1fr);grid-template-areas:"hud stage" "panel stage"}
+    #hud{grid-template-columns:1fr 1fr;grid-template-areas:"clock clock" "undo end";border-bottom:0;
+      padding:calc(8px + var(--safe-t)) calc(8px + var(--sr)) 4px 8px}
+    #race.left #hud,#race.left #panel{padding-left:calc(8px + var(--sl));padding-right:8px}
+    #panel{border-top:0;padding:4px calc(8px + var(--sr)) calc(8px + var(--safe-b)) 8px}
+    #stage{border-right:1px solid #222}
+    #race.left #stage{border-right:0;border-left:1px solid #222}
+    #clock{font-size:clamp(32px,calc(var(--col) / 5.3),84px)}
+    .hold{min-height:44px}
+    .hold .lbl{flex-direction:row;gap:8px} .hold .ico{font-size:18px}
+    #mainBtn{flex:1;height:auto;min-height:90px}
+    #mainBtn .lbl{font-size:clamp(30px,calc(var(--col) / 6.5),68px)}
+    #mainBtn .msub{font-size:clamp(14px,calc(var(--col) / 22),20px)}
+  }
+  /* tablette en paysage : place pour plusieurs lignes de noms */
+  @media (orientation:landscape) and (min-height:600px){
+    #chips{flex-wrap:wrap;overflow-x:hidden;overflow-y:auto;max-height:32vh;align-content:flex-start}
+  }
+  /* très petit téléphone en portrait */
+  @media (orientation:portrait) and (max-height:640px){
+    #mainBtn{height:clamp(96px,20vh,140px)}
+    #chips .chip{min-height:44px;font-size:16px}
   }
 
   /* ---- Modal ---- */
@@ -112,7 +142,9 @@
   table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
   th,td{padding:9px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
   th{font-size:13px;color:var(--muted);font-weight:500}
-  td.rank{font-weight:800;width:42px} td.time{font-weight:700;white-space:nowrap}
+  td.rank{font-weight:800;width:44px;font-size:18px} td.time{font-weight:800;white-space:nowrap;text-align:right;font-size:18px}
+  .gapline{display:block;font-size:13px;font-weight:500;color:var(--muted)} .gapline.play{color:var(--accent)}
+  td:nth-child(2){width:100%} td select{min-width:0;max-width:100%}
   td.gap{color:var(--muted);font-size:14px;white-space:nowrap}
   tr.seek{cursor:pointer} tr.seek:active{background:#1d2531}
   td select{padding:6px 8px;font-size:15px}
@@ -177,22 +209,22 @@
 
 <!-- =================== COURSE =================== -->
 <section id="race" class="hidden">
+  <div id="hud">
+    <button class="hold" id="undoBtn" disabled><span class="fill"></span><span class="lbl"><span class="ico">↶</span>Annuler<small>maintenir</small></span></button>
+    <div id="clockBox">
+      <div id="clock">00:00.00</div>
+      <div id="raceInfo"><span id="recState">Prêt</span><span id="countInfo"></span></div>
+    </div>
+    <button class="hold danger" id="endBtn"><span class="fill"></span><span class="lbl"><span class="ico">■</span>Terminer<small>maintenir</small></span></button>
+  </div>
   <div id="stage">
     <video id="preview" playsinline muted autoplay></video>
     <div id="flash"></div>
-    <div id="topbar">
-      <div id="clock">00:00.00</div>
-      <div id="raceInfo"><div id="recState"></div><div id="countInfo"></div></div>
-    </div>
     <div id="lastList"></div>
   </div>
-  <div id="bottom">
+  <div id="panel">
     <div id="chips"></div>
-    <button id="mainBtn" class="start"><span class="lbl" id="mainLbl">DÉPART</span><span class="sub" id="mainSub">chrono + vidéo</span></button>
-    <div id="side">
-      <button class="hold" id="undoBtn" disabled><span class="fill"></span><span class="lbl">↶ Annuler dernière<small>maintenir appuyé</small></span></button>
-      <button class="hold danger" id="endBtn"><span class="fill"></span><span class="lbl">■ Terminer<small>maintenir appuyé</small></span></button>
-    </div>
+    <button id="mainBtn" class="start"><span class="lbl" id="mainLbl">DÉPART</span><span class="msub" id="mainSub">chrono + vidéo</span></button>
   </div>
 </section>
 
@@ -204,7 +236,7 @@
 
     <div class="card" style="padding:8px 10px">
       <table>
-        <thead><tr><th>Rang</th><th>Participant</th><th>Temps</th><th>Écart</th></tr></thead>
+        <thead><tr><th>Rang</th><th>Participant</th><th style="text-align:right">Temps</th></tr></thead>
         <tbody id="resBody"></tbody>
       </table>
       <div class="hint" id="seekHint">Touche un temps pour revoir l'arrivée dans la vidéo.</div>
@@ -370,32 +402,41 @@
   // ---------- composition vidéo (chrono incrusté) ----------
   function startCompositor(){
     const v = $("preview"), c = $("comp"), ctx = c.getContext("2d");
+    // taille fixe pendant tout l'enregistrement ; si l'appareil pivote, l'image est recadrée sans déformation
     const w = v.videoWidth || 1280, h = v.videoHeight || 720;
     c.width = w; c.height = h;
-    const fs = Math.round(h * 0.085);
+    const u = Math.min(w, h);                 // unité basée sur le petit côté → même rendu en portrait et paysage
+    const fs = Math.round(u * 0.085), m = Math.round(u * 0.03);
+    const font = (wgt, px) => wgt + " " + Math.round(px) + "px -apple-system,Segoe UI,Roboto,sans-serif";
+    const box = (x, y, bw, bh, col) => { ctx.fillStyle = col; ctx.beginPath();
+      if (ctx.roundRect) ctx.roundRect(x, y, bw, bh, fs * 0.18); else ctx.rect(x, y, bw, bh); ctx.fill(); };
     const draw = () => {
-      ctx.drawImage(v, 0, 0, w, h);
+      const vw = v.videoWidth || w, vh = v.videoHeight || h;
+      ctx.fillStyle = "#000"; ctx.fillRect(0, 0, w, h);
+      const k = Math.min(w / vw, h / vh), dw = vw * k, dh = vh * k;
+      ctx.drawImage(v, (w - dw) / 2, (h - dh) / 2, dw, dh);
       const now = performance.now();
       const t = S.running ? now - S.chronoStartPerf : (S.finished ? lastTime() : 0);
-      // chrono
-      ctx.font = "800 " + fs + "px -apple-system,Segoe UI,Roboto,sans-serif";
-      const txt = fmt(t), tw = ctx.measureText(txt).width;
-      ctx.fillStyle = "rgba(0,0,0,.6)"; ctx.fillRect(w*0.02, h*0.03, tw + fs*0.6, fs*1.35);
-      ctx.fillStyle = "#fff"; ctx.textBaseline = "middle"; ctx.fillText(txt, w*0.02 + fs*0.3, h*0.03 + fs*0.7);
-      // infos
+      ctx.textBaseline = "middle"; ctx.textAlign = "left";
+      // chrono en haut à gauche
+      ctx.font = font(800, fs);
+      const txt = fmt(t), tw = ctx.measureText(txt).width, bh = fs * 1.3;
+      box(m, m, tw + fs * 0.6, bh, "rgba(0,0,0,.65)");
+      ctx.fillStyle = "#fff"; ctx.fillText(txt, m + fs * 0.3, m + bh / 2 + fs * 0.03);
+      // épreuve / classe juste en dessous (ne chevauche jamais le chrono)
       const info = [S.meta.title, S.meta.cls].filter(Boolean).join(" · ");
       if (info) {
-        ctx.font = "600 " + Math.round(fs*0.42) + "px -apple-system,Segoe UI,Roboto,sans-serif";
-        const iw = ctx.measureText(info).width;
-        ctx.fillStyle = "rgba(0,0,0,.6)"; ctx.fillRect(w - iw - fs*0.6 - w*0.02, h*0.03, iw + fs*0.6, fs*0.8);
-        ctx.fillStyle = "#fff"; ctx.fillText(info, w - iw - fs*0.3 - w*0.02, h*0.03 + fs*0.4);
+        ctx.font = font(600, fs * 0.42);
+        const iw = Math.min(ctx.measureText(info).width, w - 2 * m - fs * 0.5), ih = fs * 0.75;
+        box(m, m + bh + fs * 0.15, iw + fs * 0.5, ih, "rgba(0,0,0,.65)");
+        ctx.fillStyle = "#fff"; ctx.fillText(info, m + fs * 0.25, m + bh + fs * 0.15 + ih / 2, iw);
       }
-      // annonce d'arrivée
+      // annonce d'arrivée en bas
       if (now < S.flashUntil) {
-        ctx.font = "800 " + Math.round(fs*0.7) + "px -apple-system,Segoe UI,Roboto,sans-serif";
-        const aw = ctx.measureText(S.flashText).width;
-        ctx.fillStyle = "rgba(242,166,0,.92)"; ctx.fillRect(w*0.02, h - fs*1.5 - h*0.03, aw + fs*0.6, fs*1.1);
-        ctx.fillStyle = "#1a1200"; ctx.fillText(S.flashText, w*0.02 + fs*0.3, h - fs*0.95 - h*0.03);
+        ctx.font = font(800, fs * 0.72);
+        const aw = Math.min(ctx.measureText(S.flashText).width, w - 2 * m - fs * 0.6), ah = fs * 1.1;
+        box(m, h - m - ah, aw + fs * 0.6, ah, "rgba(242,166,0,.94)");
+        ctx.fillStyle = "#1a1200"; ctx.fillText(S.flashText, m + fs * 0.3, h - m - ah / 2, aw);
       }
     };
     // requestVideoFrameCallback quand dispo, sinon rAF
@@ -458,7 +499,7 @@
     S.chronoStartPerf = performance.now();
     S.running = true;
     $("mainBtn").className = "finish"; $("mainLbl").textContent = "ARRIVÉE";
-    $("recState").innerHTML = '<span id="recDot"></span>Enregistrement';
+    $("recState").innerHTML = '<span id="recDot"></span>REC';
     feedback(880, 0.35, [80, 60, 80]);
     renderRaceUI();
     tick();
@@ -633,22 +674,24 @@
         inp.onchange = () => { S.arrivals[i].freeName = inp.value.trim(); saveToHistory(); };
         tdN.appendChild(inp);
       }
-      const tdT = document.createElement("td"); tdT.className = "time"; tdT.textContent = fmt(row.t);
-      const tdG = document.createElement("td"); tdG.className = "gap"; tdG.textContent = fmtGap(row.gap);
-      [tdT, tdG, tdR].forEach(td => { td.style.cursor = "pointer"; td.onclick = () => seekTo(row.t); });
-      tr.append(tdR, tdN, tdT, tdG); body.appendChild(tr);
+      const tdT = document.createElement("td"); tdT.className = "time";
+      tdT.innerHTML = fmt(row.t) + (row.gap > 0 ? '<span class="gapline">' + fmtGap(row.gap) + "</span>" : "") +
+        (S.videoURL ? '<span class="gapline play">▶ revoir</span>' : "");
+      [tdT, tdR].forEach(td => { td.style.cursor = "pointer"; td.onclick = () => seekTo(row.t); });
+      tr.append(tdR, tdN, tdT); body.appendChild(tr);
     });
     nonFinishers().forEach(r => {
       const tr = document.createElement("tr");
-      tr.innerHTML = '<td class="rank">–</td><td>' + escapeHtml(runnerLabel(r)) + '</td><td class="gap">non classé</td><td></td>';
+      tr.innerHTML = '<td class="rank">–</td><td>' + escapeHtml(runnerLabel(r)) + '</td><td class="gap" style="text-align:right">non classé</td>';
       body.appendChild(tr);
     });
-    if (!S.arrivals.length) body.innerHTML = '<tr><td colspan="4" class="gap">Aucune arrivée enregistrée.</td></tr>';
+    if (!S.arrivals.length) body.innerHTML = '<tr><td colspan="3" class="gap">Aucune arrivée enregistrée.</td></tr>';
     if (!S.videoURL) $("videoInfo").textContent = "Préparation de la vidéo…";
   }
 
   function showVideo(){
     const p = $("playback"); p.src = S.videoURL;
+    renderResults();
     const mb = (S.videoBlob.size / 1048576).toFixed(1).replace(".", ",");
     $("videoInfo").textContent = "Vidéo " + S.ext.toUpperCase() + " · " + mb + " Mo" + (S.burn ? " · chrono incrusté" : "") + ". Elle n'est pas gardée sur l'appareil : enregistre-la avant de quitter.";
   }

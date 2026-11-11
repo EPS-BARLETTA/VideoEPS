@@ -1,6 +1,6 @@
 // Service worker : garde l'application sur l'appareil pour un usage sans connexion.
 // Changer VERSION à chaque mise à jour de l'application.
-const VERSION = "chrono-eps-v3";
+const VERSION = "chrono-eps-v4";
 const FILES = [
   "./",
   "./index.html",
