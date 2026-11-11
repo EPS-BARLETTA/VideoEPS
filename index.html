@@ -290,6 +290,8 @@
         <div class="seg" data-for="cam"><button data-v="environment" aria-pressed="true">Arrière</button><button data-v="user" aria-pressed="false">Avant</button></div></div>
       <div class="opt"><div><div class="t">Boutons à l'horizontale</div><div class="d">Côté de la main qui tape</div></div>
         <div class="seg" data-for="hand"><button data-v="left" aria-pressed="false">Gauche</button><button data-v="right" aria-pressed="true">Droite</button></div></div>
+      <div class="opt"><div><div class="t">Qualité vidéo</div><div class="d" id="qualityHint"></div></div>
+        <div class="seg" data-for="quality"><button data-v="normal" aria-pressed="false">Normale</button><button data-v="light" aria-pressed="true">Légère</button></div></div>
       <label class="opt"><div><div class="t">Chrono dans la vidéo</div><div class="d">Temps et numéros incrustés à l'image</div></div>
         <span class="sw"><input type="checkbox" id="fBurn" checked><i></i></span></label>
       <label class="opt"><div><div class="t">Bip à chaque arrivée</div><div class="d">Confirme sans regarder l'écran</div></div>
@@ -317,7 +319,7 @@
     <button class="hold" id="undoBtn" disabled aria-label="Annuler la dernière arrivée, maintenir appuyé"><span class="fill"></span><span class="lbl"><svg><use href="#i-undo"/></svg>Annuler<small>maintenir</small></span></button>
     <div id="clockBox">
       <div id="clock" class="clock idle" role="timer"></div>
-      <div id="raceInfo"><span id="recState">Prêt</span><span id="countInfo"></span></div>
+      <div id="raceInfo"><span id="recState">Prêt</span><span id="countInfo"></span><span id="sizeInfo"></span></div>
     </div>
     <button class="hold danger" id="endBtn" aria-label="Terminer la course, maintenir appuyé"><span class="fill"></span><span class="lbl"><svg><use href="#i-stop"/></svg>Terminer<small>maintenir</small></span></button>
   </div>
@@ -378,7 +380,7 @@
     recStartPerf:0, chronoStartPerf:0, running:false, finished:false,
     arrivals:[], runners:[], meta:{}, videoBlob:null, videoURL:null, videoSaved:false,
     rafId:0, drawId:0, wakeLock:null, burn:true, beep:true, flashUntil:0, flashNum:0, flashTime:0,
-    opts:{ cam:"environment", hand:"right" }
+    opts:{ cam:"environment", hand:"right", quality:"light" }, recBytes:0
   };
 
   // ---------- utilitaires ----------
@@ -443,15 +445,21 @@
   if (saved.beep === false) $("fBeep").checked = false;
   if (saved.cam) S.opts.cam = saved.cam;
   if (saved.hand) S.opts.hand = saved.hand;
+  if (saved.quality) S.opts.quality = saved.quality;
   document.querySelectorAll(".seg").forEach(seg => {
     const key = seg.dataset.for;
     const sync = () => seg.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === S.opts[key])));
-    seg.querySelectorAll("button").forEach(b => b.onclick = () => { S.opts[key] = b.dataset.v; sync(); saveSetup(); });
+    seg.querySelectorAll("button").forEach(b => b.onclick = () => { S.opts[key] = b.dataset.v; sync(); saveSetup(); qualityHint(); });
     sync();
   });
+  // Débits constatés sur iPhone : ~55 Mo/min en 720p. Le mode léger vise ~3 fois moins.
+  const QUALITY = { normal:{ short:720, bps:4000000, label:"Plus nette, environ 55 Mo par minute" },
+                    light:{ short:480, bps:1200000, label:"Environ 15 à 20 Mo par minute" } };
+  function qualityHint(){ $("qualityHint").textContent = QUALITY[S.opts.quality].label; }
+  qualityHint();
   function saveSetup(){
     store.set("cc_setup", { title:$("fTitle").value, cls:$("fClass").value, runners:$("fRunners").value,
-      cam:S.opts.cam, hand:S.opts.hand, burn:$("fBurn").checked, audio:$("fAudio").checked, beep:$("fBeep").checked });
+      cam:S.opts.cam, hand:S.opts.hand, quality:S.opts.quality, burn:$("fBurn").checked, audio:$("fAudio").checked, beep:$("fBeep").checked });
   }
   function parseRunners(txt){
     return txt.split(/\r?\n/).map(l => l.trim()).filter(Boolean).map((l, i) => {
@@ -487,7 +495,7 @@
     }
     try {
       S.stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { ideal: S.opts.cam }, width: { ideal: 1280 }, height: { ideal: 720 }, frameRate: { ideal: 30 } },
+        video: { facingMode: { ideal: S.opts.cam }, width: { ideal: S.opts.quality === "light" ? 854 : 1280 }, height: { ideal: S.opts.quality === "light" ? 480 : 720 }, frameRate: { ideal: 30 } },
         audio: $("fAudio").checked
       });
     } catch(e) {
@@ -513,7 +521,7 @@
     $("mainBtn").className = "start"; $("mainLbl").textContent = "Départ"; $("mainSub").textContent = "Lance le chrono et la vidéo";
     $("lastBib").classList.add("hidden");
     $("clock").classList.add("idle"); setClock($("clock"), 0);
-    $("recState").className = ""; $("recState").textContent = "Prêt";
+    $("recState").className = ""; $("recState").textContent = "Prêt"; $("sizeInfo").textContent = "";
     renderRaceUI();
   }
 
@@ -525,7 +533,10 @@
   // ---------- incrustation dans la vidéo ----------
   function startCompositor(){
     const v = $("preview"), c = $("comp"), ctx = c.getContext("2d");
-    const w = v.videoWidth || 1280, h = v.videoHeight || 720;
+    // taille de l'enregistrement : petit côté limité selon la qualité choisie (dimensions paires pour l'encodeur)
+    const sw = v.videoWidth || 1280, sh = v.videoHeight || 720;
+    const sc = Math.min(1, QUALITY[S.opts.quality].short / Math.min(sw, sh));
+    const w = Math.round(sw * sc / 2) * 2, h = Math.round(sh * sc / 2) * 2;
     c.width = w; c.height = h;
     const u = Math.min(w, h), fs = Math.round(u * 0.09), m = Math.round(u * 0.03);
     const font = (wgt, px, cond) => wgt + " " + Math.round(px) + "px " + (cond ? '"Barlow Condensed","Arial Narrow",sans-serif' : '"Barlow",sans-serif');
@@ -593,11 +604,12 @@
         S.stream.getAudioTracks().forEach(t => recStream.addTrack(t));
       } catch(e) { stopCompositor(); recStream = S.stream; S.burn = false; }
     }
-    const opts = { videoBitsPerSecond: 4000000 };
+    const bps = QUALITY[S.opts.quality].bps;
+    const opts = { videoBitsPerSecond: bps, audioBitsPerSecond: 64000 };
     if (S.mime) opts.mimeType = S.mime;
     try { S.recorder = new MediaRecorder(recStream, opts); } catch(e) { S.recorder = new MediaRecorder(recStream); }
     S.chunks = [];
-    S.recorder.ondataavailable = e => { if (e.data && e.data.size) S.chunks.push(e.data); };
+    S.recorder.ondataavailable = e => { if (e.data && e.data.size) { S.chunks.push(e.data); S.recBytes += e.data.size; showSize(); } };
     S.recorder.onstop = () => {
       const type = S.recorder.mimeType || S.mime || "video/webm";
       S.videoBlob = new Blob(S.chunks, { type });
@@ -606,7 +618,14 @@
       showVideo();
     };
     S.recStartPerf = performance.now();
+    S.recBytes = 0; showSize();
     S.recorder.start(1000);
+  }
+
+  function showSize(){
+    const mb = S.recBytes / 1048576;
+    const el = $("sizeInfo"); el.textContent = mb < 10 ? mb.toFixed(1).replace(".", ",") + " Mo" : Math.round(mb) + " Mo";
+    el.style.color = mb > 400 ? "var(--tartan)" : "";
   }
 
   // ---------- chrono ----------
