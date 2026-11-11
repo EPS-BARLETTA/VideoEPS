@@ -1273,7 +1273,29 @@
     $("pf").classList.add("hidden"); freePhotos();
     return true;
   }
-  $("againBtn").onclick = async () => { if (await leaveResults()) $("openCam").click(); };
+  $("againBtn").onclick = async () => {
+    if (!(await leaveResults())) return;
+    const N = nGroups();
+    if (N > 1) {
+      const v = await sheet((box, close) => {
+        const vals = []; for (let g = 1; g <= N; g++) vals.push([String(g), "Groupe " + g, parseRunners(S.groupsTxt[g-1], g).length]);
+        vals.push(["all", "Tous les groupes", runningRunnersCount()]);
+        box.innerHTML = "<h3>Qui court ?</h3><p>Les noms du menu à la fin de la course.</p><div class=\"pick\"></div>" +
+          '<div class="acts"><button class="btn" data-x="0">Annuler</button></div>';
+        const pick = box.querySelector(".pick");
+        vals.forEach(([val, lab, n]) => {
+          const b = document.createElement("button"); b.setAttribute("aria-pressed", String(S.opts.run === val));
+          b.innerHTML = esc(lab) + '<small style="margin-left:auto;color:var(--ink-2);font-weight:500">' + plural(n) + "</small>";
+          b.onclick = () => close(val); pick.appendChild(b);
+        });
+        box.querySelector('[data-x="0"]').onclick = () => close(undefined);
+      });
+      if (!v) { show("setup"); renderHistory(); return; }
+      S.opts.run = v; saveSetup(); renderGroups();
+    }
+    $("openCam").click();
+  };
+  function runningRunnersCount(){ let n = 0; for (let g = 1; g <= nGroups(); g++) n += parseRunners(S.groupsTxt[g-1], g).length; return n; }
   $("homeBtn").onclick = async () => { if (await leaveResults()) { show("setup"); renderHistory(); } };
   window.addEventListener("beforeunload", e => { if (S.running || (S.videoBlob && !S.videoSaved)) { e.preventDefault(); e.returnValue = ""; } });
   window.addEventListener("popstate", () => {
