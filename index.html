@@ -133,6 +133,10 @@
   #stage{grid-area:stage;position:relative;overflow:hidden;background:#000;min-height:0}
   #preview{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
   #flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;transition:opacity .22s}
+  /* chrono posé sur l'image, comme dans la vidéo enregistrée */
+  #vidClock{position:absolute;left:12px;top:12px;pointer-events:none;background:#fffffff0;border-radius:10px;
+    padding:4px 10px 2px;box-shadow:0 2px 10px #0005;font-size:clamp(24px,6.5vw,40px)}
+  #vidClock .clock{font-size:1em}
   #lastList{position:absolute;left:10px;right:10px;bottom:10px;display:flex;flex-direction:column;align-items:flex-start;gap:5px;pointer-events:none}
   #lastList .tag{display:flex;align-items:center;gap:8px;background:#fffffff0;color:var(--ink);border-radius:9px;
     padding:4px 10px 4px 4px;font-weight:600;font-size:16px;max-width:100%;box-shadow:0 2px 8px #0004}
@@ -307,7 +311,7 @@
       <div class="panel list" id="histList"></div>
       <p class="help">Les temps restent sur cet appareil. Les vidéos, non : enregistre-les à la fin de chaque course.</p>
     </div>
-    <p class="help" style="margin-top:28px;text-align:center;color:var(--ink-3)">Version 7 · qualité vidéo réglable</p>
+    <p class="help" style="margin-top:28px;text-align:center;color:var(--ink-3)">Version 8</p>
   </div>
   <div class="dock"><div class="wrap">
     <button class="btn ink wide" id="openCam"><svg><use href="#i-cam"/></svg>Ouvrir la caméra</button>
@@ -327,6 +331,7 @@
   <div id="stage">
     <video id="preview" playsinline muted autoplay></video>
     <div id="flash"></div>
+    <div id="vidClock"><div class="clock" id="clock2"></div></div>
     <div id="lastList"></div>
   </div>
   <div id="panel">
@@ -510,7 +515,7 @@
     resetRace();
     const v = $("preview"); v.srcObject = S.stream;
     try { await v.play(); } catch(e){}
-    show("race"); requestWake();
+    show("race"); requestWake(); placeVidClock();
     history.pushState({race:1}, "");
   };
 
@@ -521,7 +526,7 @@
     S.videoBlob = null;
     $("mainBtn").className = "start"; $("mainLbl").textContent = "Départ"; $("mainSub").textContent = "Lance le chrono et la vidéo";
     $("lastBib").classList.add("hidden");
-    $("clock").classList.add("idle"); setClock($("clock"), 0);
+    $("clock").classList.add("idle"); setClocks(0);
     $("recState").className = ""; $("recState").textContent = "Prêt"; $("sizeInfo").textContent = "";
     renderRaceUI();
   }
@@ -630,9 +635,24 @@
   }
 
   // ---------- chrono ----------
+  // place le chrono dans le coin de l'image réelle (hors bandes noires)
+  function placeVidClock(){
+    const st = $("stage"), v = $("preview"), el = $("vidClock");
+    const W = st.clientWidth, H = st.clientHeight, vw = v.videoWidth, vh = v.videoHeight;
+    if (!W || !H || !vw || !vh) { el.style.left = "12px"; el.style.top = "12px"; return; }
+    const k = Math.min(W / vw, H / vh);
+    el.style.left = Math.round((W - vw * k) / 2 + 10) + "px";
+    el.style.top = Math.round((H - vh * k) / 2 + 10) + "px";
+  }
+  window.addEventListener("resize", placeVidClock);
+  window.addEventListener("orientationchange", () => setTimeout(placeVidClock, 300));
+  $("preview").addEventListener("loadedmetadata", placeVidClock);
+  $("preview").addEventListener("resize", placeVidClock);
+  function setClocks(ms){ setClock($("clock"), ms); setClock($("clock2"), ms); }
+
   function tick(){
     if (!S.running) return;
-    setClock($("clock"), performance.now() - S.chronoStartPerf);
+    setClocks(performance.now() - S.chronoStartPerf);
     S.rafId = requestAnimationFrame(tick);
   }
   function startRace(){
@@ -726,7 +746,7 @@
   function finishRace(){
     S.running = false; S.finished = true;
     cancelAnimationFrame(S.rafId);
-    setClock($("clock"), lastTime());
+    setClocks(lastTime());
     try { if (S.recorder && S.recorder.state !== "inactive") S.recorder.stop(); } catch(e){}
     setTimeout(() => { stopCompositor(); closeCamera(); }, 400);
     saveToHistory(); renderResults(); show("results");
