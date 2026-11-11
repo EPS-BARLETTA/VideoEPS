@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Chrono EPS">
+<meta name="apple-mobile-web-app-title" content="PhotoFinish">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#F4F5F2">
 <link rel="manifest" href="manifest.webmanifest">
@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap">
-<title>Chrono EPS – Demi-fond</title>
+<title>PhotoFinish – EPS</title>
 <style>
   /* =========================================================
      Jetons : piste d'athlétisme (tartan, pelouse, lignes à la craie)
@@ -56,6 +56,81 @@
   /* ---------- écrans de page ---------- */
   .page{min-height:100%;padding:calc(18px + var(--st)) calc(18px + var(--sr)) calc(120px + var(--sb)) calc(18px + var(--sl))}
   .wrap{max-width:640px;margin:0 auto}
+  /* ---------- page de garde ---------- */
+  #cover{position:fixed;inset:0;z-index:30;overflow:hidden;background:var(--tartan);color:#fff;display:flex;align-items:center;justify-content:center;
+    padding:calc(20px + var(--st)) calc(20px + var(--sr)) calc(20px + var(--sb)) calc(20px + var(--sl))}
+  #cover.hidden{display:none}
+  .cv-lanes{position:absolute;inset:0;display:grid;grid-template-rows:repeat(6,1fr);
+    background:radial-gradient(#ffffff0e 1px,transparent 1.4px) 0 0/5px 5px}
+  .cv-lanes i{border-bottom:3px solid #ffffffc8}
+  .cv-lanes i:first-child{border-top:3px solid #ffffffc8}
+  /* la ligne d'arrivée est juste au bout du nom : le titre « arrive » dessus */
+  .cv-title{position:relative;display:inline-block}
+  .cv-title::after{content:"";position:absolute;top:-100vh;bottom:-100vh;right:-34px;width:24px;z-index:-1;
+    background:conic-gradient(#fff 25%,var(--ink) 0 50%,#fff 0 75%,var(--ink) 0) 0 0/12px 12px}
+  .cv-flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}
+  .cv-in{position:relative;z-index:1;text-align:center;max-width:720px}
+  .cv-bib{font-size:24px;margin-bottom:14px}
+  .cv-title{margin:0;font:800 clamp(56px,12vw,140px)/.86 var(--cond);letter-spacing:-1px;text-shadow:0 4px 0 #0004}
+  .cv-sub{font-size:clamp(17px,2.6vw,21px);font-weight:600;margin:18px auto 30px;max-width:30ch;opacity:.95}
+  .cv-acts{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+  .cv-go,.cv-help{min-height:62px;padding:0 34px;border-radius:var(--r-m);font:800 26px/1 var(--cond);letter-spacing:.3px}
+  .cv-go{background:#fff;color:var(--ink);box-shadow:0 5px 0 var(--ink)}
+  .cv-go:active{transform:translateY(3px);box-shadow:0 2px 0 var(--ink)}
+  .cv-help{border:2.5px solid #fff;color:#fff;background:#0002}
+  .cv-ver{position:absolute;bottom:calc(10px + var(--sb));left:0;right:0;text-align:center;font-size:13px;opacity:.7;margin:0}
+  /* un seul mouvement : le titre file jusqu'à la ligne, flash de l'appareil photo */
+  @keyframes dash{from{transform:translateX(-60vw);opacity:0}70%{opacity:1}to{transform:none}}
+  @keyframes snap{0%{opacity:0}10%{opacity:.85}100%{opacity:0}}
+  .cv-title{animation:dash .7s cubic-bezier(.15,.8,.25,1) both}
+  .cv-flash{animation:snap .6s .62s ease-out both}
+  .cv-sub,.cv-acts{animation:setoff .4s .75s both}
+  .helpbtn{width:34px;height:34px;border-radius:50%;background:#fff;color:var(--tartan);font:800 20px/1 var(--cond)}
+  .hero .status + .helpbtn{margin-left:8px}
+  .hero-top .app + .helpbtn{margin-left:auto}
+
+  /* ---------- mode d'emploi ---------- */
+  .gd-head{position:relative;overflow:hidden;background:var(--tartan);color:#fff;
+    margin:calc(-18px - var(--st)) calc(-18px - var(--sr)) 22px calc(-18px - var(--sl));padding:calc(14px + var(--st)) 20px 26px}
+  .gd-lanes{position:absolute;inset:0;background:repeating-linear-gradient(180deg,transparent 0 44px,#ffffff38 44px 47px)}
+  .gd-in{position:relative;max-width:980px;margin:0 auto}
+  .gd-back{color:var(--tartan);background:#fff;border-radius:50%;width:40px;height:40px}
+  .gd-head h1{font:800 clamp(44px,10vw,72px)/.95 var(--cond);margin:6px 0 8px}
+  .gd-head p{margin:0;font-weight:600;max-width:52ch}
+  .steps{display:grid;gap:14px}
+  @media (min-width:760px){.steps{grid-template-columns:1fr 1fr}}
+  .step{background:var(--paper);border:2px solid var(--ink);border-radius:var(--r-l);padding:16px 16px 6px;box-shadow:0 5px 0 var(--ink)}
+  .step .sh{display:flex;align-items:center;gap:12px}
+  .step .sh .bib{font-size:30px;--pin:var(--tartan)}
+  .step h2{margin:0;font:800 28px/1 var(--cond)}
+  .step .lead{color:var(--ink-2);margin:10px 0 6px;font-size:15px}
+  .acts-l{list-style:none;margin:0;padding:0}
+  .acts-l li{display:grid;grid-template-columns:minmax(0,46%) minmax(0,1fr);gap:12px;align-items:center;padding:10px 0;border-top:1.5px solid var(--rule)}
+  .acts-l li > span:last-child{font-size:15px;line-height:1.35}
+  .tok{justify-self:start;display:inline-flex;align-items:center;gap:6px;min-height:38px;padding:6px 12px;border-radius:10px;font-weight:700;font-size:14px;line-height:1.15;max-width:100%}
+  .tok.out{background:var(--paper);border:1.5px solid var(--rule)}
+  .tok.dash{border:2px dashed var(--ink-3);color:var(--ink-2)}
+  .tok.go{background:var(--infield);color:#fff}
+  .tok.red{background:var(--tartan);color:#fff;background-image:repeating-linear-gradient(90deg,transparent 0 22px,#ffffff22 22px 24px)}
+  .tok.ink{background:var(--ink);color:#fff}
+  .tok.big{font:800 26px/1 var(--cond);padding:12px 20px;border-radius:12px;box-shadow:inset 0 -4px 0 #0003}
+  .tok.tie{background:#FFF7D6;border:2px solid #EAD58A;font-size:12px} .tok.tie b{font:800 20px/1 var(--cond)}
+  .tok.prog{background:var(--infield);color:#fff;font:700 16px/1 var(--cond)} .tok.prog b{font-size:26px}
+  .tok.tab{border:2.5px solid var(--gc);background:var(--gc);color:#fff;font:800 18px/1 var(--cond)}
+  .tok.tab small{background:#fff;color:var(--gc);border-radius:99px;padding:2px 7px;font:700 12px var(--text)}
+  .faq-t{font:800 30px/1 var(--cond);margin:34px 0 12px}
+  .faq{display:grid;gap:10px}
+  @media (min-width:760px){.faq{grid-template-columns:1fr 1fr;align-items:start}}
+  .faq details{background:var(--paper);border:1.5px solid var(--rule);border-radius:var(--r-m);transition:border-color .15s}
+  .faq details[open]{border-color:var(--ink)}
+  .faq summary{list-style:none;cursor:pointer;display:flex;gap:12px;align-items:center;padding:14px 14px;font-weight:700;font-size:16px;line-height:1.3}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary::before{content:"+";flex:none;width:30px;height:30px;border-radius:8px;background:var(--signal);color:var(--ink);
+    display:flex;align-items:center;justify-content:center;font:800 22px/1 var(--cond);transition:transform .2s}
+  .faq details[open] summary::before{content:"–";background:var(--ink);color:#fff}
+  .faq details p{margin:0;padding:0 16px 16px 56px;color:var(--ink-2);font-size:15px}
+  .faq details p b{color:var(--ink)}
+
   /* ---------- accueil : la piste ---------- */
   .hero{position:relative;overflow:hidden;color:#fff;background:var(--tartan);
     margin:calc(-18px - var(--st)) calc(-18px - var(--sr)) 6px calc(-18px - var(--sl));
@@ -446,12 +521,108 @@
 </svg>
 
 <!-- ======================= PRÉPARATION ======================= -->
-<section id="setup" class="page">
+<!-- ======================= PAGE DE GARDE ======================= -->
+<section id="cover">
+  <div class="cv-lanes" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="cv-flash" aria-hidden="true"></div>
+  <div class="cv-in">
+    <span class="bib cv-bib">EPS</span>
+    <h1 class="cv-title">PhotoFinish</h1>
+    <p class="cv-sub">Filme l'arrivée, chronomètre chaque élève, garde la photo de chaque passage.</p>
+    <div class="cv-acts">
+      <button class="cv-go" id="cvStart">Démarrer</button>
+      <button class="cv-help" id="cvGuide">Mode d'emploi</button>
+    </div>
+  </div>
+  <p class="cv-ver">Version 15</p>
+</section>
+
+<!-- ======================= MODE D'EMPLOI ======================= -->
+<section id="guide" class="page hidden">
+  <header class="gd-head">
+    <div class="gd-lanes" aria-hidden="true"></div>
+    <div class="gd-in">
+      <button class="iconbtn gd-back" id="gdBack" aria-label="Retour"><svg><use href="#i-back"/></svg></button>
+      <h1>Mode d'emploi</h1>
+      <p>Une course se déroule en quatre temps. Les boutons sont dessinés comme dans l'appli.</p>
+    </div>
+  </header>
+  <div class="wrap wide">
+    <div class="steps">
+      <article class="step">
+        <div class="sh"><span class="bib">1</span><h2>Prépare ta classe</h2></div>
+        <p class="lead">Une seule fois : la classe et ses groupes restent sur l'iPad pour les séances suivantes.</p>
+        <ul class="acts-l">
+          <li><span class="tok dash">+ Nouvelle classe</span><span>Donne-lui un nom, par exemple 2B.</span></li>
+          <li><span class="tok out">⇪ Importer CSV</span><span>La liste de l'école, avec les colonnes Nom et Prénom. Une colonne Groupe est reprise telle quelle.</span></li>
+          <li><span class="tok tab" style="--gc:#1F5FA8">Groupe 2 <small>5</small></span><span>Choisis un groupe, puis touche chaque élève pour l'y mettre. Touche-le à nouveau dans le groupe pour le retirer.</span></li>
+          <li><span class="tok out">↻ Groupes au hasard</span><span>Répartit toute la classe en 2 à 5 groupes en un toucher.</span></li>
+        </ul>
+      </article>
+      <article class="step">
+        <div class="sh"><span class="bib">2</span><h2>Lance la course</h2></div>
+        <p class="lead">Pose l'iPad sur un trépied ou un banc, face à la ligne d'arrivée, en mode paysage.</p>
+        <ul class="acts-l">
+          <li><span class="tok out">800 m</span><span>Choisis l'épreuve, ou écris-la.</span></li>
+          <li><span class="tok go">Ouvrir la caméra</span><span>L'appli demande qui court : un groupe ou toute la classe.</span></li>
+          <li><span class="tok big go">Départ</span><span>Au coup de sifflet : le chrono et la vidéo démarrent ensemble.</span></li>
+        </ul>
+      </article>
+      <article class="step">
+        <div class="sh"><span class="bib">3</span><h2>Pendant la course</h2></div>
+        <p class="lead">Regarde la ligne, pas l'écran : un bip confirme chaque appui.</p>
+        <ul class="acts-l">
+          <li><span class="tok big red">Arrivée</span><span>Un toucher par élève qui franchit la ligne. Une photo est prise à cet instant.</span></li>
+          <li><span class="tok tie"><b>+1</b> ensemble</span><span>Deux ou trois élèves en même temps : touche Arrivée une fois, puis +1 pour chacun en plus.</span></li>
+          <li><span class="tok prog"><b>7</b> / 10</span><span>Le compteur passe au vert quand tout le groupe est passé.</span></li>
+          <li><span class="tok out">↶ Annuler</span><span>Maintiens appuyé pour effacer la dernière arrivée. <b>Terminer</b> se maintient aussi.</span></li>
+        </ul>
+      </article>
+      <article class="step">
+        <div class="sh"><span class="bib">4</span><h2>Valide et garde</h2></div>
+        <p class="lead">Associe chaque photo à un élève, puis enregistre ce dont tu as besoin.</p>
+        <ul class="acts-l">
+          <li><span class="tok ink">Valider avec les photos</span><span>Grande photo, temps et menu déroulant : l'élève choisi disparaît des autres menus.</span></li>
+          <li><span class="tok dash">+ 2e élève sur cette photo</span><span>Pour ajouter un ex aequo après coup.</span></li>
+          <li><span class="tok out">Fiche résultats</span><span>Classement avec les photos, à imprimer ou enregistrer en PDF.</span></li>
+          <li><span class="tok ink">Enregistrer la vidéo</span><span>La vidéo n'est pas gardée par l'appli : enregistre-la avant de quitter.</span></li>
+        </ul>
+      </article>
+    </div>
+
+    <h2 class="faq-t">Questions fréquentes</h2>
+    <div class="faq">
+      <details><summary>Deux élèves franchissent la ligne en même temps ?</summary>
+        <p>Pendant la course, touche <b>Arrivée</b> une fois, puis <b>+1 ensemble</b>. Ils ont le même temps, la même place et la même photo. Après la course, sur la photo, touche <b>+ 2e élève sur cette photo</b>.</p></details>
+      <details><summary>J'ai touché Arrivée une fois de trop.</summary>
+        <p>Maintiens <b>Annuler</b> en haut à gauche : la dernière arrivée est effacée, avec sa photo. Après la course, laisse simplement le menu vide pour ce passage.</p></details>
+      <details><summary>Un élève n'apparaît pas dans le menu déroulant.</summary>
+        <p>Il est déjà associé à une autre arrivée, ou il n'est pas dans le groupe qui court. Retire-le de l'autre arrivée, ou modifie la classe pour l'ajouter.</p></details>
+      <details><summary>Comment changer de groupe pour la course suivante ?</summary>
+        <p>Touche <b>Nouvelle course</b> sur l'écran des résultats : l'appli redemande qui court. Tu peux aussi revenir à l'accueil puis <b>Ouvrir la caméra</b>.</p></details>
+      <details><summary>Mon fichier CSV n'est pas reconnu.</summary>
+        <p>Il faut une ligne de titres avec au moins <b>Nom</b> ou <b>Prénom</b>. Les colonnes <b>Groupe</b>, <b>Classe</b> et <b>Dossard</b> sont reprises si elles existent. Un export Excel « CSV (point-virgule) » fonctionne. Sinon, colle les noms avec <b>Modifier la liste</b>.</p></details>
+      <details><summary>Les photos et la vidéo sont-elles gardées ?</summary>
+        <p>Les temps, les noms et les photos restent dans l'historique de l'iPad tant que tu ne supprimes pas la course. La vidéo, non : touche <b>Enregistrer la vidéo</b> pour la mettre dans Photos.</p></details>
+      <details><summary>Ça marche au stade sans Wi-Fi ?</summary>
+        <p>Oui, une fois l'appli ouverte une première fois avec Internet. Ajoute-la à l'écran d'accueil (Partager, puis Sur l'écran d'accueil) et ouvre-la toujours depuis cette icône.</p></details>
+      <details><summary>Comment garder une preuve pour la note ?</summary>
+        <p>Enregistre la <b>fiche résultats</b> en PDF (photo et temps de chaque élève) et la <b>vidéo</b>, où le chrono est incrusté à l'image.</p></details>
+      <details><summary>Quand le chrono démarre-t-il exactement ?</summary>
+        <p>Au moment où tu touches <b>Départ</b>. Pour être précis, touche-le au signal de départ, pas avant.</p></details>
+      <details><summary>Et les données des élèves ?</summary>
+        <p>Rien n'est envoyé sur Internet : listes, photos et temps restent sur l'iPad. Supprime les courses et les vidéos dont tu n'as plus besoin, et vérifie les règles de ton école sur le droit à l'image.</p></details>
+    </div>
+    <button class="btn go" id="gdStart" style="width:100%;margin-top:26px">Démarrer</button>
+  </div>
+</section>
+
+<section id="setup" class="page hidden">
   <header class="hero" id="hero">
     <div class="lanes" aria-hidden="true"><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i></div>
     <div class="finish" aria-hidden="true"></div>
     <div class="hero-in">
-      <div class="hero-top"><span class="bib">EPS</span><span class="app">Chrono course</span><span id="offlineState" class="status"></span></div>
+      <div class="hero-top"><span class="bib">EPS</span><span class="app">PhotoFinish</span><span id="offlineState" class="status"></span><button class="helpbtn" id="toGuide" aria-label="Mode d'emploi">?</button></div>
       <div class="hero-cls" id="heroCls">À vos marques</div>
       <div class="hero-sub"><span class="plate" id="heroRun">Choisis ta classe</span><span class="evt" id="heroEvt"></span></div>
     </div>
@@ -497,7 +668,7 @@
       <div class="panel list" id="histList"></div>
       <button class="linkbtn hidden" id="histMore"></button>
     </div>
-    <p class="help" style="margin-top:28px;text-align:center;color:var(--ink-3)">Version 14</p>
+    <p class="help" style="margin-top:28px;text-align:center;color:var(--ink-3)">PhotoFinish · version 15</p>
   </div>
   <div class="dock"><div class="wrap">
     <button class="btn go wide" id="openCam"><svg><use href="#i-cam"/></svg><span id="camLbl">Ouvrir la caméra</span></button>
@@ -671,7 +842,7 @@
       box.querySelectorAll("[data-v]").forEach(b => b.onclick = () => close(b.dataset.v === "1"));
     });
   }
-  function show(id){ ["setup","race","results","grp"].forEach(s => $(s).classList.toggle("hidden", s !== id)); window.scrollTo(0,0); }
+  function show(id){ ["cover","guide","setup","race","results","grp"].forEach(s => $(s).classList.toggle("hidden", s !== id)); window.scrollTo(0,0); }
   const safeName = s => (s || "").normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-zA-Z0-9]+/g,"-").replace(/^-|-$/g,"");
   function baseFileName(){
     const d = new Date(S.meta.date);
@@ -1727,7 +1898,7 @@
       (body ? '<table><thead><tr><th>Place</th><th>Élève</th><th>Temps</th><th class="g">Écart</th><th>Photo</th></tr></thead><tbody>' + body + "</tbody></table>" : "<p>Aucune arrivée.</p>") +
       (nf.length ? "<h2>Non classés</h2><div class=\"nf\">" + nf.map(r => "<div>" + esc(runnerLabel(r)) + "</div>").join("") + "</div>" : "") +
       '<button class="p" onclick="print()">Imprimer ou enregistrer en PDF</button>' +
-      '<div class="foot">Chrono EPS · temps pris à la main sur la vidéo de l\'arrivée</div></div></body></html>';
+      '<div class="foot">PhotoFinish · temps pris à la main sur la vidéo de l\'arrivée</div></div></body></html>';
   }
   async function reportFile(){ return new File([await reportHTML()], baseFileName() + ".html", { type:"text/html" }); }
   // préparée à l'avance : la feuille de partage de l'iPad doit s'ouvrir tout de suite après le toucher
@@ -1827,7 +1998,17 @@
 
   $("homeBtn").onclick = async () => { if (await leaveResults()) { show("setup"); renderHistory(); } };
   window.addEventListener("beforeunload", e => { if (S.running || (S.videoBlob && !S.videoSaved)) { e.preventDefault(); e.returnValue = ""; } });
+  // page de garde, mode d'emploi
+  let guideBack = "cover";
+  function openGuide(from){ guideBack = from; show("guide"); history.pushState({guide:1}, ""); }
+  $("cvStart").onclick = () => { show("setup"); history.pushState({setup:1}, ""); };
+  $("cvGuide").onclick = () => openGuide("cover");
+  $("toGuide").onclick = () => openGuide("setup");
+  $("gdBack").onclick = () => history.back();
+  $("gdStart").onclick = () => { show("setup"); if (guideBack === "cover") history.replaceState({setup:1}, ""); else history.back(); };
   window.addEventListener("popstate", () => {
+    if (!$("guide").classList.contains("hidden")) { show(guideBack); return; }
+    if (!$("setup").classList.contains("hidden")) { show("cover"); return; }
     if (!$("grp").classList.contains("hidden")) { closeClass(); return; }
     if (!$("pf").classList.contains("hidden")) { closeViewer(); return; }
     if (!$("race").classList.contains("hidden")) { history.pushState({race:1}, ""); toast("Maintiens Terminer pour arrêter la course"); }
