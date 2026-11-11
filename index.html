@@ -1178,7 +1178,7 @@
     for (const pid of pids) {
       try {
         const rec = await idb.get(pid);
-        if (!rec || !rec.blob) continue;
+        if (!rec || !rec.blob) { S.arrivals.forEach(a => { if (a.pid === pid) a.photoMissing = true; }); continue; }
         const url = URL.createObjectURL(rec.blob); S.photos.push(url);
         S.arrivals.forEach(a => { if (a.pid === pid) a.photo = url; });
       } catch(e){}
@@ -1445,7 +1445,7 @@
     arrivalGroups().forEach((grp, gi) => {
       const head = S.arrivals[grp[0]], gap = head.t - first;
       const el = document.createElement("div"); el.className = "card";
-      el.innerHTML = '<button class="ph" aria-label="Agrandir la photo">' + (head.photo ? '<img alt="" src="' + head.photo + '">' : (head.pid ? "…" : (S.finishedFromHistory ? "Photo effacée" : "Pas de photo"))) + "</button>" +
+      el.innerHTML = '<button class="ph" aria-label="Agrandir la photo">' + (head.photo ? '<img alt="" src="' + head.photo + '">' : (head.pid ? (head.photoMissing ? "Photo introuvable" : "…") : (S.finishedFromHistory ? "Photo non enregistrée (course avant la version 10)" : "Pas de photo"))) + "</button>" +
         '<div><div class="ctop"><span class="bib">' + (grp[0] + 1) + "</span><b>" + fmt(head.t) + "</b>" +
         (gap > 0 ? "<small>" + fmtGap(gap) + "</small>" : "") + (S.videoURL ? '<button class="play">revoir</button>' : "") +
         '</div><div class="slots"></div><button class="tieAdd">+ ' + (grp.length + 1) + 'e élève sur cette photo (ex aequo)</button></div>';
@@ -1482,7 +1482,7 @@
     if (head.photo) { if (img.getAttribute("src") !== head.photo) { img.src = head.photo; img.classList.remove("zoom"); } img.classList.remove("hidden"); }
     else { img.removeAttribute("src"); img.classList.add("hidden"); }
     $("pfNone").classList.toggle("hidden", !!head.photo);
-    $("pfNone").textContent = head.pid ? "Chargement…" : (S.finishedFromHistory ? "Photo effacée" : "Pas de photo pour cette arrivée");
+    $("pfNone").textContent = head.pid ? (head.photoMissing ? "Photo introuvable sur cet appareil" : "Chargement…") : (S.finishedFromHistory ? "Photo non enregistrée : course faite avant la version 10" : "Pas de photo pour cette arrivée");
     $("pfHint").classList.toggle("hidden", !head.photo);
     $("pfNum").textContent = grp[0] + 1;
     $("pfTime").textContent = fmt(head.t);
