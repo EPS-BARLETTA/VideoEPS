@@ -72,7 +72,8 @@
   .cv-in{position:relative;z-index:1;text-align:center;max-width:720px}
   .cv-bib{font-size:24px;margin-bottom:14px}
   .cv-title{margin:0;font:800 clamp(56px,12vw,140px)/.86 var(--cond);letter-spacing:-1px;text-shadow:0 4px 0 #0004}
-  .cv-sub{font-size:clamp(17px,2.6vw,21px);font-weight:600;margin:18px auto 30px;max-width:30ch;opacity:.95}
+  .cv-sub{display:inline-block;font-size:clamp(17px,2.6vw,21px);font-weight:700;line-height:1.35;margin:22px auto 30px;max-width:32ch;
+    padding:10px 18px;border-radius:12px;background:#0B2550e6;box-shadow:0 4px 0 #0003}
   .cv-acts{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
   .cv-go,.cv-help{min-height:62px;padding:0 34px;border-radius:var(--r-m);font:800 26px/1 var(--cond);letter-spacing:.3px}
   .cv-go{background:#fff;color:var(--ink);box-shadow:0 5px 0 var(--ink)}
@@ -526,7 +527,7 @@
   <div class="cv-lanes" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
   <div class="cv-flash" aria-hidden="true"></div>
   <div class="cv-in">
-    <span class="bib cv-bib">EPS</span>
+    <div><span class="bib cv-bib">EPS</span></div>
     <h1 class="cv-title">PhotoFinish</h1>
     <p class="cv-sub">Filme l'arrivée, chronomètre chaque élève, garde la photo de chaque passage.</p>
     <div class="cv-acts">
@@ -534,7 +535,7 @@
       <button class="cv-help" id="cvGuide">Mode d'emploi</button>
     </div>
   </div>
-  <p class="cv-ver">Version 16</p>
+  <p class="cv-ver">Version 17</p>
 </section>
 
 <!-- ======================= MODE D'EMPLOI ======================= -->
@@ -668,7 +669,7 @@
       <div class="panel list" id="histList"></div>
       <button class="linkbtn hidden" id="histMore"></button>
     </div>
-    <p class="help" style="margin-top:28px;text-align:center;color:var(--ink-3)">PhotoFinish · version 16</p>
+    <p class="help" style="margin-top:28px;text-align:center;color:var(--ink-3)">PhotoFinish · version 17</p>
   </div>
   <div class="dock"><div class="wrap">
     <button class="btn go wide" id="openCam"><svg><use href="#i-cam"/></svg><span id="camLbl">Ouvrir la caméra</span></button>
