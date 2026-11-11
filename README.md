@@ -6,7 +6,8 @@ Application web pour chronométrer les arrivées d'une course de demi-fond en fi
 - Un bouton DÉPART lance le chrono et l'enregistrement vidéo en même temps
 - Un appui sur ARRIVÉE par coureur
 - Classement final, vidéo avec chrono incrusté, export CSV (Excel)
-- Import de la liste des élèves en CSV (colonnes Nom, Prénom, Groupe, Dossard reconnues), 1 à 3 groupes
+- Import de la liste des élèves en CSV (colonnes Nom, Prénom, Groupe, Dossard reconnues)
+- « Former les groupes » : élèves en cases à cocher, attribution à un groupe (autant de groupes que voulu)
 - Photo d'arrivée prise à chaque appui (gardée avec la course dans l'historique, exportable avec les noms), validation des arrivées avec menu déroulant (l'élève choisi disparaît de la liste)
 - Élèves arrivés ensemble : « + Ajouter un élève » sur la même arrivée
 
