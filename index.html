@@ -357,6 +357,10 @@
   #sheet h3{font:800 26px/1.1 var(--cond);margin:0 0 6px}
   #sheet p{margin:0 0 16px;color:var(--ink-2)}
   #sheet .acts{display:flex;gap:10px} #sheet .acts .btn{flex:1}
+  #sheet .todo{display:flex;flex-direction:column;gap:10px;margin:0 0 16px}
+  #sheet .todo .btn{justify-content:flex-start;text-align:left}
+  #sheet .todo .btn small{display:block;font-weight:500;font-size:13px;opacity:.8}
+  #sheet .todo .btn.ok{background:var(--chalk);color:var(--ink-2);border-color:var(--rule)}
   #sheet .btn.danger{background:var(--tartan);border-color:var(--tartan);color:#fff}
   #sheet .pick{display:flex;flex-direction:column;margin:0 -6px 14px}
   #sheet .pick button{display:flex;align-items:center;gap:12px;min-height:54px;padding:6px;border-radius:10px;text-align:left;font-weight:600;font-size:17px}
@@ -604,7 +608,7 @@
       <details><summary>Mon fichier CSV n'est pas reconnu.</summary>
         <p>Il faut une ligne de titres avec au moins <b>Nom</b> ou <b>Prénom</b>. Les colonnes <b>Groupe</b>, <b>Classe</b> et <b>Dossard</b> sont reprises si elles existent. Un export Excel « CSV (point-virgule) » fonctionne. Sinon, colle les noms avec <b>Modifier la liste</b>.</p></details>
       <details><summary>Les photos et la vidéo sont-elles gardées ?</summary>
-        <p>Les temps, les noms et les photos restent dans l'historique de l'iPad tant que tu ne supprimes pas la course. La vidéo, non : touche <b>Enregistrer la vidéo</b> pour la mettre dans Photos.</p></details>
+        <p>Les temps, les noms et les photos restent dans l'historique de l'iPad tant que tu ne supprimes pas la course. La vidéo, non : touche <b>Enregistrer la vidéo</b> pour la mettre dans Photos. En touchant <b>Nouvelle course</b> ou retour, l'appli te rappelle ce qui n'a pas été enregistré (vidéo, photos, fiche résultats pour ScanDocument).</p></details>
       <details><summary>Ça marche au stade sans Wi-Fi ?</summary>
         <p>Oui, une fois l'appli ouverte une première fois avec Internet. Ajoute-la à l'écran d'accueil (Partager, puis Sur l'écran d'accueil) et ouvre-la toujours depuis cette icône.</p></details>
       <details><summary>Comment garder une preuve pour la note ?</summary>
@@ -1309,7 +1313,7 @@
   };
 
   function resetRace(){
-    S.arrivals = []; S.running = false; S.finished = false; S.chunks = []; S.videoSaved = false; S.doneShown = false;
+    S.arrivals = []; S.running = false; S.finished = false; S.chunks = []; S.videoSaved = false; S.photosSaved = false; S.reportSaved = false; S.doneShown = false;
     $("doneBanner").classList.add("hidden");
     freePhotos();
     S.chronoStartPerf = 0; S.recStartPerf = 0;
@@ -1916,23 +1920,26 @@
     a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 30000);
   }
-  $("dlCsv").onclick = async () => {
+  // chaque enregistrement renvoie true s'il a abouti (utile pour la liste « avant de quitter »)
+  async function saveReport(){
     const f = S.report || await reportFile();
     if (navigator.canShare && navigator.canShare({ files:[f] }) && navigator.maxTouchPoints > 1) {
-      try { await navigator.share({ files:[f] }); return; } catch(e) { if (e.name === "AbortError") return; }
+      try { await navigator.share({ files:[f] }); S.reportSaved = true; return true; } catch(e) { if (e.name === "AbortError") return false; }
     }
-    download(f, f.name); toast("Fiche enregistrée");
-  };
-  $("dlVideo").onclick = async () => {
-    if (!S.videoBlob) { toast(S.finishedFromHistory ? "La vidéo de cette course n'est plus sur l'appareil" : "Vidéo en préparation…"); return; }
+    download(f, f.name); S.reportSaved = true; toast("Fiche enregistrée"); return true;
+  }
+  async function saveVideo(){
+    if (!S.videoBlob) { toast(S.finishedFromHistory ? "La vidéo de cette course n'est plus sur l'appareil" : "Vidéo en préparation…"); return false; }
     const file = new File([S.videoBlob], baseFileName() + "." + S.ext, { type:S.videoBlob.type });
     // Sur iPhone/iPad, la feuille de partage permet « Enregistrer la vidéo » dans Photos
     if (navigator.canShare && navigator.canShare({ files:[file] }) && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1) {
-      try { await navigator.share({ files:[file] }); S.videoSaved = true; toast("Vidéo enregistrée"); return; }
-      catch(e) { if (e.name === "AbortError") return; }
+      try { await navigator.share({ files:[file] }); S.videoSaved = true; toast("Vidéo enregistrée"); return true; }
+      catch(e) { if (e.name === "AbortError") return false; }
     }
-    download(S.videoBlob, file.name); S.videoSaved = true; toast("Vidéo enregistrée");
-  };
+    download(S.videoBlob, file.name); S.videoSaved = true; toast("Vidéo enregistrée"); return true;
+  }
+  $("dlCsv").onclick = saveReport;
+  $("dlVideo").onclick = saveVideo;
   // photos avec numéro, nom(s) et temps écrits en haut
   const loadImg = url => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = url; });
   async function photoFiles(){
@@ -1956,17 +1963,18 @@
     }
     return files;
   }
-  $("dlPhotos").onclick = async () => {
+  async function savePhotos(){
     let files;
-    try { files = await photoFiles(); } catch(e) { toast("Photos indisponibles"); return; }
-    if (!files.length) { toast("Aucune photo pour cette course"); return; }
+    try { files = await photoFiles(); } catch(e) { toast("Photos indisponibles"); return false; }
+    if (!files.length) { toast("Aucune photo pour cette course"); return false; }
     if (navigator.canShare && navigator.canShare({ files }) && navigator.maxTouchPoints > 1) {
-      try { await navigator.share({ files }); toast("Photos enregistrées"); return; }
-      catch(e) { if (e.name === "AbortError") return; }
+      try { await navigator.share({ files }); S.photosSaved = true; toast("Photos enregistrées"); return true; }
+      catch(e) { if (e.name === "AbortError") return false; }
     }
     for (const f of files) { download(f, f.name); await new Promise(r => setTimeout(r, 300)); }
-    toast(files.length + " photos enregistrées");
-  };
+    S.photosSaved = true; toast(files.length + " photos enregistrées"); return true;
+  }
+  $("dlPhotos").onclick = savePhotos;
   $("copyBtn").onclick = async () => {
     try { await navigator.clipboard.writeText(plainText()); toast("Classement copié"); }
     catch(e) { toast("Copie impossible sur cet appareil"); }
@@ -1976,18 +1984,45 @@
     if (S.videoBlob) files.unshift(new File([S.videoBlob], baseFileName() + "." + S.ext, { type:S.videoBlob.type }));
     try {
       if (navigator.canShare && navigator.canShare({ files })) {
-        await navigator.share({ files, title:S.meta.title || "Course", text:plainText() }); if (S.videoBlob) S.videoSaved = true;
+        await navigator.share({ files, title:S.meta.title || "Course", text:plainText() }); S.reportSaved = true; if (S.videoBlob) S.videoSaved = true;
       } else if (navigator.share) {
         await navigator.share({ title:S.meta.title || "Course", text:plainText() });
       } else toast("Partage indisponible sur cet appareil");
     } catch(e) { if (e.name !== "AbortError") toast("Partage impossible"); }
   };
 
+  // Sécurité avant « Nouvelle course » ou retour : vidéo, photos et fiche résultats (indispensable pour ScanDocument)
+  function toSave(){
+    if (S.finishedFromHistory) return []; // course rouverte : seule la vidéo compte, et elle n'est plus là
+    const list = [];
+    if (S.videoBlob && !S.videoSaved) list.push({ k:"video", label:"Enregistrer la vidéo", sub:"Sinon elle est perdue définitivement", go:saveVideo });
+    if (S.arrivals.some(a => a.photo) && !S.photosSaved) list.push({ k:"photos", label:"Enregistrer les photos", sub:"Photo de chaque arrivée avec le nom et le temps", go:savePhotos });
+    if (S.arrivals.length && !S.reportSaved) list.push({ k:"report", label:"Enregistrer la fiche résultats", sub:"Fichier à importer dans ScanDocument (temps + photos)", go:saveReport });
+    return list;
+  }
+  function saveBeforeLeave(list){
+    return sheet((box, close) => {
+      const draw = () => {
+        const left = list.filter(x => !x.done).length;
+        box.innerHTML = "<h3>" + (left ? "Avant de continuer" : "Tout est enregistré") + "</h3>" +
+          "<p>" + (left ? "Enregistre ce qui manque. La vidéo n'est pas gardée dans l'appli ; la fiche résultats sert à ScanDocument." : "Tu peux passer à la suite.") + "</p>" +
+          '<div class="todo">' + list.map((x, i) => '<button class="btn ' + (x.done ? "ok" : "ink") + '" data-i="' + i + '"><svg><use href="#i-down"/></svg><span>' + (x.done ? "✓ " : "") + esc(x.label) + "<small>" + esc(x.done ? "Enregistré" : x.sub) + "</small></span></button>").join("") + "</div>" +
+          '<div class="acts"><button class="btn" data-v="0">Annuler</button><button class="btn ' + (left ? "danger" : "go") + '" data-v="1">' + (left ? "Continuer sans" : "Continuer") + "</button></div>";
+        box.querySelectorAll("[data-i]").forEach(b => b.onclick = async () => { const x = list[+b.dataset.i]; if (x.done) return; if (await x.go()) { x.done = true; draw(); } });
+        box.querySelectorAll("[data-v]").forEach(b => b.onclick = async () => {
+          if (b.dataset.v === "1" && list.some(x => !x.done && x.k === "video")) {
+            // dernière confirmation : la vidéo ne pourra plus être récupérée
+            if (!confirm("La vidéo n'a pas été enregistrée. Elle sera perdue (les temps et les photos restent dans l'historique). Continuer ?")) return;
+          }
+          close(b.dataset.v === "1");
+        });
+      };
+      draw();
+    });
+  }
   async function leaveResults(){
-    if (S.videoBlob && !S.videoSaved) {
-      const ok = await ask("Quitter sans la vidéo ?", "La vidéo n'a pas été enregistrée. Elle sera perdue, les temps restent dans l'historique.", "Quitter", true);
-      if (!ok) return false;
-    }
+    const list = toSave();
+    if (list.length && !(await saveBeforeLeave(list))) return false;
     S.finishedFromHistory = false; $("playback").removeAttribute("src");
     $("pf").classList.add("hidden"); freePhotos();
     return true;
