@@ -506,6 +506,7 @@
   }
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
+<link rel="stylesheet" href="./portraits.css">
 </head>
 <body>
 
@@ -688,6 +689,8 @@
     <input id="cName" class="cname" placeholder="Nom de la classe" autocomplete="off" aria-label="Nom de la classe">
     <div class="ctools">
       <button class="chipbtn" id="csvBtn"><svg><use href="#i-up"/></svg>Importer CSV</button>
+      <button class="chipbtn" id="portraitImport">Importer un trombinoscope</button>
+      <input type="file" id="portraitFile" accept="image/jpeg,image/png,.jpg,.jpeg,.png" class="hidden">
       <input type="file" id="fCsv" accept=".csv,.txt,text/csv,text/plain" class="hidden">
       <button class="chipbtn" id="addNames"><svg><use href="#i-groups"/></svg>Modifier la liste</button>
       <button class="chipbtn" id="grpRand"><svg><use href="#i-redo"/></svg>Groupes au hasard</button>
@@ -695,7 +698,7 @@
 
     <div id="clsEmpty" class="empty hidden">
       <b>Ajoute les élèves de la classe</b>
-      <p>Importe la liste exportée de l'école (CSV avec Nom et Prénom), ou tape les noms.</p>
+      <p>Importe le trombinoscope PRONOTE ou une liste CSV, ou tape les noms.</p>
       <div class="acts"><button class="btn ink" id="emptyCsv"><svg><use href="#i-up"/></svg>Importer un CSV</button><button class="btn" id="emptyNames">Taper les noms</button></div>
     </div>
 
@@ -793,6 +796,7 @@
 <div id="sheet" class="hidden"><div class="box" role="dialog" aria-modal="true"></div></div>
 <canvas id="comp" style="position:fixed;left:0;top:0;width:2px;height:2px;opacity:0;pointer-events:none"></canvas>
 
+<script src="./portraits.js"></script>
 <script>
 (() => {
   "use strict";
@@ -823,7 +827,7 @@
   }
   const store = {
     get(k, d){ try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch(e){ return d; } },
-    set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} }
+    set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch(e){ return false; } }
   };
   function toast(msg){
     document.querySelectorAll(".toast").forEach(t => t.remove());
@@ -902,6 +906,25 @@
   const plural = n => n + (n > 1 ? " élèves" : " élève");
   const itemName = l => { const m = l.match(/^(\d{1,4})[\s.,;:\-–]+(.+)$/); return m ? { bib:m[1], name:m[2].trim() } : { bib:"", name:l }; };
   const curClass = () => S.classes.find(c => c.id === S.classId) || null;
+  function rosterPortrait(runner, items){
+    const key = portraitNameKey(runner.name);
+    const matches = items.filter(item => portraitNameKey(itemName(item.line).name) === key);
+    if (matches.length === 1) return matches[0].portrait;
+    const byBib = runner.bib ? matches.filter(item => itemName(item.line).bib === runner.bib) : [];
+    return byBib.length === 1 ? byBib[0].portrait : undefined;
+  }
+  function runnerPortrait(runner){
+    const found = S.meta.classId
+      ? S.classes.filter(c => c.id === S.meta.classId)
+      : S.classes.filter(c => c.name === S.meta.cls);
+    return found.length === 1 ? rosterPortrait(runner, found[0].items) : undefined;
+  }
+  function keepRosterPortraits(items, previous){
+    return items.map(item => {
+      const portrait = rosterPortrait(itemName(item.line), previous);
+      return validRosterPortrait(portrait) ? {...item, portrait} : item;
+    });
+  }
   const groupsOf = c => c ? [...new Set(c.items.map(x => x.g).filter(Boolean))].sort((a, b) => a - b) : [];
   // valeur « Qui court » valide pour la classe : numéro de groupe, ou "all"
   function runValue(c){
@@ -1081,7 +1104,7 @@
           const sub = list.filter(s => s.cls === cn);
           const ex = S.classes.find(x => x.name === cn);
           const target = ex || { id:"c" + Date.now() + Math.random().toString(36).slice(2, 5), name:cn, items:[] };
-          target.items = itemsFromList(sub, 0);
+          target.items = keepRosterPortraits(itemsFromList(sub, 0), target.items);
           if (!ex) S.classes.push(target);
           if (!first) first = target;
         });
@@ -1104,7 +1127,7 @@
     }
     const offset = mode === "add" ? groupsOf(c).reduce((m, g) => Math.max(m, g), 0) : 0;
     const items = itemsFromList(list, offset);
-    c.items = mode === "add" ? c.items.concat(items) : items;
+    c.items = mode === "add" ? c.items.concat(items) : keepRosterPortraits(items, c.items);
     G.active = 0; persistClass(); renderClass();
     const ng = new Set(items.map(x => x.g).filter(Boolean)).size;
     toast(plural(list.length) + " importés" + (ng ? " en " + ng + " groupe" + (ng > 1 ? "s" : "") : ""));
@@ -1120,8 +1143,8 @@
       box.querySelectorAll("[data-v]").forEach(b => b.onclick = () => close(b.dataset.v === "1" ? ta.value : null));
     });
     if (txt == null) return;
-    const old = new Map(); c.items.forEach(x => { if (!old.has(x.line)) old.set(x.line, x.g); });
-    c.items = txt.split(/\r?\n/).map(l => l.trim()).filter(Boolean).map(l => ({ line:l, g:old.has(l) ? old.get(l) : 0 }));
+    const old = new Map(); c.items.forEach(x => { if (!old.has(x.line)) old.set(x.line, x); });
+    c.items = txt.split(/\r?\n/).map(l => l.trim()).filter(Boolean).map(l => (old.get(l) ? {...old.get(l)} : {line:l, g:0}));
     persistClass(); renderClass();
   }
   $("addNames").onclick = editList;
@@ -1139,6 +1162,29 @@
     history.pushState({grp:1}, "");
     if (G.isNew) setTimeout(() => $("cName").focus(), 100);
   }
+  $("portraitImport").onclick = () => $("portraitFile").click();
+  $("portraitFile").onchange = event => {
+    const input = event.target, file = input.files[0];
+    input.value = "";
+    if (!file) return;
+    const cls = G.cls;
+    PhotoFinishPortraits.importRoster({
+      file, items: cls.items, itemName,
+      save(items){
+        if (G.cls.id !== cls.id) return false;
+        const created = G.isNew;
+        const updated = {...G.cls, name: $("cName").value.trim() || G.cls.name || "Ma classe", items};
+        const classes = created ? [...S.classes, updated] : S.classes.map(c => c.id === cls.id ? updated : c);
+        if (!store.set("cc_classes", classes)) return false;
+        S.classes = classes;
+        G.cls = updated; G.isNew = false; S.classId = updated.id;
+        $("cName").value = updated.name;
+        saveSetup(); renderClass();
+        toast("Portraits enregistrés");
+        return true;
+      }
+    });
+  };
   // enregistre la classe ouverte (une nouvelle classe n'est gardée que si elle a un nom ou des élèves)
   function persistClass(){
     const c = G.cls; if (!c) return;
@@ -1302,7 +1348,7 @@
     }
     S.runners = runningRunners();
     const cc = curClass();
-    S.meta = { title:$("fTitle").value.trim(), cls:cc ? cc.name : "", group:runLabel(), date:Date.now() };
+    S.meta = { title:$("fTitle").value.trim(), cls:cc ? cc.name : "", classId:cc?.id || "", group:runLabel(), date:Date.now() };
     S.burn = $("fBurn").checked; S.beep = $("fBeep").checked;
     $("race").classList.toggle("left", S.opts.hand === "left");
     resetRace();
@@ -1722,21 +1768,24 @@
       d.appendChild(inp);
     } else {
       const used = new Set(S.arrivals.filter((x, j) => j !== i).map(x => x.runnerId).filter(Boolean));
-      const sel = document.createElement("select");
-      sel.setAttribute("aria-label", "Élève de l'arrivée n°" + rankOf(i));
       const avail = S.runners.filter(r => r.id === a.runnerId || !used.has(r.id));
-      let h = '<option value="">' + (avail.length ? "Choisir l'élève…" : "Tous les élèves sont placés") + "</option>";
-      const multi = new Set(S.runners.map(r => r.group)).size > 1;
-      const opt = r => '<option value="' + esc(r.id) + '">' + esc(runnerLabel(r)) + "</option>";
-      if (multi) {
-        [...new Set(avail.map(r => r.group))].forEach(g => {
-          h += '<optgroup label="Groupe ' + esc(g) + '">' + avail.filter(r => r.group === g).map(opt).join("") + "</optgroup>";
-        });
-      } else h += avail.map(opt).join("");
-      sel.innerHTML = h; sel.value = a.runnerId || "";
-      sel.classList.toggle("empty", !a.runnerId);
-      sel.onchange = () => { a.runnerId = sel.value || null; changed(); };
-      d.appendChild(sel);
+      const current = runnerById(a.runnerId);
+      const open = document.createElement("button");
+      open.type = "button";
+      open.className = "pf-roster-trigger";
+      open.setAttribute("aria-haspopup", "dialog");
+      open.setAttribute("aria-label", "Élève de l’arrivée n°" + rankOf(i) + (current ? " · " + current.name : ""));
+      if (current) open.append(PhotoFinishPortraits.photo(runnerPortrait(current)));
+      const name = document.createElement("span");
+      name.textContent = current ? runnerLabel(current) : avail.length ? "Choisir l’élève…" : "Tous les élèves sont placés";
+      open.append(name);
+      open.disabled = !avail.length;
+      open.onclick = () => PhotoFinishPortraits.picker({
+        runners: avail.map(r => ({...r, portrait: runnerPortrait(r)})), selected: a.runnerId,
+        label: "Élève de l’arrivée n°" + rankOf(i),
+        select(id){ a.runnerId = id; changed(); }
+      });
+      d.appendChild(open);
     }
     if (a.tie) {
       const x = document.createElement("button"); x.className = "x"; x.textContent = "×";
@@ -1835,7 +1884,7 @@
     img.classList.toggle("zoom");
   };
   document.addEventListener("keydown", e => {
-    if ($("pf").classList.contains("hidden") || /SELECT|INPUT/.test(document.activeElement && document.activeElement.tagName)) return;
+    if ($("pf").classList.contains("hidden") || document.querySelector(".pf-roster-dialog[open]") || /SELECT|INPUT/.test(document.activeElement && document.activeElement.tagName)) return;
     if (e.key === "ArrowRight") $("pfNext").click();
     else if (e.key === "ArrowLeft" && pfIdx > 0) $("pfPrev").click();
     else if (e.key === "Escape") history.back();
